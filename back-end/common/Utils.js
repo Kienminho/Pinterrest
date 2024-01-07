@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const message = {
   SUCCESS: "Successful",
   ERROR: "Error",
-  NOTFOUND: "Data Not found",
+  NOT_FOUND: "Data Not found",
 };
 
 const code = {
@@ -27,7 +27,7 @@ const createResponseModel = (code, message, data = null) => {
   };
 };
 
-const createSuccessResponseModel = (totalRecord = 1, data) => {
+const createSuccessResponseModel = (totalRecord = 1, data = true) => {
   return {
     statusCode: 200,
     message: "Successful",
@@ -68,6 +68,10 @@ const generateRandomToken = (length) => {
   return token;
 };
 
+const generateVerificationCode = () => {
+  return Math.floor(Math.random() * 1000000);
+};
+
 module.exports = {
   messageCode: message,
   statusCode: code,
@@ -75,6 +79,7 @@ module.exports = {
   createResponseModel: createResponseModel,
   createSuccessResponseModel: createSuccessResponseModel,
   generateRandomToken: generateRandomToken,
+  generateVerificationCode: generateVerificationCode,
   createErrorResponseModel: createErrorResponseModel,
   validatePassword: validatePassword,
   hashPassword: hashPassword,

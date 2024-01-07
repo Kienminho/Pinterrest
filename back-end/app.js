@@ -21,6 +21,11 @@ app.use(
 );
 app.use(express.static("public"));
 app.use(cookieParser());
+
+//router
+const userRouter = require("./router/UserRouter");
+app.use("/api/user", userRouter);
+
 app.listen(process.env.PORT, () => {
   console.log("Server is running on: http://localhost:" + process.env.PORT);
 });
