@@ -1,0 +1,111 @@
+.fade0 {
+  color: #f9c813;
+}
+.fade1 {
+  color: #1159f2;
+}
+.fade2 {
+  color: #066d38;
+}
+.fade3 {
+  color: #e44c06;
+}
+.bgfade0 {
+  background: #f9c813;
+}
+.bgfade1 {
+  background: #1159f2;
+}
+.bgfade2 {
+  background: #066d38;
+}
+.bgfade3 {
+  background: #e44c06;
+}
+.fade0,
+.fade1,
+.fade2,
+.fade3 {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 7s linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes fadeInUp {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  30%,
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.image0 {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: ImageInUp 3s linear none;
+  will-change: transform, opacity;
+}
+.image1 {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: ImageInUp 4s linear none;
+  will-change: transform, opacity;
+}
+.image2 {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: ImageInUp 5s linear none;
+  will-change: transform, opacity;
+}
+.image3 {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: ImageInUp 6s linear none;
+  will-change: transform, opacity;
+}
+.image4 {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: ImageInUp 7s linear none;
+  will-change: transform, opacity;
+}
+
+@keyframes ImageInUp {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  30%,
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90%,
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.bar {
+  background: #fde68a;
+}
+.textbar {
+  color: #fffd92;
+}
+
+html, body {
+  scroll-behavior: smooth;
+}
