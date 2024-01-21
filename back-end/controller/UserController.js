@@ -1,5 +1,6 @@
 const EmailService = require("../common/EmailService");
 const Utils = require("../common/Utils");
+const AuthenticateService = require("../common/AuthenticateService");
 
 const User = require("../model/User");
 
@@ -20,8 +21,20 @@ const HandleRegister = async (req, res) => {
           )
         );
     }
+
+    const checkPassword = Utils.checkFormatPassword(newUser.Password);
+    if (!checkPassword) {
+      return res
+        .status(400)
+        .json(
+          Utils.createErrorResponseModel(
+            "Mật khẩu phải có ít nhất 8 ký tự, trong đó có ít nhất 1 chữ hoa, 1 chữ thường và 1 số."
+          )
+        );
+    }
     //hash password
     newUser.Password = Utils.hashPassword(newUser.Password);
+    newUser.UserName = Utils.getUserNameByEmail(newUser.Email);
     //create new user
     const user = new User(newUser);
     await user.save();
@@ -57,8 +70,8 @@ const HandleLogin = async (req, res) => {
     }
 
     //create token
-    const accessToken = Utils.generateAccessToken(user);
-    const refreshToken = Utils.generateRefreshToken(user);
+    const accessToken = AuthenticateService.generateAccessToken(user);
+    const refreshToken = AuthenticateService.generateRefreshToken(user);
     //save refreshToken
     user.RefreshToken = refreshToken;
     await user.save();
@@ -110,25 +123,21 @@ const GetUserByEmail = async (req, res) => {
 /// Send mail
 /// </summary>
 const SendMail = async (req, res) => {
-  //send email
-  const code = Utils.generateVerificationCode();
-  const username = Utils.getUserNameByEmail(req.Email);
-  const sendMail = EmailService.sendMail(req.Email, code, username);
-  if (!sendMail) {
-    return res
-      .status(400)
-      .json(
-        Utils.createErrorResponseModel(
-          "Gửi mã xác minh thất bại, vui lòng thử lại."
-        )
-      );
+  try {
+    const code = Utils.generateVerificationCode();
+    const username = Utils.getUserNameByEmail(req.body.Email);
+    await EmailService.sendMail(req.body.Email, code, username);
+
+    return res.status(200).json(
+      Utils.createSuccessResponseModel(1, {
+        code: code,
+        username: username,
+      })
+    );
+  } catch (error) {
+    console.log("UserController - SendMail: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
-  return res.status(200).json(
-    Utils.createSuccessResponseModel(1, {
-      code: code,
-      username: username,
-    })
-  );
 };
 
 /// <summary>

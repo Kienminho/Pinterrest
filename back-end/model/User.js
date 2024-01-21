@@ -3,6 +3,7 @@ const mongoose = require("../common/ConfigDB");
 const UserSchema = new mongoose.Schema({
   UserName: {
     type: String,
+    unique: false,
     required: false,
     min: 6,
     max: 255,
@@ -16,6 +17,7 @@ const UserSchema = new mongoose.Schema({
   Avatar: {
     type: String,
     default: "/images/avatar.jpg",
+    unique: false,
     required: false,
   },
   Email: {
@@ -26,14 +28,16 @@ const UserSchema = new mongoose.Schema({
   },
   FullName: {
     type: String,
-    required: true,
+    required: false,
+    unique: false,
     min: 6,
     max: 255,
   },
   Gender: {
     type: String,
     enum: ["Nam", "Nữ", "Khác"],
-    required: true,
+    default: "Khác",
+    required: false,
   },
   Birthday: {
     type: Date,
