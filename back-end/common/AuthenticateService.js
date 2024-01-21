@@ -2,28 +2,31 @@ const Utils = require("./Utils");
 const jwt = require("jsonwebtoken");
 
 const generateAccessToken = (user) => {
-  const headers = {
+  const payload = {
     id: user._id,
-    name: user.name,
-    role: user.role,
+    email: user.Email,
+    name: user.UserName,
+    role: user.Role,
   };
   const options = {
     expiresIn: "7d",
     algorithm: "HS256",
   };
-  return jwt.sign(headers, process.env.ACCESS_TOKEN_SECRET, options);
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, options);
 };
 
 const generateRefreshToken = (user) => {
-  const headers = {
+  const payload = {
     id: user._id,
-    name: user.name,
+    email: user.Email,
+    name: user.UserName,
+    role: user.Role,
   };
   const options = {
     expiresIn: "15d",
     algorithm: "HS256",
   };
-  return jwt.sign(headers, process.env.REFRESH_TOKEN_SECRET, options);
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, options);
 };
 
 const authenticateToken = (req, res, next) => {

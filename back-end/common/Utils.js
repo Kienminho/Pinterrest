@@ -72,6 +72,15 @@ const generateVerificationCode = () => {
   return Math.floor(Math.random() * 1000000);
 };
 
+const checkFormatPassword = (password) => {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  return regex.test(password);
+};
+
+const createThumbnailPath = (filePath) => {
+  return process.env.BASE_URL + filePath.match(/public(.*)/)?.[1];
+};
+
 module.exports = {
   messageCode: message,
   statusCode: code,
@@ -83,4 +92,6 @@ module.exports = {
   createErrorResponseModel: createErrorResponseModel,
   validatePassword: validatePassword,
   hashPassword: hashPassword,
+  createThumbnailPath: createThumbnailPath,
+  checkFormatPassword: checkFormatPassword,
 };
