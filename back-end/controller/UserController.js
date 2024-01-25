@@ -116,7 +116,7 @@ const GetUserByEmail = async (req, res) => {
       .status(400)
       .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
   }
-  return res.json(Utils.createSuccessResponseModel(1, true));
+  return res.json(Utils.createSuccessResponseModel(1, userExist));
 };
 
 /// <summary>
