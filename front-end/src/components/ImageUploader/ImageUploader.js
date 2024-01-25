@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { UploadIcon } from '../Icon/UploadIcon'
+import { GrUploadOption as UploadIcon } from 'react-icons/gr'
 
 const ImageUploader = ({ setFile }) => {
   const [selectedFile, setSelectedFile] = useState(null)
@@ -43,7 +43,7 @@ const ImageUploader = ({ setFile }) => {
       <div
         className={`img-Uploader bg-[#e9e9e9] w-[24rem] max-sm:w-auto rounded-3xl border-dashed border-[#dadada]  hover:border-[#929292] border-2 cursor-pointer overflow-hidden relative ${
           // check if not image, set default height
-          selectedFile && imageHeight ? `h-[${imageHeight}]` : 'h-[28rem] max-sm:h-[23rem]'
+          selectedFile && imageHeight ? `h-[${imageHeight}]` : 'h-[32rem] max-sm:h-[25rem]'
         }`}
         onClick={selectFile}
         onDrop={onDropIn}
@@ -52,7 +52,7 @@ const ImageUploader = ({ setFile }) => {
         <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
           {selectedFile ? (
             <img
-              className=' w-full '
+              className=' w-full'
               ref={previewImg}
               src={URL.createObjectURL(selectedFile)}
               alt='preview-img-upload'
@@ -60,13 +60,32 @@ const ImageUploader = ({ setFile }) => {
             />
           ) : (
             <>
-              <UploadIcon width={26} />
-              <h3 className='text-center pointer-events-none break-words max-w-[210px]'>
+              <UploadIcon size='2rem' />
+              <h4 className='text-center pointer-events-none break-words max-w-[230px] mt-3'>
                 Choose a file or drag and drop it here
-              </h3>
+              </h4>
             </>
           )}
         </div>
+        {/* Muốn chọn ảnh khác */}
+        {selectedFile && (
+          <div className='flex items-center justify-center  flex-col w-full h-full z-20 bg-[#ffffff8f] absolute opacity-0 hover:opacity-100 top-0'>
+            <UploadIcon size='2rem' />
+            <h4 className='text-center pointer-events-none break-words max-w-[210px]'>Choose another file</h4>
+          </div>
+        )}
+        <input
+          type='file'
+          accept='image/*'
+          name='upload_file'
+          onChange={(e) => {
+            setSelectedFile(e.target.files[0])
+            setFile(e.target.files[0])
+          }}
+          hidden
+          multiple={false}
+          ref={inputRef}
+        />
       </div>
     </>
   )

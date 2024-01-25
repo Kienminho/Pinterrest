@@ -1,16 +1,37 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
 import { FaFacebook, FaGoogle, FaPinterest } from 'react-icons/fa6'
-import { Link, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { login } from '../../store/slices/AuthSlice'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Login = () => {
   const navigate = useNavigate()
+  const inputRef = useRef()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    return inputRef.current.focus()
+  }, [])
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    Email: '',
+    Password: ''
   })
+
+  console.log(formData)
+
+  const formDataObject = {
+    Email: formData.Email,
+    Password: formData.Password
+  }
+
+  const formDataString = JSON.stringify(formDataObject)
+
+  console.log(formDataString)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -22,25 +43,34 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('/login', {
+      const response = await fetch('https://api-pinterrest.up.railway.app/api/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         // credentials: "include",
-        body: JSON.stringify(formData)
+        body: formDataString
       })
 
       const resJson = await response.json()
+      console.log(resJson)
 
       if (response.status === 400) {
-        console.log(resJson.error)
+        toast.error(resJson.error)
       }
 
       if (response.status === 200) {
         console.log('login successful', response.status)
-        // const { id } = resJson
-        // dispatch(login(id))
+        const access_token = resJson.data.AccessToken
+        const refresh_token = resJson.data.RefreshToken
+
+        // Lưu trữ access token và refresh token
+        localStorage.setItem('access_token', access_token)
+        localStorage.setItem('refresh_token', refresh_token)
+        const { Id } = resJson.data
+
+        dispatch(login(Id))
+        toast.success('login successful')
         navigate('/')
       } else {
         // Handle server error
@@ -48,6 +78,7 @@ const Login = () => {
       }
     } catch (error) {
       console.log('login error: ' + error)
+      toast.error('login unsuccessful: something went wrong')
     }
   }
 
@@ -61,9 +92,10 @@ const Login = () => {
 
         <div className='w-[300px] mt-6 flex flex-col gap-3'>
           <InputField
+            ref={inputRef}
             label={'Email'}
             type='email'
-            name={'email'}
+            name={'Email'}
             id={'user-email'}
             placeholder='Email'
             handleChange={handleChange}
@@ -72,14 +104,15 @@ const Login = () => {
           <InputField
             label={'Password'}
             type='password'
-            name={'password'}
+            name={'Password'}
             id={'user-pass'}
+            placeholder='Mật khẩu'
             handleChange={handleChange}
           />
 
           <label>
             <a
-              class='no-underline font-medium text-sm text-gray-700 hover:text-blue-500 hover:underline'
+              class='no-underline font-medium text-md text-gray-700 hover:text-blue-500 hover:underline'
               href='forget.com'
             >
               Quên mật khẩu?
@@ -87,7 +120,7 @@ const Login = () => {
           </label>
           <div className='flex justify-center'>
             <button
-              className='text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 text-decoration-none w-64 text-center'
+              className='text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 text-decoration-none w-64 text-center mt-2'
               onClick={handleSubmit}
             >
               Đăng nhập
@@ -127,9 +160,9 @@ const Login = () => {
             </p>
             <p class='text-zinc-600  dark:text-zinc-500 mt-2'>
               Bạn chưa có tài khoản?{' '}
-              <Link to='/signup' class='font-medium dec text--600 dark:text-blue-500 no-underline hover:underline'>
+              <NavLink to='/register' class='font-medium dec text--600 dark:text-blue-500 no-underline hover:underline'>
                 Đăng ký
-              </Link>
+              </NavLink>
             </p>
           </div>
         </div>

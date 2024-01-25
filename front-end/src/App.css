@@ -1,9 +1,10 @@
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
 @layer base {
   body {
-    @apply font-roboto;
+    @apply font-bevietnampro;
   }
 
   h1 {
@@ -33,11 +34,11 @@
 
 @layer components {
   .btn-henry {
-    @apply border-2 border-primary px-4 py-2 rounded uppercase text-xl font-semibold cursor-pointer hover:bg-primary hover:text-white;
+    @apply border-2 border-primary_henry px-4 py-2 rounded uppercase text-xl font-semibold cursor-pointer hover:bg-primary_henry hover:text-white;
   }
 
   .btn-basic {
-    @apply px-5 py-2 cursor-pointer text-base font-medium rounded-md hover:bg-primary hover:text-white;
+    @apply px-5 py-2 cursor-pointer text-base font-medium rounded-md hover:bg-primary_henry hover:text-white;
   }
 
   .btn-link {
@@ -65,11 +66,15 @@
   }
 
   .card {
-    @apply bg-primary rounded-md shadow-md shadow-primary relative overflow-hidden hover:shadow-lg hover:shadow-primary;
+    @apply bg-primary_henry rounded-md shadow-md shadow-primary_henry relative overflow-hidden hover:shadow-lg hover:shadow-primary_henry;
   }
 
   .badge {
     @apply flex justify-between items-center bg-cyan-50 rounded-md absolute top-2 left-2 p-2 min-w-[25%];
+  }
+
+  .btn-save {
+    @apply bg-[#e60023] text-white text-base font-medium px-6 py-3 rounded-[30px] hover:bg-[#c5001e];
   }
 }
 

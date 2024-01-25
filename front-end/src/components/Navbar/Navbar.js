@@ -3,7 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { PinterestLogo } from '../Icon/PinterestLogo'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
 import Search from '../Search/Search'
-
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { FaAngleDown } from 'react-icons/fa'
 import { RiUpload2Fill } from 'react-icons/ri'
 import { IoNotifications } from 'react-icons/io5'
@@ -12,10 +13,11 @@ import 'tippy.js/dist/tippy.css'
 import Tippy from '@tippyjs/react/'
 import TippyHeadless from '@tippyjs/react/headless'
 import Menu from '../Popper/Menu'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Signin from '../Signin/signin'
-import Signup from '../Signup/signup'
+import Signup from '../../page/Signup/Signup'
+import { logout } from '../../store/slices/AuthSlice'
 
 const MENU_ITEMS = [
   {
@@ -29,31 +31,88 @@ const MENU_ITEMS = [
 ]
 
 const Navbar = () => {
-  const isLoggedIn = true
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { isAuthenticated } = useSelector((state) => {
+    return state.Auth
+  })
+
+  // useEffect để kiểm tra trạng thái xác thực khi component được tạo
+  useEffect(() => {
+    console.log('Trạng thái xác thực sau khi F5:', isAuthenticated)
+    // Thực hiện các thao tác cập nhật UI tại đây nếu cần
+  }, [isAuthenticated])
+
   const logoutHandler = async () => {
     try {
-      // const response = await fetch('/logout', {
-      //   method: 'get'
-      // })
-      // if (response.status === 200) {
-      //   toast.success('logout successful')
-      //   dispatch(logout())
-      //   dispatch(resetState())
-      navigate('/login')
+      const accessToken = localStorage.getItem('access_token')
+      console.log(accessToken)
+
+      const response = await fetch('https://api-pinterrest.up.railway.app/api/user/logout', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      })
+
+      if (response.status === 200) {
+        toast.success('logout successful')
+        dispatch(logout())
+        console.log(isAuthenticated)
+        // dispatch(resetState())
+        // Xóa accessToken và refreshToken khỏi localStorage
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        navigate('/login')
+      }
     } catch (err) {
       console.log(err.message)
     }
   }
+
+  const refreshTokenHandler = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token')
+      console.log(refreshToken)
+
+      if (refreshToken) {
+        const response = await fetch('https://api-pinterrest.up.railway.app/api/user/refresh-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken })
+        })
+        if (response.ok) {
+          const data = await response.json()
+          console.log(data)
+
+          if (data.statusCode === 200) {
+            const newAccessToken = data.data.AccessToken
+            localStorage.setItem('access_token', newAccessToken)
+            console.log('Làm mới accessToken thành công:', data.message)
+            // Update application state
+          } else {
+            console.log('Làm mới accessToken thất bại:', data.message)
+          }
+        } else {
+          // Xử lý khi có lỗi từ server
+          console.log('Không nhận được refreshToken')
+        }
+      }
+    } catch (error) {
+      console.log('Lỗi khi làm mới accessToken:', error.message)
+    }
+  }
+
   return (
     <div className='navbar bg-white w-full max-sm:top-auto max-sm:fixed max-sm:bottom-0 px-6 py-4 sticky top-0 z-50'>
-      <ForBigScreen isAuthenticated={isLoggedIn} logoutHandler={logoutHandler} />
+      <ForBigScreen
+        isAuthenticated={isAuthenticated}
+        logoutHandler={logoutHandler}
+        refreshTokenHandler={refreshTokenHandler}
+      />
     </div>
   )
 }
 
-const ForBigScreen = ({ isLoggedIn, logoutHandler }) => {
-  const currentUser = true
+const ForBigScreen = ({ isAuthenticated, logoutHandler, refreshTokenHandler }) => {
   const userMenu = [
     {
       title: 'View profile',
@@ -92,32 +151,35 @@ const ForBigScreen = ({ isLoggedIn, logoutHandler }) => {
   return (
     <div className='flex justify-between'>
       <div className='flex items-center gap-2'>
-        <NavLink to='/'>
+        <NavLink to='/' className='flex justify-center items-center'>
           <NavWrapper>
             <PinterestLogo />
           </NavWrapper>
+          <span className='text-red-600 text-[20px] font-medium tracking-tighter ml-[-6px]'>Pinterest</span>
         </NavLink>
-        <span className='text-red-600 text-lg font-medium tracking-tighter ml-[-12px]'>Pinterest</span>
+
         <div className='btn-link'>
-          <NavLink to='/'>{currentUser ? 'Home' : 'Explore'}</NavLink>
+          <NavLink to='/'>{isAuthenticated ? 'Home' : 'Explore'}</NavLink>
         </div>
 
-        {currentUser && (
+        {isAuthenticated && (
           <div className='btn-link'>
             <NavLink to='/create'>Create</NavLink>
           </div>
         )}
       </div>
 
-      <div className='flex items-center justify-center mx-8'>
-        {' '}
-        <div>
-          <Search />
+      {isAuthenticated && (
+        <div className='flex items-center justify-center mx-8'>
+          {' '}
+          <div>
+            <Search />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className='flex items-center gap-6'>
-        {currentUser ? (
+        {isAuthenticated ? (
           <>
             <Tippy delay={[0, 200]} content='Upload media' placement='bottom'>
               <button>
@@ -134,16 +196,26 @@ const ForBigScreen = ({ isLoggedIn, logoutHandler }) => {
                 <AiFillMessage size='1.5rem' />
               </button>
             </Tippy>
-            <button className='rounded-3xl bg-red-600 px-5 py-2 text-white hover:bg-[#c5001e]' onClick={logoutHandler}>
-              Logout
-            </button>
+            <NavLink to='/'>
+              <div onClick={logoutHandler} className='rounded-3xl bg-red-600 px-5 py-2 text-white hover:bg-[#c5001e]'>
+                Logout
+              </div>
+            </NavLink>
+            <NavLink to='/refresh-token'>
+              <div
+                onClick={refreshTokenHandler}
+                className='rounded-3xl bg-red-600 px-5 py-2 text-white hover:bg-[#c5001e]'
+              >
+                Refresh Token
+              </div>
+            </NavLink>
             <NavLink to='/profile/created'>
               <ProfileAvatar />
             </NavLink>
           </>
         ) : (
           <>
-            <NavLink to='/'>
+            <NavLink to='/login'>
               <div
                 onClick={openLoginPopup}
                 className='rounded-3xl bg-red-600 px-6 py-2 mr-[-1rem] font-medium text-white hover:bg-[#c5001e]'
@@ -151,19 +223,19 @@ const ForBigScreen = ({ isLoggedIn, logoutHandler }) => {
                 Login
               </div>
             </NavLink>
-            <NavLink to='/'>
+            <NavLink to='/register'>
               <div
                 onClick={openRegisterPopup}
                 className='rounded-3xl px-6 py-2 text-dark_color font-medium hover:bg-zinc-300/90 bg-zinc-300/60'
               >
-                Register
+                Sign up
               </div>
             </NavLink>
           </>
         )}
 
-        <Menu items={currentUser ? userMenu : MENU_ITEMS}>
-          {currentUser ? (
+        <Menu items={isAuthenticated ? userMenu : MENU_ITEMS}>
+          {isAuthenticated ? (
             <TippyHeadless>
               <img
                 className='w-8 h-8 cursor-pointer object-cover rounded-full'
@@ -180,8 +252,8 @@ const ForBigScreen = ({ isLoggedIn, logoutHandler }) => {
           )}
         </Menu>
       </div>
-      {showLoginPopup && <Signin onClose={closeLoginPopup} />}
-      {showRegisterPopup && <Signup onClose={closeRegisterPopup} />}
+      {/* {showLoginPopup && <Signin onClose={closeLoginPopup} />}
+      {showRegisterPopup && <Signup onClose={closeRegisterPopup} />} */}
     </div>
   )
 }

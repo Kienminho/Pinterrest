@@ -1,5 +1,4 @@
 import './PersonalProfile.css'
-import StickyFooter from '../StickyFooter/StickyFooter'
 
 const PersonalProfile = () => (
   <div>
@@ -84,9 +83,6 @@ const PersonalProfile = () => (
           <option selected>Tiếng Anh (Mỹ)</option>
           <option value='1'>Tiếng Việt</option>
         </select>
-      </div>
-      <div style={{ marginTop: '150px' }}>
-        <StickyFooter />
       </div>
     </div>
   </div>
