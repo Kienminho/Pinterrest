@@ -11,7 +11,11 @@ router.get(
   AuthenticateService.authenticateToken,
   UserController.HandleLogout
 );
-router.get("/user-by-email/:email", UserController.GetUserByEmail);
+router.get(
+  "/user-by-email/:email",
+  AuthenticateService.authenticateToken,
+  UserController.GetUserByEmail
+);
 router.post("/verify", UserController.SendMail);
 
 router.post(
