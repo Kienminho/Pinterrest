@@ -152,7 +152,7 @@ const GetAccessTokenByRefreshToken = async (req, res) => {
         .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
     }
     //create token
-    const accessToken = Utils.generateAccessToken(user);
+    const accessToken = AuthenticateService.generateAccessToken(user);
     return res.json(
       Utils.createSuccessResponseModel(1, { AccessToken: accessToken })
     );
