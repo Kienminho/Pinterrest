@@ -2,7 +2,7 @@ const EmailService = require("../common/EmailService");
 const Utils = require("../common/Utils");
 const AuthenticateService = require("../common/AuthenticateService");
 
-const User = require("../model/User");
+const _User = require("../model/User");
 
 /// <summary>
 /// Handle register
@@ -11,7 +11,7 @@ const HandleRegister = async (req, res) => {
   try {
     const newUser = req.body;
     //check email exist
-    const userExist = await User.findOne({ Email: newUser.Email });
+    const userExist = await _User.findOne({ Email: newUser.Email });
     if (userExist) {
       return res
         .status(400)
@@ -36,10 +36,11 @@ const HandleRegister = async (req, res) => {
     newUser.Password = Utils.hashPassword(newUser.Password);
     newUser.UserName = Utils.getUserNameByEmail(newUser.Email);
     //create new user
-    const user = new User(newUser);
+    const user = new _User(newUser);
     await user.save();
     res.json(Utils.createSuccessResponseModel());
   } catch (error) {
+    console.log("UserController - HandleRegister: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -51,7 +52,7 @@ const HandleLogin = async (req, res) => {
   try {
     const { Email, Password } = req.body;
     //check email exist
-    const user = await User.findOne({ Email: Email, IsDeleted: false });
+    const user = await _User.findOne({ Email: Email, IsDeleted: false });
     if (!user) {
       return res
         .status(400)
@@ -86,6 +87,7 @@ const HandleLogin = async (req, res) => {
       .status(200)
       .json(Utils.createSuccessResponseModel(1, userResponse));
   } catch (error) {
+    console.log("UserController - HandleLogin: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -94,7 +96,7 @@ const HandleLogin = async (req, res) => {
 /// Handle logout
 /// </summary>
 const HandleLogout = async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const user = await _User.findById(req.user.id);
   if (!user) {
     return res
       .status(400)
@@ -110,13 +112,18 @@ const HandleLogout = async (req, res) => {
 /// Get user by email
 /// </summary>
 const GetUserByEmail = async (req, res) => {
-  const userExist = await User.findOne({ Email: req.params.email });
-  if (!userExist) {
-    return res
-      .status(400)
-      .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+  try {
+    const userExist = await _User.findOne({ Email: req.params.email });
+    if (!userExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    return res.json(Utils.createSuccessResponseModel(1, userExist));
+  } catch (error) {
+    console.log("UserController - GetUserByEmail: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
-  return res.json(Utils.createSuccessResponseModel(1, userExist));
 };
 
 /// <summary>
@@ -145,7 +152,7 @@ const SendMail = async (req, res) => {
 /// </summary>
 const GetAccessTokenByRefreshToken = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await _User.findById(req.user.id);
     if (!user) {
       return res
         .status(400)
@@ -157,6 +164,9 @@ const GetAccessTokenByRefreshToken = async (req, res) => {
       Utils.createSuccessResponseModel(1, { AccessToken: accessToken })
     );
   } catch (error) {
+    console.log(
+      "UserController - GetAccessTokenByRefreshToken: " + error.message
+    );
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -168,14 +178,15 @@ const ForgotPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     //check email exist
-    const user = await User.findOne({ Email: email, IsDeleted: false });
+    const user = await _User.findOne({ Email: email, IsDeleted: false });
     if (!user) {
       return res
         .status(400)
         .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
     }
 
-    if (Utils.validatePassword(newPassword, user.Password)) {
+    const checked = await Utils.validatePassword(newPassword, user.Password); // check new password is same old password
+    if (checked) {
       return res
         .status(400)
         .json(
@@ -190,6 +201,31 @@ const ForgotPassword = async (req, res) => {
     await user.save();
     return res.json(Utils.createSuccessResponseModel());
   } catch (error) {
+    console.log("UserController - ForgotPassword: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const UpdateInfo = async (req, res) => {
+  try {
+    const userExist = await _User.findById(req.user.id);
+    if (!userExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+
+    //update info
+    const newUser = { ...userExist, ...req.body };
+    newUser.UpdateAt = Date.now();
+
+    //save user
+    const result = await _User.updateOne({ _id: req.user.id }, newUser);
+    return res.json(
+      Utils.createSuccessResponseModel(0, result.modifiedCount > 0)
+    );
+  } catch (error) {
+    console.log("UserController - UpdateInfo: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -202,4 +238,5 @@ module.exports = {
   SendMail: SendMail,
   GetAccessTokenByRefreshToken: GetAccessTokenByRefreshToken,
   ForgotPassword: ForgotPassword,
+  UpdateInfo: UpdateInfo,
 };

@@ -72,6 +72,10 @@ const generateVerificationCode = () => {
   return Math.floor(Math.random() * 1000000);
 };
 
+const getFileExtension = (fileName) => {
+  return fileName.substring(fileName.lastIndexOf(".") + 1);
+};
+
 const checkFormatPassword = (password) => {
   const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
   return regex.test(password);

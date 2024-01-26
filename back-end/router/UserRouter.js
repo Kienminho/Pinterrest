@@ -25,4 +25,9 @@ router.post(
 );
 
 router.post("/forgot-password", UserController.ForgotPassword);
+router.put(
+  "/update-info",
+  AuthenticateService.authenticateToken,
+  UserController.UpdateInfo
+);
 module.exports = router;

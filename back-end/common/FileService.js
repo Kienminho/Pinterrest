@@ -2,6 +2,7 @@ const formidable = require("formidable");
 const Guid = require("guid");
 const fs = require("fs");
 const Utils = require("./Utils");
+const Attachment = require("../model/Attachment");
 
 //handle uploading multiple files to a specified folder
 const uploadFiles = (req, res, next) => {
