@@ -1,6 +1,5 @@
 import './PublicProfile.css'
 import React, { useState } from 'react'
-import StickyFooter from '../StickyFooter/StickyFooter'
 
 export default function PublicProfile() {
   const [publicProfile, setPublicProfile] = useState({

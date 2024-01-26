@@ -5,10 +5,13 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        bevietnampro: ['"Be Vietnam Pro"', 'sans-serif'],
+        poppins: ['"Poppins"', 'sans-serif'],
+        barlow: ['"Barlow Condensed"', 'san-serif'],
         roboto: ['"Roboto"', 'sans-serif']
       },
       colors: {
-        primary: '#16405B',
+        primary_henry: '#16405B',
         dark_color: '#333333',
         light_sid: '#dafff6',
         dark_sid: '#006b6c',
