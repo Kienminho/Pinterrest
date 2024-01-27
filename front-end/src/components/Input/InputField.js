@@ -10,7 +10,7 @@ const InputField = forwardRef(({ id, label, name, type = 'text', placeholder, ha
         name={name}
         type={type}
         placeholder={placeholder}
-        className='px-4 py-2 ps-5 text-base text-gray-900 border-[#cdcdcd] rounded-3xl bg-gray-50 focus:ring-blue-300 focus:border-blue-300 outline-none border focus:border-2 focus:ring-1'
+        className='border border-[#cdcdcd] text-gray-900 text-sm block w-full ps-10 p-2.5 rounded-3xl bg-gray-50 focus:ring-blue-300 focus:border-blue-300 outline-none focus:ring-1 shadow-sm'
         onChange={handleChange}
       />
     </label>

@@ -1,10 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { PinterestLogo } from '../Icon/PinterestLogo'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
 import Search from '../Search/Search'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { FaAngleDown } from 'react-icons/fa'
 import { RiUpload2Fill } from 'react-icons/ri'
 import { IoNotifications } from 'react-icons/io5'
@@ -17,7 +15,9 @@ import { useEffect, useState } from 'react'
 
 import Signin from '../Signin/signin'
 import Signup from '../../page/Signup/Signup'
-import { logout } from '../../store/slices/AuthSlice'
+import { logoutSuccess } from '../../store/slices/AuthSlice'
+import { logoutUser } from '../../store/apiRequest'
+import { createAxios } from '../../createInstance'
 
 const MENU_ITEMS = [
   {
@@ -31,88 +31,28 @@ const MENU_ITEMS = [
 ]
 
 const Navbar = () => {
+  const user = useSelector((state) => state.Auth.login?.currentUser)
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { isAuthenticated } = useSelector((state) => {
-    return state.Auth
-  })
+  let axiosJWT = createAxios(user, dispatch, logoutSuccess)
 
-  // useEffect để kiểm tra trạng thái xác thực khi component được tạo
-  useEffect(() => {
-    console.log('Trạng thái xác thực sau khi F5:', isAuthenticated)
-    // Thực hiện các thao tác cập nhật UI tại đây nếu cần
-  }, [isAuthenticated])
+  const accessToken_daniel = user?.data.AccessToken
+  console.log(accessToken_daniel)
 
-  const logoutHandler = async () => {
-    try {
-      const accessToken = localStorage.getItem('access_token')
-      console.log(accessToken)
-
-      const response = await fetch('https://api-pinterrest.up.railway.app/api/user/logout', {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      })
-
-      if (response.status === 200) {
-        toast.success('logout successful')
-        dispatch(logout())
-        console.log(isAuthenticated)
-        // dispatch(resetState())
-        // Xóa accessToken và refreshToken khỏi localStorage
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
-        navigate('/login')
-      }
-    } catch (err) {
-      console.log(err.message)
-    }
+  const handleLogout = () => {
+    logoutUser(dispatch, navigate, accessToken_daniel, axiosJWT)
+    console.log('done handle logout')
   }
-
-  const refreshTokenHandler = async () => {
-    try {
-      const refreshToken = localStorage.getItem('refresh_token')
-      console.log(refreshToken)
-
-      if (refreshToken) {
-        const response = await fetch('https://api-pinterrest.up.railway.app/api/user/refresh-token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refreshToken })
-        })
-        if (response.ok) {
-          const data = await response.json()
-          console.log(data)
-
-          if (data.statusCode === 200) {
-            const newAccessToken = data.data.AccessToken
-            localStorage.setItem('access_token', newAccessToken)
-            console.log('Làm mới accessToken thành công:', data.message)
-            // Update application state
-          } else {
-            console.log('Làm mới accessToken thất bại:', data.message)
-          }
-        } else {
-          // Xử lý khi có lỗi từ server
-          console.log('Không nhận được refreshToken')
-        }
-      }
-    } catch (error) {
-      console.log('Lỗi khi làm mới accessToken:', error.message)
-    }
-  }
-
   return (
     <div className='navbar bg-white w-full max-sm:top-auto max-sm:fixed max-sm:bottom-0 px-6 py-4 sticky top-0 z-50'>
-      <ForBigScreen
-        isAuthenticated={isAuthenticated}
-        logoutHandler={logoutHandler}
-        refreshTokenHandler={refreshTokenHandler}
-      />
+      <ForBigScreen handleLogout={handleLogout} user={user} />
     </div>
   )
 }
 
-const ForBigScreen = ({ isAuthenticated, logoutHandler, refreshTokenHandler }) => {
+const ForBigScreen = ({ handleLogout, user }) => {
   const userMenu = [
     {
       title: 'View profile',
@@ -159,17 +99,17 @@ const ForBigScreen = ({ isAuthenticated, logoutHandler, refreshTokenHandler }) =
         </NavLink>
 
         <div className='btn-link'>
-          <NavLink to='/'>{isAuthenticated ? 'Home' : 'Explore'}</NavLink>
+          <NavLink to='/'>{user ? 'Home' : 'Explore'}</NavLink>
         </div>
 
-        {isAuthenticated && (
+        {user && (
           <div className='btn-link'>
             <NavLink to='/create'>Create</NavLink>
           </div>
         )}
       </div>
 
-      {isAuthenticated && (
+      {user && (
         <div className='flex items-center justify-center mx-8'>
           {' '}
           <div>
@@ -179,7 +119,7 @@ const ForBigScreen = ({ isAuthenticated, logoutHandler, refreshTokenHandler }) =
       )}
 
       <div className='flex items-center gap-6'>
-        {isAuthenticated ? (
+        {user ? (
           <>
             <Tippy delay={[0, 200]} content='Upload media' placement='bottom'>
               <button>
@@ -196,19 +136,10 @@ const ForBigScreen = ({ isAuthenticated, logoutHandler, refreshTokenHandler }) =
                 <AiFillMessage size='1.5rem' />
               </button>
             </Tippy>
-            <NavLink to='/'>
-              <div onClick={logoutHandler} className='rounded-3xl bg-red-600 px-5 py-2 text-white hover:bg-[#c5001e]'>
-                Logout
-              </div>
+            <NavLink to='/logout' onClick={handleLogout}>
+              <div className='rounded-3xl bg-red-600 px-5 py-2 text-white hover:bg-[#c5001e]'>Logout</div>
             </NavLink>
-            <NavLink to='/refresh-token'>
-              <div
-                onClick={refreshTokenHandler}
-                className='rounded-3xl bg-red-600 px-5 py-2 text-white hover:bg-[#c5001e]'
-              >
-                Refresh Token
-              </div>
-            </NavLink>
+            <span> {user.data.UserName} </span>
             <NavLink to='/profile/created'>
               <ProfileAvatar />
             </NavLink>
@@ -234,8 +165,8 @@ const ForBigScreen = ({ isAuthenticated, logoutHandler, refreshTokenHandler }) =
           </>
         )}
 
-        <Menu items={isAuthenticated ? userMenu : MENU_ITEMS}>
-          {isAuthenticated ? (
+        <Menu items={user ? userMenu : MENU_ITEMS}>
+          {user ? (
             <TippyHeadless>
               <img
                 className='w-8 h-8 cursor-pointer object-cover rounded-full'

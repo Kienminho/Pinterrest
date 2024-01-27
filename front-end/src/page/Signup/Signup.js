@@ -3,12 +3,21 @@ import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
 import { FaFacebook, FaGoogle, FaPinterest } from 'react-icons/fa6'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { registerUser } from '../../store/apiRequest'
+import { useDispatch, useSelector } from 'react-redux'
+import toast, { Toaster } from 'react-hot-toast'
+import { HiInformationCircle } from 'react-icons/hi'
+import { MdOutlineEmail } from 'react-icons/md'
+import { MdEmail } from 'react-icons/md'
+import { RiLockPasswordFill } from 'react-icons/ri'
 
 const Signup = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const inputRef = useRef()
+  // const error = useSelector((state) => state.Auth.error)
+
+  const [error, setError] = useState('')
 
   useEffect(() => {
     return inputRef.current.focus()
@@ -40,29 +49,17 @@ const Signup = () => {
     }))
   }
 
-  const handleSubmit = async () => {
+  const handleRegister = async (e) => {
+    const newUser = {
+      Email: formData.Email,
+      Password: formData.Password
+    }
     try {
-      const response = await fetch('https://api-pinterrest.up.railway.app/api/user/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: formDataString
-      })
-
-      console.log(response)
-      if (response.ok || response.status === 200) {
-        console.log('Signup successful', response)
-        toast.success('signup successful')
-        navigate('/login')
-      } else {
-        // Handle server error
-        console.log('Signup failed with status:', response.status)
-        toast.error('signup unsuccessful')
-      }
+      await registerUser(newUser, dispatch, navigate)
     } catch (error) {
-      console.log('signup error: ' + error)
-      toast.error('signup unsuccessful: something went wrong')
+      console.log(error.message)
+      // Hiển thị giá trị lỗi lên giao diện hoặc thực hiện các xử lý khác tùy ý
+      setError(error.message)
     }
   }
 
@@ -80,41 +77,58 @@ const Signup = () => {
             <p className='text-center text-dark_color font-normal'>Tìm những ý tưởng mới để thử</p>
           </div>
 
-          <div className='w-[300px] mt-4 flex flex-col gap-3'>
-            <InputField
-              ref={inputRef}
-              label={'Email'}
-              type='email'
-              name={'Email'}
-              id={'user-email'}
-              placeholder='Email'
-              handleChange={handleChange}
-            />
+          <div className='w-[360px] mt-4 flex flex-col gap-3'>
+            <div className='relative'>
+              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
+                {/* <MdEmail size='1.5rem' color='salmon' /> */}
+              </div>
+              <InputField
+                ref={inputRef}
+                label={'Email'}
+                type='email'
+                name={'Email'}
+                id={'user-email'}
+                placeholder='Email'
+                handleChange={handleChange}
+              />
+            </div>
 
-            <InputField
-              label={'Password'}
-              type='password'
-              name={'Password'}
-              id={'user-pass'}
-              placeholder='Tạo mật khẩu'
-              handleChange={handleChange}
-            />
+            <div className='relative'>
+              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
+                {/* <RiLockPasswordFill size='1.5rem' color='salmon' /> */}
+              </div>
+              <InputField
+                label={'Password'}
+                type='password'
+                name={'Password'}
+                id={'user-pass'}
+                placeholder='Tạo mật khẩu'
+                handleChange={handleChange}
+              />
+            </div>
+            <p class='flex items-center gap-1 mt-2 font-sans text-sm antialiased font-normal leading-normal text-zinc-600'>
+              <HiInformationCircle size='1.5rem' />
+              Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số.
+            </p>
+
+            {/* Hiển thị thông báo lỗi nếu có */}
+            {error && (
+              <div className='w-[300px] mt-2'>
+                <p style={{ color: 'red' }}>{error}</p>
+              </div>
+            )}
 
             <div className='flex justify-center'>
               <button
-                className='text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-medium rounded-3xl text-md px-2 py-2 mt-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 text-decoration-none w-64 text-center'
-                type='submit'
-                onClick={handleSubmit}
+                className='text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-medium rounded-3xl text-md px-2 py-2 mt-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 text-decoration-none w-80 text-center'
+                onClick={handleRegister}
               >
                 Tiếp tục
               </button>
             </div>
-            <div class='flex justify-center text-dark_mode font-bold text-md mb-2'>HOẶC</div>
+            <div className='flex justify-center text-dark_mode font-bold text-md mb-2'>HOẶC</div>
             <div className='flex justify-center'>
-              <button
-                className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 text-decoration-none w-64 text-center flex justify-around '
-                onClick={handleSubmit}
-              >
+              <button className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 text-decoration-none w-80 text-center flex justify-evenly '>
                 <div className='flex justify-center items-center'>
                   <FaFacebook size='1.6rem' />
                 </div>
@@ -122,10 +136,7 @@ const Signup = () => {
               </button>
             </div>
             <div className='flex justify-center'>
-              <button
-                href='google.com'
-                class='text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:ring-rose-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-rose-600 dark:hover:bg-rose-700 focus:outline-none dark:focus:ring-rose-800 text-decoration-none w-64 text-center flex justify-around'
-              >
+              <button className='text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:ring-rose-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-rose-600 dark:hover:bg-rose-700 focus:outline-none dark:focus:ring-rose-800 text-decoration-none w-80 text-center flex justify-evenly'>
                 <div className='flex justify-center items-center'>
                   <FaGoogle size='1.4rem' />
                 </div>
@@ -134,16 +145,22 @@ const Signup = () => {
             </div>
 
             <div className='mt-4 w-80 mx-auto text-center'>
-              <p class='text-zinc-600  dark:text-zinc-500'>
+              <p className='font-normal text-zinc-600  dark:text-zinc-500'>
                 Bằng cách tiếp tục, bạn đồng ý với{' '}
-                <a href='youtube.com' class='font-medium dec text--600 dark:text-blue-500 no-underline hover:underline'>
+                <a
+                  href='youtube.com'
+                  className='font-normal dec text--600 dark:text-blue-500 no-underline hover:underline'
+                >
                   Điều khoản dịch vụ và Chính sách quyền riêng tư
                 </a>{' '}
                 của chúng tôi.
               </p>
-              <p class='text-zinc-600  dark:text-zinc-500 mt-2'>
+              <p className='font-normal text-zinc-600  dark:text-zinc-500 mt-2'>
                 Bạn đã là thành viên?{' '}
-                <NavLink to='/login' class='font-medium dec text--600 dark:text-blue-500 no-underline hover:underline'>
+                <NavLink
+                  to='/login'
+                  className='font-medium dec text--600 dark:text-blue-500 no-underline hover:underline'
+                >
                   Đăng nhập
                 </NavLink>
               </p>
