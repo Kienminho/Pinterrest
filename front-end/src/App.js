@@ -3,17 +3,14 @@ import PersonalProfile from './components/PersonalProfile/PersonalProfile'
 import PublicProfile from './components/PublicProfile/PublicProfile'
 import MyModal from './components/Signup/signup'
 import './App.css'
-import Profile from './pages_copy/Profile'
-import DefaultLayout from './components/Layout/Defaultlayout'
-import HeaderOnly from './components/Layout/HeaderOnly'
-import Search from './components/Layout/components/Search'
 import routesConfig from './config/routes'
 import Login from './page/Login/Login'
 import Signup from './page/Signup/Signup'
 import Navbar from './components/Navbar/Navbar'
 import IntroContainer from './components/Intro'
 import Create from './page/Create/Create'
-import RefreshToken from './page/RefreshToken/RefreshToken'
+import { Toaster } from 'react-hot-toast'
+import ChangePassword from './page/ChangePassword/ChangePassword'
 
 function App() {
   return (
@@ -24,8 +21,9 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Signup />} />
         <Route path='/create' element={<Create />} />
-        <Route path='/refresh-token' element={<RefreshToken />} />
+        <Route path='/forgot-password' element={<ChangePassword />} />
       </Routes>
+      <Toaster position={window.innerWidth > 640 ? 'bottom-right' : 'top-center'} reverseOrder={true} />
     </>
   )
 }
