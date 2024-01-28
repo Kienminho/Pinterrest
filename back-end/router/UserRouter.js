@@ -30,4 +30,30 @@ router.put(
   AuthenticateService.authenticateToken,
   UserController.UpdateInfo
 );
+
+router.post(
+  "/follow",
+  AuthenticateService.authenticateToken,
+  UserController.HandleFollow
+);
+
+router.delete(
+  "/un-follow/:id",
+  AuthenticateService.authenticateToken,
+  UserController.HandleUnFollow
+);
+
+//get following list of user
+router.get(
+  "/get-following",
+  AuthenticateService.authenticateToken,
+  UserController.GetFollowing
+);
+
+//get follower list of user
+router.get(
+  "/get-follower",
+  AuthenticateService.authenticateToken,
+  UserController.GetFollower
+);
 module.exports = router;
