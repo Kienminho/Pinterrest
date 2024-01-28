@@ -1,0 +1,64 @@
+const mongoose = require("../common/ConfigDB");
+
+const PostSchema = new mongoose.Schema({
+  Title: {
+    type: String,
+    unique: false,
+    required: true,
+  },
+  Description: {
+    type: String,
+    required: true,
+  },
+  Attachment: {
+    Id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "File",
+      required: false,
+    },
+    Thumbnail: {
+      type: String,
+      required: false,
+    },
+  },
+  TotalLike: {
+    type: Number,
+    default: 0,
+  },
+  TotalComment: {
+    type: Number,
+    default: 0,
+  },
+  IsComment: {
+    type: Boolean,
+    default: true,
+  },
+  SimilarPosts: {
+    type: Boolean,
+    default: true,
+  },
+  Created: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  CreatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  UpdateAt: {
+    type: Date,
+    required: false,
+  },
+  Updated: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  IsDeleted: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const Post = mongoose.model("Post", PostSchema);
+
+module.exports = Post;
