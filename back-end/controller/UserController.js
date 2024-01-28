@@ -3,6 +3,7 @@ const Utils = require("../common/Utils");
 const AuthenticateService = require("../common/AuthenticateService");
 
 const _User = require("../model/User");
+const _Follow = require("../model/Follow");
 
 /// <summary>
 /// Handle register
@@ -230,6 +231,110 @@ const UpdateInfo = async (req, res) => {
   }
 };
 
+const HandleFollow = async (req, res) => {
+  try {
+    const { follower, following } = req.body;
+    //check user exist
+    const followerExist = await _User.findById(follower);
+    if (!followerExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    const followingExist = await _User.findById(following);
+    if (!followingExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    //check follow exist
+    const followExist = await _Follow.findOne({
+      follower: follower,
+      following: following,
+    });
+    if (followExist) {
+      return res
+        .status(200)
+        .json(
+          Utils.createErrorResponseModel("Bạn đã theo dõi người dùng này.")
+        );
+    }
+    //create follow
+    const follow = new _Follow({
+      follower: follower,
+      following: following,
+    });
+    await follow.save();
+    return res.json(Utils.createSuccessResponseModel(0, true));
+  } catch (error) {
+    console.log("UserController - HandleFollow: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const HandleUnFollow = async (req, res) => {
+  try {
+    const { id } = req.params;
+    //check user exist
+    const followExist = await _Follow.findById(id);
+    if (!followExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    //delete follow
+    const result = await _Follow.deleteOne({ _id: id });
+    return res.json(
+      Utils.createSuccessResponseModel(0, result.deletedCount > 0)
+    );
+  } catch (error) {
+    console.log("UserController - HandleUnFollow: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const GetFollowing = async (req, res) => {
+  try {
+    const { id } = req.user;
+    //check user exist
+    const userExist = await _User.findById(id);
+    if (!userExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    //get following list
+    const followingList = await _Follow
+      .find({ follower: id })
+      .populate("following");
+    return res.json(Utils.createSuccessResponseModel(1, followingList));
+  } catch (error) {
+    console.log("UserController - GetFollowing: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const GetFollower = async (req, res) => {
+  try {
+    const { id } = req.user;
+    //check user exist
+    const userExist = await _User.findById(id);
+    if (!userExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    //get follower list
+    const followerList = await _Follow
+      .find({ following: id })
+      .populate("follower");
+    return res.json(Utils.createSuccessResponseModel(1, followerList));
+  } catch (error) {
+    console.log("UserController - GetFollower: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
 module.exports = {
   HandleRegister: HandleRegister,
   HandleLogin: HandleLogin,
@@ -239,4 +344,8 @@ module.exports = {
   GetAccessTokenByRefreshToken: GetAccessTokenByRefreshToken,
   ForgotPassword: ForgotPassword,
   UpdateInfo: UpdateInfo,
+  HandleFollow: HandleFollow,
+  HandleUnFollow: HandleUnFollow,
+  GetFollowing: GetFollowing,
+  GetFollower: GetFollower,
 };
