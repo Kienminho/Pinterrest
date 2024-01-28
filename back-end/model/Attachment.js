@@ -14,13 +14,26 @@ const AttachmentSchema = new mongoose.Schema({
     min: 6,
     max: 255,
   },
+  FileName: {
+    type: String,
+    required: true,
+  },
   FileSize: {
     type: Number,
+    required: true,
+  },
+  FileType: {
+    type: String,
     required: true,
   },
   FileExtension: {
     type: String,
     required: true,
+  },
+  PostId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Post",
+    required: false,
   },
   IsDeleted: {
     type: Boolean,
@@ -29,6 +42,12 @@ const AttachmentSchema = new mongoose.Schema({
   CreatedAt: {
     type: Date,
     default: Date.now,
+  },
+  CreatedName: {
+    type: String,
+    required: false,
+    min: 6,
+    max: 255,
   },
 });
 

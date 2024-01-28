@@ -15,8 +15,12 @@ app.use(cookieParser());
 //router
 const userRouter = require("./router/UserRouter");
 const fileRouter = require("./router/FileRouter");
+const postRouter = require("./router/PostRouter");
+const commentRouter = require("./router/CommentRouter");
 app.use("/api/user", userRouter);
 app.use("/api/file", fileRouter);
+app.use("/api/post", postRouter);
+app.use("/api/comment", commentRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running on: http://localhost:" + process.env.PORT);
