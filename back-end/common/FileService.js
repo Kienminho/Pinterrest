@@ -1,8 +1,26 @@
 const formidable = require("formidable");
+const multer = require("multer");
 const Guid = require("guid");
 const fs = require("fs");
 const Utils = require("./Utils");
-const Attachment = require("../model/Attachment");
+
+//set up storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const pathUpload = `./public/uploads/${req.user.name}`;
+    if (!fs.existsSync(pathUpload)) {
+      fs.mkdirSync(pathUpload, { recursive: true });
+    }
+    cb(null, pathUpload);
+  },
+  filename: function (req, file, cb) {
+    const fileName = Date.now() + "-" + Guid.raw() + ".jpg";
+    cb(null, fileName);
+  },
+});
+
+//upload multiple files
+const upload = multer({ storage: storage });
 
 //handle uploading multiple files to a specified folder
 const uploadFiles = (req, res, next) => {
@@ -13,8 +31,12 @@ const uploadFiles = (req, res, next) => {
       res.status(500).json({ message: "Upload files failed!" });
       return;
     }
+    console.log(fields);
+    console.log(files);
+    const fileList = Array.isArray(files.files) ? files.files : [files.files]; // Convert to array if not already an array
+    console.log(fileList);
     let processedCount = 0;
-    files.files.forEach((file) => {
+    fileList.forEach((file) => {
       if (file) {
         const fileName = Date.now() + "-" + Guid.raw() + ".jpg";
         //check exist path
@@ -67,5 +89,7 @@ const removeFileInDisk = (req, res) => {
 };
 
 module.exports = {
+  upload: upload,
   uploadFiles: uploadFiles,
+  removeFileInDisk: removeFileInDisk,
 };

@@ -7,8 +7,8 @@ const FileController = require("../controller/FileController");
 router.post(
   "/upload",
   AuthenticateService.authenticateToken,
-  FileService.uploadFiles,
-  FileController.HandleUploadFiles
+  FileService.upload.single("file"),
+  FileController.HandleUploadFile
 );
 
 module.exports = router;

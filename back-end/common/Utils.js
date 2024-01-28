@@ -85,6 +85,11 @@ const createThumbnailPath = (filePath) => {
   return process.env.BASE_URL + filePath.match(/public(.*)/)?.[1];
 };
 
+//calc file size to MB
+const calcFileSize = (fileSize) => {
+  return fileSize / 1024 / 1024;
+};
+
 module.exports = {
   messageCode: message,
   statusCode: code,
@@ -98,4 +103,6 @@ module.exports = {
   hashPassword: hashPassword,
   createThumbnailPath: createThumbnailPath,
   checkFormatPassword: checkFormatPassword,
+  getFileExtension: getFileExtension,
+  calcFileSize: calcFileSize,
 };

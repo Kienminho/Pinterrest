@@ -22,6 +22,7 @@
     "fs": "^0.0.1-security",
     "guid": "^0.0.12",
     "mongoose": "^8.0.3",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.8",
     "nodemon": "^3.0.2"
   }
