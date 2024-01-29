@@ -3,10 +3,23 @@ const _Post = require("../model/Post");
 
 const HandleGetPostsByUser = async (req, res) => {
   try {
-    const posts = await _Post.find({ Created: req.user.id });
+    const posts = await _Post
+      .find({ Created: req.user.id })
+      .populate("Created");
     res.json(Utils.createSuccessResponseModel(posts.length, posts));
   } catch (error) {
     console.log("PostController - HandleGetPostsByUser: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const HandleGetDetailPost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await _Post.findById(postId).populate("Created");
+    res.json(Utils.createSuccessResponseModel(1, post));
+  } catch (error) {
+    console.log("PostController - HandleGetDetailPost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -67,6 +80,7 @@ const HandleUpdatePost = async (req, res) => {
 
 module.exports = {
   HandleGetPostsByUser: HandleGetPostsByUser,
+  HandleGetDetailPost: HandleGetDetailPost,
   HandleCreatePost: HandleCreatePost,
   HandleUpdatePost: HandleUpdatePost,
 };

@@ -9,6 +9,12 @@ router.get(
   PostController.HandleGetPostsByUser
 );
 
+router.get(
+  "/get-detail-post/:postId",
+  AuthenticateService.authenticateToken,
+  PostController.HandleGetDetailPost
+);
+
 router.post(
   "/create-post",
   AuthenticateService.authenticateToken,
