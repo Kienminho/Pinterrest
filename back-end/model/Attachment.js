@@ -41,7 +41,7 @@ const AttachmentSchema = new mongoose.Schema({
   },
   CreatedAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now("en-US", { timezone: "Asia/Ho_Chi_Minh" }),
   },
   CreatedName: {
     type: String,

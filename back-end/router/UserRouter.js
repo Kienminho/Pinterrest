@@ -31,6 +31,13 @@ router.put(
   UserController.UpdateInfo
 );
 
+//update avatar
+router.put(
+  "/update-avatar",
+  AuthenticateService.authenticateToken,
+  UserController.UpdateAvatar
+);
+
 router.post(
   "/follow",
   AuthenticateService.authenticateToken,

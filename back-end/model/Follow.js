@@ -11,9 +11,9 @@ const FollowSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  createAt: {
+  CreatedAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now("en-US", { timezone: "Asia/Ho_Chi_Minh" }),
   },
 });
 

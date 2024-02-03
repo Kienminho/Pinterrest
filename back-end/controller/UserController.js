@@ -217,7 +217,7 @@ const UpdateInfo = async (req, res) => {
     }
 
     //update info
-    const newUser = { ...userExist, ...req.body };
+    const newUser = { ...userExist.toObject(), ...req.body };
     newUser.UpdateAt = Date.now();
 
     //save user
@@ -227,6 +227,21 @@ const UpdateInfo = async (req, res) => {
     );
   } catch (error) {
     console.log("UserController - UpdateInfo: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const UpdateAvatar = async (req, res) => {
+  try {
+    const userExist = await _User.findById(req.user.id);
+    console.log(req.body.newAvatar);
+    userExist.Avatar = req.body.newAvatar;
+    await userExist.save();
+    return res.json(
+      Utils.createSuccessResponseModel(0, "Cập nhật ảnh đại diện thành công.")
+    );
+  } catch (error) {
+    console.log("UserController - UpdateAvatar: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -344,6 +359,7 @@ module.exports = {
   GetAccessTokenByRefreshToken: GetAccessTokenByRefreshToken,
   ForgotPassword: ForgotPassword,
   UpdateInfo: UpdateInfo,
+  UpdateAvatar: UpdateAvatar,
   HandleFollow: HandleFollow,
   HandleUnFollow: HandleUnFollow,
   GetFollowing: GetFollowing,
