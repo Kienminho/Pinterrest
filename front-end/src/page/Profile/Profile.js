@@ -10,6 +10,7 @@ import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
 import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import { getUserByEmail } from '../../store/apiRequest'
+import { format } from 'date-fns'
 
 const Profile = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)

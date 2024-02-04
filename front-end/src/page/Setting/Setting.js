@@ -1,5 +1,6 @@
 import { Button, Datepicker, Label, Radio, Select, Sidebar, TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react'
+import moment from 'moment'
 import { BiBuoy } from 'react-icons/bi'
 import {
   HiArrowSmRight,
@@ -17,16 +18,13 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
+import toast from 'react-hot-toast'
 
 const Setting = () => {
   const dispatch = useDispatch()
-
+  const [selectedDate, setSelectedDate] = useState(false)
   const [selectGender, setSelectGender] = useState('')
-  console.log(selectGender)
 
-  const [selectBirthday, setSelectBirthday] = useState(null)
-  console.log(selectBirthday)
-  
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const accessToken_daniel = user?.data?.AccessToken
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
@@ -36,23 +34,38 @@ const Setting = () => {
     FullName: '',
     UserName: '',
     Email: '',
-    Gender: ''
+    Gender: '',
+    Birthday: ''
   })
 
   const handleRadioClick = (event) => {
     setSelectGender(event.currentTarget.value)
   }
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target
-    if (name === 'Birthday') {
-      setSelectBirthday(value)
-    } else {
+  const handleDatePickerChange = (selectedDate) => {
+    // Đảm bảo selectedDate là một đối tượng Date
+    if (selectedDate instanceof Date) {
+      // Format ngày thành chuỗi theo định dạng "yyyy-MM-dd"
+      const formattedDate = moment(selectedDate).format('YYYY/MM/DD')
+
+      console.log(formattedDate)
+
+      // Cập nhật state hoặc thực hiện các xử lý khác tùy theo yêu cầu của bạn
       setUserData((prevState) => ({
         ...prevState,
-        [name]: value
+        Birthday: formattedDate
       }))
+      setSelectedDate(formattedDate)
     }
+  }
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target
+
+    setUserData((prevState) => ({
+      ...prevState,
+      [name]: value
+    }))
   }
 
   //  Xử lý submit Save
@@ -63,14 +76,17 @@ const Setting = () => {
         UserName: userData.UserName,
         Email: userData.Email,
         Gender: selectGender,
-        Birthday: selectBirthday
+        Birthday: selectedDate
       }
 
       console.log(updateBody)
 
       await updateUserInfo(updateBody, accessToken_daniel, axiosJWT)
+
+      toast.success('Cập nhật thông tin thành công')
       console.log('Thông tin người dùng đã được cập nhật thành công.')
     } catch (error) {
+      toast.error('Đã xảy ra lỗi khi cập nhật thông tin')
       console.log('Đã xảy ra lỗi khi cập nhật thông tin người dùng:', error)
     }
   }
@@ -81,20 +97,25 @@ const Setting = () => {
         const userCurrentEmail = user.data.Email
         const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
         console.log(userCurrent)
+
+        const formattedDate = moment(userCurrent.data.Birthday).format('DD/MM/YYYY')
+
         // Cập nhật state với dữ liệu từ API
         setUserData({
           FullName: userCurrent.data.FullName,
           UserName: userCurrent.data.UserName,
           Email: userCurrent.data.Email,
-          Gender: userCurrent.data.Gender
+          Gender: userCurrent.data.Gender,
+          Birthday: formattedDate
         })
         setSelectGender(userCurrent.data.Gender)
+        setSelectedDate(formattedDate)
       } catch (error) {
         console.error('Lỗi khi lấy thông tin người dùng', error)
       }
     }
     fetchData()
-  }, [user])
+  }, [user, selectedDate])
 
   console.log(userData)
 
@@ -188,7 +209,11 @@ const Setting = () => {
                       <div className='mb-2 block'>
                         <Label htmlFor='birthday' className='text-base' value='Ngày sinh' />
                       </div>
-                      <Datepicker name='Birthday' />
+                      <Datepicker
+                        name='Birthday'
+                        value={userData.Birthday}
+                        onSelectedDateChanged={handleDatePickerChange}
+                      />
                     </div>
 
                     {/* Gender */}
