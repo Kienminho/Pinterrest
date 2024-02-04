@@ -41,7 +41,7 @@ const HandleRegister = async (req, res) => {
     await user.save();
     res.json(Utils.createSuccessResponseModel());
   } catch (error) {
-    console.log("UserController - HandleRegister: " + error.message);
+    console.log("UserController -> HandleRegister: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -88,7 +88,7 @@ const HandleLogin = async (req, res) => {
       .status(200)
       .json(Utils.createSuccessResponseModel(1, userResponse));
   } catch (error) {
-    console.log("UserController - HandleLogin: " + error.message);
+    console.log("UserController -> HandleLogin: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -122,7 +122,7 @@ const GetUserByEmail = async (req, res) => {
     }
     return res.json(Utils.createSuccessResponseModel(1, userExist));
   } catch (error) {
-    console.log("UserController - GetUserByEmail: " + error.message);
+    console.log("UserController -> GetUserByEmail: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -143,7 +143,7 @@ const SendMail = async (req, res) => {
       })
     );
   } catch (error) {
-    console.log("UserController - SendMail: " + error.message);
+    console.log("UserController -> SendMail: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -166,7 +166,7 @@ const GetAccessTokenByRefreshToken = async (req, res) => {
     );
   } catch (error) {
     console.log(
-      "UserController - GetAccessTokenByRefreshToken: " + error.message
+      "UserController -> GetAccessTokenByRefreshToken: " + error.message
     );
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
@@ -202,7 +202,7 @@ const ForgotPassword = async (req, res) => {
     await user.save();
     return res.json(Utils.createSuccessResponseModel());
   } catch (error) {
-    console.log("UserController - ForgotPassword: " + error.message);
+    console.log("UserController -> ForgotPassword: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -226,7 +226,7 @@ const UpdateInfo = async (req, res) => {
       Utils.createSuccessResponseModel(0, result.modifiedCount > 0)
     );
   } catch (error) {
-    console.log("UserController - UpdateInfo: " + error.message);
+    console.log("UserController -> UpdateInfo: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -241,7 +241,7 @@ const UpdateAvatar = async (req, res) => {
       Utils.createSuccessResponseModel(0, "Cập nhật ảnh đại diện thành công.")
     );
   } catch (error) {
-    console.log("UserController - UpdateAvatar: " + error.message);
+    console.log("UserController -> UpdateAvatar: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -282,7 +282,7 @@ const HandleFollow = async (req, res) => {
     await follow.save();
     return res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
-    console.log("UserController - HandleFollow: " + error.message);
+    console.log("UserController -> HandleFollow: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -303,7 +303,7 @@ const HandleUnFollow = async (req, res) => {
       Utils.createSuccessResponseModel(0, result.deletedCount > 0)
     );
   } catch (error) {
-    console.log("UserController - HandleUnFollow: " + error.message);
+    console.log("UserController -> HandleUnFollow: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -324,7 +324,7 @@ const GetFollowing = async (req, res) => {
       .populate("following");
     return res.json(Utils.createSuccessResponseModel(1, followingList));
   } catch (error) {
-    console.log("UserController - GetFollowing: " + error.message);
+    console.log("UserController -> GetFollowing: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -345,7 +345,7 @@ const GetFollower = async (req, res) => {
       .populate("follower");
     return res.json(Utils.createSuccessResponseModel(1, followerList));
   } catch (error) {
-    console.log("UserController - GetFollower: " + error.message);
+    console.log("UserController -> GetFollower: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };

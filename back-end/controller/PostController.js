@@ -8,7 +8,7 @@ const HandleGetPostsByUser = async (req, res) => {
       .populate("Created");
     res.json(Utils.createSuccessResponseModel(posts.length, posts));
   } catch (error) {
-    console.log("PostController - HandleGetPostsByUser: " + error.message);
+    console.log("PostController -> HandleGetPostsByUser: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -19,7 +19,7 @@ const HandleGetDetailPost = async (req, res) => {
     const post = await _Post.findById(postId).populate("Created");
     res.json(Utils.createSuccessResponseModel(1, post));
   } catch (error) {
-    console.log("PostController - HandleGetDetailPost: " + error.message);
+    console.log("PostController -> HandleGetDetailPost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -42,7 +42,7 @@ const HandleCreatePost = async (req, res) => {
     await post.save();
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
-    console.log("PostController - HandleCreatePost: " + error.message);
+    console.log("PostController -> HandleCreatePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -73,7 +73,7 @@ const HandleUpdatePost = async (req, res) => {
     await existPost.save();
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
-    console.log("PostController - HandleCreatePost: " + error.message);
+    console.log("PostController -> HandleCreatePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
