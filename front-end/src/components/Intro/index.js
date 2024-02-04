@@ -13,22 +13,9 @@ import { loginSuccess } from '../../store/slices/AuthSlice'
 import { createAxios } from '../../createInstance'
 
 const IntroContainer = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-
-  const user = useSelector((state) => state.Auth.login?.currentUser)
-
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login')
-    }
-  }, [])
-
   return (
     <div>
-      {/* <HeroSection /> */}
+      <HeroSection />
       <SearchIdeaSection />
       <SaveIdeaSection />
       <ExploreSection />

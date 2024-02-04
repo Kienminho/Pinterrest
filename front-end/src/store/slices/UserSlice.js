@@ -1,30 +1,54 @@
+// authSlice.js
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  _id: '',
+  UserName: '',
+  Email: '',
+  Avatar: '[]',
+  Gender: '',
+  Birthday: ''
+}
+
+const filterPayload = (payload, initialState) => {
+  return Object.keys(payload).reduce((acc, key) => {
+    if (initialState.hasOwnProperty(key)) {
+      acc[key] = payload[key]
+    }
+    return acc
+  }, {})
+}
 const UserSlice = createSlice({
   name: 'User',
-  initialState: {
-    users: {
-      allUsers: null,
-      isFetching: false,
-      error: false
-    }
-  },
+  initialState,
   reducers: {
-    getUsersStart: (state) => {
-      state.users.isFetching = true
+    updateState: (state, action) => {
+      const filteredPayload = filterPayload(action.payload, initialState)
+      return { ...state, ...filteredPayload }
     },
-    getUsersSuccess: (state, action) => {
-      state.users.isFetching = false
-      state.users.allUsers = action.payload
-      state.users.error = false
+    updateStateSavedPosts: (state, action) => {
+      return {
+        ...state,
+        savedPosts: action.payload
+      }
     },
-    getUsersFailed: (state) => {
-      state.login.isFetching = false
-      state.login.error = true
-    }
+    updateStatePosts: (state, action) => {
+      return {
+        ...state,
+        posts: action.payload
+      }
+    },
+    deleteStatePost: (state, action) => {
+      return {
+        ...state,
+        posts: state.posts.filter((post) => post._id !== action.payload)
+      }
+    },
+
+    resetState: () => initialState
   }
 })
 
-export const { getUsersStart, getUsersSuccess, getUsersFailed } = UserSlice.actions
+export const { updateState, updateStateSavedPosts, updateStatePosts, deleteStatePost, resetState } = UserSlice.actions
 
 export default UserSlice.reducer

@@ -52,7 +52,7 @@ const ImageUploader = ({ setFile }) => {
         <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
           {selectedFile ? (
             <img
-              className=' w-full'
+              className='w-full'
               ref={previewImg}
               src={URL.createObjectURL(selectedFile)}
               alt='preview-img-upload'

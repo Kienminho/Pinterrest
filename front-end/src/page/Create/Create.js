@@ -4,16 +4,30 @@ import ImageUploader from '../../components/ImageUploader/ImageUploader'
 import InputField from '../../components/Input/InputField'
 import axios from 'axios'
 
+import { ToggleSwitch } from 'flowbite-react'
+import { uploadFilesAndCreatePost } from '../../store/apiRequest'
+import { useDispatch, useSelector } from 'react-redux'
+import { createAxios } from '../../createInstance'
+import { loginSuccess } from '../../store/slices/AuthSlice'
+
 const Create = () => {
+  const user = useSelector((state) => state.Auth.login?.currentUser)
+
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+
+  const accessToken_daniel = user?.data?.AccessToken
   const container = useRef()
+
+  const [switch1, setSwitch1] = useState(true)
 
   const [file, setFile] = useState(null)
   const [fileInfo, setFileInfo] = useState({
-    pinTitle: '',
-    pinDesc: '',
-    pinLink: '',
-    pinTopic: ''
+    Title: '',
+    Description: '',
+    pinLink: ''
   })
 
   const [underUpload, setUnderUpload] = useState(false)
@@ -30,55 +44,23 @@ const Create = () => {
     event.preventDefault()
   }
 
-  // const uploadHandler = async () => {
-  //   try {
-  //     setUnderUpload(true)
-  //     if (!file) {
-  //       // setErrorMsg('Please select a file.')
-  //       console.log('Please select a file.')
-  //       return
-  //     }
-
-  //     if (!fileInfo.pinTitle || !fileInfo.pinDesc || !fileInfo.pinTopic) {
-  //       // setErrorMsg('Title and Description are required.')
-  //       console.log('Title and Description are required.')
-  //       return
-  //     }
-  //     const formData = new FormData()
-  //     // console.log(formData);
-
-  //     //appendin img file
-  //     formData.append('upload_file', file)
-
-  //     //appending image meta data or additionals
-  //     formData.append('pinTitle', fileInfo.pinTitle)
-  //     formData.append('pinDescription', fileInfo.pinDescription)
-
-  //     const response = await axios.post('image/upload', formData)
-  //     // const resJson = await response.json();
-
-  //     if (response.status === 200) {
-  //       // console.log("Upload.js", resJson);
-  //       console.log(response.data.message)
-  //       // toast.success('post created successfully')
-  //       navigate('/')
-  //     } else {
-  //       // toast.error('post creation failed: please check your connection')
-  //       console.log(response.data.message)
-  //     }
-  //   } catch (error) {
-  //     // toast.error('Oops! Something went wrong.')
-  //     console.log('Failed to upload', error)
-  //   } finally {
-  //     setUnderUpload(false)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   // console.log(file);
-  //   // console.log(fileMetadata);
-  //   console.log(underUpload)
-  // }, [underUpload])
+  const handlePostCreate = async () => {
+    try {
+      const postBody = {
+        Title: fileInfo.Title,
+        Description: fileInfo.Description,
+        Attachment: {
+          Id: '',
+          Thumbnail: ''
+        }
+      }
+      console.log(postBody)
+      const res = await uploadFilesAndCreatePost([file], postBody, dispatch, navigate, accessToken_daniel, axiosJWT)
+      console.log(res)
+    } catch (error) {
+      console.error('Failed to create post:', error.message)
+    }
+  }
 
   return (
     <div
@@ -95,7 +77,7 @@ const Create = () => {
           </div>
           <div className='pin-detls-inputs mt-1 w-[36rem] max-sm:w-auto gap-6 flex flex-col max-sm:gap-3'>
             <InputField
-              name={'pinTitle'}
+              name={'Title'}
               id={'pinTitle'}
               handleChange={handleChange}
               label={'Title'}
@@ -105,11 +87,11 @@ const Create = () => {
               Description
               <textarea
                 type='text'
-                name='pinDescription'
+                name='Description'
                 id='pinDesc'
                 rows={3}
                 placeholder='Add a detailed description'
-                className='border-[#cdcdcd] resize-none px-4 py-2 ps-5 text-base text-gray-900 rounded-3xl bg-gray-50 focus:ring-blue-300 focus:border-blue-300 outline-none border focus:border-2 focus:ring-1'
+                className='border-[#cdcdcd] px-4 py-2 ps-5 text-base text-gray-900 rounded-3xl bg-gray-50 focus:ring-blue-300 focus:border-blue-300 outline-none border focus:border-1 focus:ring-1'
                 onChange={handleChange}
               />
             </label>
@@ -120,18 +102,12 @@ const Create = () => {
               label={'Link'}
               placeholder='Add a link'
             />
-            <InputField
-              name={'pinTopic'}
-              id={'pinTopic'}
-              handleChange={handleChange}
-              label={'Tagged Topic'}
-              placeholder='Add a tag'
-            />
+            <ToggleSwitch checked={switch1} label='Allow peope to comment' onChange={setSwitch1} />
             <div className='pin-prime-btn flex'>
               {/* <button disabled={underUpload} onClick={uploadHandler}>
                 Publish
               </button> */}
-              <button className='btn-save' disabled={underUpload}>
+              <button className='btn-save' disabled={underUpload} onClick={handlePostCreate}>
                 Publish
               </button>
             </div>
