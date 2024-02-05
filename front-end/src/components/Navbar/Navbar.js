@@ -19,6 +19,8 @@ import { logoutSuccess } from '../../store/slices/AuthSlice'
 import { logoutUser } from '../../store/apiRequest'
 import { createAxios } from '../../createInstance'
 
+import { Button, Tooltip } from 'flowbite-react'
+
 const MENU_ITEMS = [
   {
     title: 'Introduce about Pinterest',
@@ -38,7 +40,7 @@ const Navbar = () => {
 
   let axiosJWT = createAxios(user, dispatch, logoutSuccess)
 
-  const accessToken_daniel = user?.data.AccessToken
+  const accessToken_daniel = user?.data?.AccessToken
   console.log(accessToken_daniel)
 
   const handleLogout = () => {
@@ -121,6 +123,9 @@ const ForBigScreen = ({ handleLogout, user }) => {
       <div className='flex items-center gap-6'>
         {user ? (
           <>
+            <Tooltip content='Tooltip content' placement='bottom'>
+              <Button>Tooltip bottom</Button>
+            </Tooltip>
             <Tippy delay={[0, 200]} content='Upload media' placement='bottom'>
               <button>
                 <RiUpload2Fill size='1.5rem' />
