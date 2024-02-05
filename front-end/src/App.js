@@ -16,8 +16,10 @@ import UserCreatedPosts from './components/UserCreatedPosts/UserCreatedPosts'
 import UserSavedPosts from './components/UserSavedPosts/UserSavedPosts'
 import DetailPin from './page/DetailPin/DetailPin'
 import Setting from './page/Setting/Setting'
+import { useFetchUserInfo } from './customHooks/useFetchUserInfo'
 
 function App() {
+  useFetchUserInfo()
   return (
     <>
       {/* <Navbar /> */}

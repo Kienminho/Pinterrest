@@ -2,19 +2,8 @@ import { Button, Datepicker, Label, Radio, Select, Sidebar, TextInput } from 'fl
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { BiBuoy } from 'react-icons/bi'
-import {
-  HiArrowSmRight,
-  HiChartPie,
-  HiInbox,
-  HiMail,
-  HiShoppingBag,
-  HiTable,
-  HiUser,
-  HiViewBoards
-} from 'react-icons/hi'
-import { RiLockPasswordFill } from 'react-icons/ri'
+import { HiMail, HiTable, HiUser, HiViewBoards } from 'react-icons/hi'
 import { getUserByEmail, updateUserInfo } from '../../store/apiRequest'
-import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
@@ -26,6 +15,7 @@ const Setting = () => {
   const [selectGender, setSelectGender] = useState('')
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
+  const { Avatar, UserName, FullName, Email, Gender, Birthday } = useSelector((state) => state.User)
   const accessToken_daniel = user?.data?.AccessToken
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const isGenderSelected = (value) => selectGender === value

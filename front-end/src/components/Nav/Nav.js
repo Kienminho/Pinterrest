@@ -24,6 +24,7 @@ import { MdPrivacyTip } from 'react-icons/md'
 
 const Nav = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
+  const { Avatar: AvatarUser } = useSelector((state) => state.User)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -49,13 +50,7 @@ const Nav = () => {
 
       {user && (
         <div className='flex md:order-2'>
-          <Dropdown
-            arrowIcon={false}
-            inline
-            label={
-              <Avatar alt='User settings' img='https://flowbite.com/docs/images/people/profile-picture-5.jpg' rounded />
-            }
-          >
+          <Dropdown arrowIcon={false} inline label={<Avatar alt='User settings' img={AvatarUser} rounded />}>
             <Dropdown.Header>
               <span className='text-sm'>
                 Username: <span className='truncate text-sm font-medium text-blue-600'>{user.data.UserName}</span>

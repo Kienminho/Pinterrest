@@ -17,6 +17,7 @@ import {
 import { getUsersFailed, getUsersStart, getUsersSuccess } from './slices/UserSlice_chuabiet'
 import toast, { Toaster } from 'react-hot-toast'
 import { uploadFileFailed, uploadFileStart, uploadFileSuccess } from './slices/FileSlice'
+import { resetState } from './slices/UserSlice'
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart())
@@ -78,6 +79,7 @@ export const logoutUser = async (dispatch, navigate, accessToken, axiosJWT) => {
       headers: { authorization: `Bearer ${accessToken}` }
     })
     dispatch(logoutSuccess())
+    dispatch(resetState())
     toast.success('Đăng xuất thành công')
     navigate('/login')
   } catch (error) {
@@ -293,9 +295,9 @@ export const followUser = async (userId, targetUserId, accessToken, axiosJWT) =>
   }
 }
 
-export const getUserByEmail = async (email, accessToken) => {
+export const getUserByEmail = async (email, accessToken, axiosJWT) => {
   try {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/user-by-email/${email}`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/user-by-email/${email}`, {
       headers: { authorization: `Bearer ${accessToken}` }
     })
     console.log(res.data)

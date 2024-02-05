@@ -14,6 +14,7 @@ import { format } from 'date-fns'
 
 const Profile = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
+  const { Avatar, UserName } = useSelector((state) => state.User)
   const [tempPic, setTempPic] = useState(null)
 
   const navigate = useNavigate()
@@ -22,26 +23,11 @@ const Profile = () => {
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
-  const [currentUser, setCurrentUser] = useState(null)
   const [createPosts, setCreatePosts] = useState([])
   const [savedPosts, setSavedPosts] = useState([])
   const [selectedTab, setSelectedTab] = useState('created')
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userEmail = user.data.Email
-        const userData = await getUserByEmail(userEmail, accessToken_daniel)
-        console.log(userData)
-        setCurrentUser(userData)
-      } catch (error) {
-        console.error('Lỗi khi lấy thông tin người dùng', error)
-      }
-    }
-    fetchUser()
-  }, [])
 
   useEffect(() => {
     const getPostsFromServer = async () => {
@@ -65,35 +51,26 @@ const Profile = () => {
   }, [])
 
   useEffect(() => {
-    const getFollowersFromServer = async () => {
+    const fetchDataFromServer = async () => {
       try {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
+        // Gọi API để lấy danh sách follower
+        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
-        console.log(resData)
 
-        const followersData = resData.data.data
+        const followersData = followersRes.data.data
         console.log(followersData)
 
         if (followersData) {
           setFollowers(followersData)
         }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getFollowersFromServer()
-  }, [])
 
-  useEffect(() => {
-    const getFollowingFromServer = async () => {
-      try {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
+        // Gọi API để lấy danh sách following
+        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
-        console.log(resData)
 
-        const followingData = resData.data.data
+        const followingData = followingRes.data.data
         console.log(followingData)
 
         if (followingData) {
@@ -103,7 +80,7 @@ const Profile = () => {
         console.log(error)
       }
     }
-    getFollowingFromServer()
+    fetchDataFromServer()
   }, [])
 
   return (
@@ -116,7 +93,7 @@ const Profile = () => {
               {tempPic ? (
                 <ProfileImage src={URL.createObjectURL(tempPic)} alt='pic' />
               ) : (
-                <ProfileImage src={currentUser?.data?.Avatar} alt='pic' />
+                <ProfileImage src={Avatar} alt='pic' />
               )}
             </div>
             <div className='absolute bottom-0 right-2'>
@@ -128,7 +105,7 @@ const Profile = () => {
 
           {/* Username part */}
           <div className='profile-username mt-3'>
-            <h1 className='text-2xl font-semibold'>@{user?.data?.UserName}</h1>
+            <h1 className='text-2xl font-semibold'>@{UserName}</h1>
           </div>
 
           {/* Follow part */}

@@ -27,11 +27,13 @@ const DetailPin = () => {
   const [replyContent, setReplyContent] = useState('')
   const [comments, setComments] = useState([])
   const [selectedCommentId, setSelectedCommentId] = useState(null)
-
+  console.log(comments)
   const [isReplyingToReply, setIsReplyingToReply] = useState(false)
   const [selectedReplyId, setSelectedReplyId] = useState(null)
+  const [followers, setFollowers] = useState([])
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
+  const { Avatar, UserName, _id: UserId } = useSelector((state) => state.User)
   const { id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -114,6 +116,28 @@ const DetailPin = () => {
     }
   }, [id])
 
+  // Lấy danh sách follower của user
+  useEffect(() => {
+    const getFollowersFromServer = async () => {
+      try {
+        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
+        console.log(resData)
+
+        const followersData = resData.data.data
+        console.log(followersData)
+
+        if (followersData) {
+          setFollowers(followersData)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getFollowersFromServer()
+  }, [])
+
   const handleSendComment = async () => {
     try {
       // Gọi hàm createComment với các thông tin cần thiết
@@ -182,18 +206,30 @@ const DetailPin = () => {
 
   const handleFollowUser = async () => {
     try {
-      const userCurrentEmail = user.data.Email
-
-      const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
-
-      const userCurrentId = userCurrent.data._id
       const creatorId = postData?.Created?._id
 
-      const resData = await followUser(userCurrentId, creatorId, accessToken_daniel, axiosJWT)
+      const resData = await followUser(UserId, creatorId, accessToken_daniel, axiosJWT)
       console.log('🚀', resData)
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const getTotalCommentsAndReplies = (comments) => {
+    let total = 0
+
+    // Lặp qua từng bình luận
+    comments.forEach((comment) => {
+      // Tăng số lượng bình luận lên 1
+      total++
+
+      // Nếu có các phản hồi, gọi đệ qui để tính số lượng phản hồi và cộng vào tổng
+      if (comment.replies && comment.replies.length > 0) {
+        total += getTotalCommentsAndReplies(comment.replies)
+      }
+    })
+
+    return total
   }
 
   return (
@@ -219,23 +255,22 @@ const DetailPin = () => {
           </div>
 
           {/* description right handside */}
-          <div className=' w-[570px] desc-container max-sm:px-2 max-sm:w-auto bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400'>
+          <div className=' w-[570px] desc-container max-sm:px-2 max-sm:w-auto bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 relative'>
             <div className='desc-container-header pt-9 px-9 pb-5 flex justify-end max-sm:pt-5 max-sm:justify-start'>
               {/* <Button pinId={id} savedBy={saves} /> */}
-              <Button gradientDuoTone='pinkToOrange'>Save</Button>
+              <Button gradientDuoTone='pinkToOrange' className='rounded-full px-2 py-1.5'>
+                Save
+              </Button>
             </div>
 
-            <div className='desc-body flex flex-col gap-8 px-9 max-sm:gap-3 overflow-y-auto max-h-[25rem] rounded-xl overflow-scroll'>
+            <div className='desc-body flex flex-col gap-6 px-9 max-sm:gap-3 overflow-y-auto rounded-xl overflow-scroll max-h-[33rem]'>
               <h1 className=' capitalize text-4xl font-semibold max-sm:text-3xl'>{postData?.Title}</h1>{' '}
               <p className=' text-xl max-sm:text-base'>{postData?.Description}</p>
               {/* User info part */}
               <div className='creator-profile flex w-full items-center mt-auto gap-3'>
                 <div className='creator-image rounded-full w-14 aspect-square overflow-hidden opacity-80 shrink-0'>
-                  {user?.userPic ? (
-                    <ProfileImage
-                      src='https://static-images.vnncdn.net/files/publish/2023/6/30/mason-mount-1-228.jpg'
-                      alt='stranger'
-                    />
+                  {user ? (
+                    <ProfileImage src={Avatar} alt='avatar' />
                   ) : (
                     <ProfileImage
                       src='https://static-images.vnncdn.net/files/publish/2023/6/30/mason-mount-1-228.jpg'
@@ -245,12 +280,12 @@ const DetailPin = () => {
                   )}
                 </div>
                 <div className='creator-name font-medium opacity-80 capitalize whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
-                  <div>{postData?.Created?.UserName}</div>
-                  <div>{'12 followers'}</div>
+                  <div>{UserName}</div>
+                  <div>{followers.length} người theo dõi</div>
                 </div>
                 <div className='creator-follow ml-auto'>
-                  <Button gradientDuoTone='greenToBlue' onClick={handleFollowUser}>
-                    Follow
+                  <Button gradientDuoTone='greenToBlue' className='rounded-full px-1 py-1.5' onClick={handleFollowUser}>
+                    Theo dõi
                   </Button>
                 </div>
               </div>
@@ -261,10 +296,7 @@ const DetailPin = () => {
                 <div key={comment._id} className='comment-section flex flex-col w-full gap-1'>
                   <div className='flex gap-3'>
                     <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden opacity-80 shrink-0'>
-                      <ProfileImage
-                        src={'https://cdn.icon-icons.com/icons2/2438/PNG/512/boy_avatar_icon_148455.png'}
-                        alt='stranger'
-                      />
+                      <ProfileImage src={comment.author.avatar} alt='strangers' />
                     </div>
                     <div className='creator-name font-medium opacity-80 capitalize whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
                       <div className='flex'>
@@ -314,7 +346,7 @@ const DetailPin = () => {
                     <div key={reply._id} className='reply-comment-section flex flex-col gap-3 ml-5 mt-3'>
                       <div className='flex gap-3'>
                         <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden opacity-80 shrink-0'>
-                          <ProfileImage src={'https://cdn-icons-png.freepik.com/512/186/186313.png'} alt='stranger' />
+                          <ProfileImage src={reply.author.avatar} alt='stranger' />
                         </div>
                         <div className='creator-name font-medium opacity-80 capitalize whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
                           <div className='flex'>
@@ -355,13 +387,13 @@ const DetailPin = () => {
                         </div>
                       </div>
                       <div>
-                        {reply.replies.map((nestedReply) => (
-                          <div key={nestedReply._id} className='nested-reply-comment-section flex gap-3'>
+                        {reply.replies.map((nestedReply, index) => (
+                          <div
+                            key={nestedReply._id}
+                            className={`nested-reply-comment-section flex gap-3 ${index !== 0 ? 'mt-2' : ''}`}
+                          >
                             <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden opacity-80 shrink-0'>
-                              <ProfileImage
-                                src={'https://cdn-icons-png.freepik.com/512/186/186313.png'}
-                                alt='stranger'
-                              />
+                              <ProfileImage src={nestedReply.author.avatar} alt='stranger' />
                             </div>
                             <div className='creator-name font-medium capitalize whitespace-nowrap overflow-hidden text-ellipsis flex flex-col opacity-80 '>
                               <div className='flex'>
@@ -389,17 +421,12 @@ const DetailPin = () => {
             </div>
 
             {/* Comment box section */}
-            <div className='comment-box flex flex-col gap-5 p-4 max-sm:gap-2 rounded overflow-hidden min-h-32 mt-6 bg-gradient-to-r from-indigo-300 to-purple-400'>
-              <h6>{comments.length} comments</h6>
+            <div className='comment-box flex flex-col gap-3 px-5 py-3 max-sm:gap-2 rounded overflow-hidden min-h-30 mt-4 bg-gradient-to-r from-indigo-300 to-purple-400 absolute bottom-0 w-full'>
+              <h6>{getTotalCommentsAndReplies(comments)} comments</h6>
 
               <div className='flex gap-3'>
-                <div className='creator-image rounded-full w-12 aspect-square  opacity-80 shrink-0'>
-                  <ProfileImage
-                    src={
-                      'https://e7.pngegg.com/pngimages/178/419/png-clipart-man-illustration-computer-icons-avatar-login-user-avatar-child-web-design-thumbnail.png'
-                    }
-                    alt='stranger'
-                  />
+                <div className='creator-image rounded-full w-12 aspect-square opacity-80 shrink-0'>
+                  <ProfileImage src={Avatar} alt='stranger' />
                 </div>
                 <div className='creator-name font-medium capitalize whitespace-nowrap text-ellipsis w-full'>
                   <Textarea
@@ -412,7 +439,7 @@ const DetailPin = () => {
                     className='px-4 py-3 rounded-full'
                   />
                 </div>
-                <Button gradientDuoTone='pinkToOrange' onClick={handleSendComment} className='rounded-full px-2'>
+                <Button gradientDuoTone='pinkToOrange' onClick={handleSendComment} className='rounded-full px-3'>
                   Send
                 </Button>
               </div>

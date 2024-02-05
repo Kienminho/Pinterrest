@@ -5,9 +5,10 @@ const initialState = {
   _id: '',
   UserName: '',
   Email: '',
-  Avatar: '[]',
+  Avatar: '',
   Gender: '',
-  Birthday: ''
+  Birthday: '',
+  Role: ''
 }
 
 const filterPayload = (payload, initialState) => {
