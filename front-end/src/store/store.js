@@ -4,14 +4,19 @@ import UserSlice from './slices/UserSlice'
 import FileSlice from './slices/FileSlice'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import GenderSlice from './slices/GenderSlice'
+import FollowingSlice from './slices/FollowingSlice'
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage
 }
-const rootReducer = combineReducers({ Auth: AuthSlice, User: UserSlice, File: FileSlice, Gender: GenderSlice })
+const rootReducer = combineReducers({
+  Auth: AuthSlice,
+  User: UserSlice,
+  File: FileSlice,
+  Following: FollowingSlice
+})
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
