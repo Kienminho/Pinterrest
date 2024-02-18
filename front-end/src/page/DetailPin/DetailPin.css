@@ -1,0 +1,29 @@
+.divide-y > button {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 20px 0px !important;
+  outline: none !important;
+}
+
+.divide-y button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  color: #333333;
+}
+
+.divide-y button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.divide-y button:focus-within {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+div.px-5 {
+  padding: 12px 12px !important;
+}

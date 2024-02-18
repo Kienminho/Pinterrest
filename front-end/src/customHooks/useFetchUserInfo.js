@@ -9,7 +9,7 @@ import { loginSuccess } from '../store/slices/AuthSlice'
 export const useFetchUserInfo = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const userEmail = user.data.Email
+  const userEmail = user?.data?.Email
   const accessToken_daniel = user?.data?.AccessToken
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
 
@@ -17,15 +17,26 @@ export const useFetchUserInfo = () => {
     const fetchData = async () => {
       try {
         const userData = await getUserByEmail(userEmail, accessToken_daniel, axiosJWT)
-
         console.log('useFetchUserInfo', userData.data)
         if (userData.data) {
-          dispatch(updateState(userData.data))
+          // Lọc dữ liệu trước khi dispatch action
+          const filteredData = {
+            _id: userData.data._id,
+            UserName: userData.data.UserName,
+            Email: userData.data.Email,
+            Gender: userData.data.Gender,
+            Birthday: userData.data.Birthday,
+            Role: userData.data.Role,
+            Avatar: userData.data.Avatar,
+            FullName: userData.data.FullName,
+          }
+          dispatch(updateState(filteredData))
+          console.log('đã dispatch dữ liệu')
         }
       } catch (error) {
         console.log(error)
       }
     }
     fetchData()
-  }, [dispatch])
+  }, [])
 }

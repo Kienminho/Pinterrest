@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MdOutlineEdit } from 'react-icons/md'
-import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import './Profile.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
@@ -9,15 +8,14 @@ import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts
 import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
 import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
-import { getUserByEmail } from '../../store/apiRequest'
-import { format } from 'date-fns'
+import ModalListFollow from '../../components/ModalListFollow/ModalListFollow'
+import { updateState } from '../../store/slices/UserSlice'
 
 const Profile = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const { Avatar, UserName } = useSelector((state) => state.User)
+  const { Avatar, FullName, UserName } = useSelector((state) => state.User)
   const [tempPic, setTempPic] = useState(null)
 
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
@@ -35,8 +33,6 @@ const Profile = () => {
         const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-posts-by-user`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
-        console.log(resData)
-
         const postData = resData.data.data
         console.log(postData)
 
@@ -103,21 +99,25 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Username part */}
-          <div className='profile-username mt-3'>
-            <h1 className='text-2xl font-semibold'>@{UserName}</h1>
+          {/* Fullname part */}
+          <div className='profile-fullname'>
+            <h1 className='text-3xl font-semibold'>{FullName}</h1>
           </div>
 
-          {/* Follow part */}
+          {/* Username part */}
+          <div className='profile-username mt-2'>
+            <h1 className='text-xl font-medium text-gray-800'>@{UserName}</h1>
+          </div>
+
+          {/* Follow modal part  */}
           <div className='profile-follow mt-3 flex gap-3 items-center font-medium'>
-            <div>{followers.length} Followers</div>
-            <div>{following.length} Following</div>
+            <ModalListFollow followerList={followers} followingList={following} />
           </div>
 
           {/* Activity part */}
           <div className='profile-activity mt-2 flex gap-3 items-center font-medium'>
-            <div className='save-pic'>{savedPosts?.length} saved</div>
-            <div className='create-pic'>{createPosts?.length} created</div>
+            <div className='save-pic'>{savedPosts?.length} đã lưu</div>
+            <div className='create-pic'>{createPosts?.length} đã tạo</div>
           </div>
         </div>
         <div className='profile-pins mt-8 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400'>

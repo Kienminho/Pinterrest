@@ -22,6 +22,7 @@ const Create = () => {
   const container = useRef()
 
   const [switch1, setSwitch1] = useState(true)
+  const [allowComment, setAllowComment] = useState(true)
 
   const [file, setFile] = useState(null)
   const [fileInfo, setFileInfo] = useState({
@@ -31,6 +32,11 @@ const Create = () => {
   })
 
   const [underUpload, setUnderUpload] = useState(false)
+
+  // Xử lý khi người dùng thay đổi ToggleSwitch
+  const handleToggleSwitchChange = (newValue) => {
+    setAllowComment(newValue)
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -52,7 +58,8 @@ const Create = () => {
         Attachment: {
           Id: '',
           Thumbnail: ''
-        }
+        },
+        IsComment: allowComment
       }
       console.log(postBody)
       const res = await uploadFilesAndCreatePost([file], postBody, dispatch, navigate, accessToken_daniel, axiosJWT)
@@ -102,7 +109,13 @@ const Create = () => {
               label={'Link'}
               placeholder='Add a link'
             />
-            <ToggleSwitch checked={switch1} label='Allow peope to comment' onChange={setSwitch1} />
+            {/* <ToggleSwitch checked={switch1} label='Cho phép mọi người bình luận' onChange={setSwitch1} /> */}
+            <ToggleSwitch
+              checked={allowComment}
+              label='Cho phép mọi người bình luận'
+              onChange={handleToggleSwitchChange}
+            />
+
             <div className='pin-prime-btn flex'>
               {/* <button disabled={underUpload} onClick={uploadHandler}>
                 Publish

@@ -84,9 +84,9 @@
 } */
 
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 20px;
-  left:-100px;
+  width: 9px;
+  height: 16px;
+  left: -100px;
 }
 
 body::-webkit-scrollbar-track {
@@ -97,13 +97,12 @@ body::-webkit-scrollbar-track {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #f8a7b4;
+  background-color: #b1b1b1;
   border-radius: 10px;
-  border: 2px solid #f8a7b4;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #e5919f;
+  background-color: #7a7a7a;
 }
 
 ::-webkit-scrollbar-track:horizontal {

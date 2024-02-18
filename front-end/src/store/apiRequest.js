@@ -1,8 +1,5 @@
 import axios from 'axios'
 import {
-  changePassStart,
-  changePassSuccess,
-  changePassFailed,
   loginFailed,
   loginStart,
   loginSuccess,
@@ -14,8 +11,7 @@ import {
   registerSuccess
 } from './slices/AuthSlice'
 
-import { getUsersFailed, getUsersStart, getUsersSuccess } from './slices/UserSlice_chuabiet'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { uploadFileFailed, uploadFileStart, uploadFileSuccess } from './slices/FileSlice'
 import { resetState } from './slices/UserSlice'
 
@@ -89,15 +85,11 @@ export const logoutUser = async (dispatch, navigate, accessToken, axiosJWT) => {
 }
 
 export const changePassword = async (email, newPassword, dispatch, navigate) => {
-  console.log('toi dc day roi')
-  dispatch(loginStart())
-
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/forgot-password`, {
       email,
       newPassword
     })
-    dispatch(loginSuccess(res.data))
     console.log(res.data)
     toast.success('Đặt lại mật khẩu thành công')
     navigate('/login')
@@ -114,8 +106,6 @@ export const changePassword = async (email, newPassword, dispatch, navigate) => 
       // Xử lý các trường hợp lỗi khác tùy theo cần thiết
       console.error('Lỗi không xác định khi đặt lại mật khẩu:', error.message)
     }
-
-    dispatch(loginFailed())
     throw new Error(errorMessage)
   }
 }
@@ -181,6 +171,39 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
   }
 }
 
+export const updatePost = async (updatedData, accessToken, axiosJWT) => {
+  try {
+    const updateData = {
+      PostId: updatedData.id,
+      Title: updatedData.Title,
+      Description: updatedData.Description
+      // IsComment: true
+    }
+
+    // Gọi API cập nhật bài viết
+    const updatePostRes = await axiosJWT.put(`${process.env.REACT_APP_API_URL}/post/update-post`, updateData, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    console.log('Update post response:', updatePostRes.data)
+    const { data: postData } = updatePostRes
+
+    // Xử lý phản hồi từ server nếu cần
+    if (postData.statusCode === 200) {
+      console.log('Cập nhật bài đăng thành công')
+      toast.success('Cập nhật bài đăng thành công')
+      return postData.data // Trả về thông tin bài đăng đã được cập nhật
+    } else {
+      console.error('Lỗi khi cập nhật bài đăng:', postData.message)
+      toast.error('Cập nhật bài đăng thất bại')
+      throw new Error(postData.message)
+    }
+  } catch (error) {
+    console.error('Lỗi không xác định khi cập nhật bài đăng:', error.message)
+    toast.error('Xảy ra lỗi không xác định khi cập nhật bài đăng')
+    throw new Error('Lỗi không xác định khi cập nhật bài đăng')
+  }
+}
+
 export const uploadFiles = async (files, dispatch, accessToken, axiosJWT) => {
   dispatch(uploadFileStart())
   try {
@@ -211,18 +234,6 @@ export const uploadFiles = async (files, dispatch, accessToken, axiosJWT) => {
     console.error('Lỗi không xác định khi upload files:', error.message)
     toast.error('Xảy ra lỗi không xác định khi upload files')
     throw new Error('Lỗi không xác định khi upload files')
-  }
-}
-
-export const getAllUsers = async (accessToken, dispatch) => {
-  dispatch(getUsersStart())
-  try {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/all`, {
-      headers: { authorization: `Bearer ${accessToken}` }
-    })
-    dispatch(getUsersSuccess(res.data))
-  } catch (error) {
-    dispatch(getUsersFailed())
   }
 }
 
@@ -288,7 +299,31 @@ export const followUser = async (userId, targetUserId, accessToken, axiosJWT) =>
         headers: { authorization: `Bearer ${accessToken}` }
       }
     )
-    console.log('day la follow user: ', res.config.data)
+    console.log('day la follow user: ', res)
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const unfollowUser = async (followedId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/user/un-follow/${followedId}`, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    console.log('day la unfollow user: ')
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getListFollowingOfUser = async (userId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    console.log(res.data)
     return res.data
   } catch (error) {
     console.log(error)
@@ -300,7 +335,6 @@ export const getUserByEmail = async (email, accessToken, axiosJWT) => {
     const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/user-by-email/${email}`, {
       headers: { authorization: `Bearer ${accessToken}` }
     })
-    console.log(res.data)
     return res.data
   } catch (error) {
     console.log(error)

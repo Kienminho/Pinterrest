@@ -1,4 +1,4 @@
-import { Button, Datepicker, Label, Radio, Select, Sidebar, TextInput } from 'flowbite-react'
+import { Button, Datepicker, Label, Radio, Sidebar, TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { BiBuoy } from 'react-icons/bi'
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import toast from 'react-hot-toast'
+import { updateState } from '../../store/slices/UserSlice'
 
 const Setting = () => {
   const dispatch = useDispatch()
@@ -15,7 +16,6 @@ const Setting = () => {
   const [selectGender, setSelectGender] = useState('')
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const { Avatar, UserName, FullName, Email, Gender, Birthday } = useSelector((state) => state.User)
   const accessToken_daniel = user?.data?.AccessToken
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const isGenderSelected = (value) => selectGender === value
@@ -73,6 +73,9 @@ const Setting = () => {
 
       await updateUserInfo(updateBody, accessToken_daniel, axiosJWT)
 
+      // // Gửi action để cập nhật thông tin người dùng trong Redux Toolkit
+      dispatch(updateState(updateBody))
+
       toast.success('Cập nhật thông tin thành công')
       console.log('Thông tin người dùng đã được cập nhật thành công.')
     } catch (error) {
@@ -105,7 +108,7 @@ const Setting = () => {
       }
     }
     fetchData()
-  }, [user, selectedDate])
+  }, [user])
 
   console.log(userData)
 
@@ -133,7 +136,7 @@ const Setting = () => {
           </Sidebar.Items>
         </Sidebar>
 
-        <div class='min-h-fit p-6 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center rounded-3xl'>
+        <div class='min-h-fit p-6 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 flex items-center justify-center rounded-3xl mt-5'>
           <div class='container max-w-screen-lg mx-auto'>
             <div class='bg-white rounded-3xl shadow-lg p-4 px-4 md:p-8'>
               <div class='grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1'>
@@ -203,6 +206,7 @@ const Setting = () => {
                         name='Birthday'
                         value={userData.Birthday}
                         onSelectedDateChanged={handleDatePickerChange}
+                        minDate={new Date(1900, 0, 1)}
                       />
                     </div>
 
