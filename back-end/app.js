@@ -18,11 +18,13 @@ const fileRouter = require("./router/FileRouter");
 const postRouter = require("./router/PostRouter");
 const commentRouter = require("./router/CommentRouter");
 const conversationRouter = require("./router/ConversationRouter");
+const generationRouter = require("./router/GenerationRouter");
 app.use("/api/user", userRouter);
 app.use("/api/file", fileRouter);
 app.use("/api/post", postRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/conversation", conversationRouter);
+app.use("/api/generations", generationRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running on: http://localhost:" + process.env.PORT);

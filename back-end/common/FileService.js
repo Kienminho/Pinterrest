@@ -39,14 +39,12 @@ const removeFileInDisk = (path) => {
 };
 
 //sanity
-const uploadImageToSanity = (req) => {
+const uploadImageToSanity = (filepath) => {
   return new Promise((resolve, reject) => {
-    const filePath = req.file.path;
-    console.log(filePath);
     sanityClient.assets
-      .upload("image", fs.createReadStream(filePath))
+      .upload("image", fs.createReadStream(filepath))
       .then((document) => {
-        removeFileInDisk(req.file.path);
+        removeFileInDisk(filepath);
         resolve(document);
       })
       .catch((error) => {

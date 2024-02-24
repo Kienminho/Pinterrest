@@ -7,7 +7,7 @@ const _FileService = require("../common/FileService");
 const HandleUploadFile = async (req, res) => {
   try {
     //upload file to cloud
-    const fileSanity = await _FileService.uploadImageToSanity(req);
+    const fileSanity = await _FileService.uploadImageToSanity(req.file.path);
     //create attachment
     const attachment = await createFileAttachment(req, fileSanity);
     const ThumbnailPath = fileSanity.url;
