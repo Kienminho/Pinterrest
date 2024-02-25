@@ -21,6 +21,12 @@ const PostSchema = new mongoose.Schema({
       required: false,
     },
   },
+  Category: [
+    {
+      type: Number,
+      require: false,
+    },
+  ],
   TotalLike: {
     type: Number,
     default: 0,

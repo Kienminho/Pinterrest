@@ -1,4 +1,5 @@
 const multer = require("multer");
+const axios = require("axios");
 const Guid = require("guid");
 const fs = require("fs");
 const Utils = require("./Utils");
@@ -54,8 +55,25 @@ const uploadImageToSanity = (filepath) => {
   });
 };
 
+//get base64 from file path
+const generateBase64FromImageUrl = async (imageUrl) => {
+  try {
+    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+    if (response.status === 200) {
+      const imageBuffer = Buffer.from(response.data, "binary");
+      return imageBuffer.toString("base64");
+    } else {
+      throw new Error("Failed to download image");
+    }
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw error;
+  }
+};
+
 module.exports = {
   upload: upload,
   removeFileInDisk: removeFileInDisk,
   uploadImageToSanity: uploadImageToSanity,
+  getBase64FromFile: generateBase64FromImageUrl,
 };

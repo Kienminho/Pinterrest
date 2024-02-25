@@ -14,6 +14,12 @@ const UserSchema = new mongoose.Schema({
     min: 6,
     max: 255,
   },
+  Category: [
+    {
+      type: Number,
+      required: false,
+    },
+  ],
   Avatar: {
     type: String,
     default: "/images/avatar.jpg",

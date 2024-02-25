@@ -4,6 +4,12 @@ const AuthenticateService = require("../common/AuthenticateService");
 const PostController = require("../controller/PostController");
 
 router.get(
+  "/get-posts-by-categories",
+  AuthenticateService.authenticateToken,
+  PostController.HandleGetPostsByCategories
+);
+
+router.get(
   "/get-posts-by-user",
   AuthenticateService.authenticateToken,
   PostController.HandleGetPostsByUser

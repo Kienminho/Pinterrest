@@ -1,5 +1,35 @@
 const Utils = require("../common/Utils");
+const _FileService = require("../common/FileService");
 const _Post = require("../model/Post");
+const _User = require("../model/User");
+const _Category = require("../model/Category");
+const _AIController = require("./AIController");
+const _CategoryController = require("./CategoryController");
+
+const HandleGetPostsByCategories = async (req, res) => {
+  try {
+    const { pageIndex, pageSize } = req.query;
+    const currentUser = await _User.findById(req.user.id);
+    let posts = []; //nếu category của user rỗng thì lấy tất cả bài viết
+    if (currentUser.Category.length === 0) {
+      posts = await _Post.find({});
+    } else {
+      posts = await _Post.find({
+        Category: { $in: currentUser.Category },
+      });
+    }
+    //phân trang
+    const data = posts
+      .slice((pageIndex - 1) * pageSize, pageSize)
+      .sort((a, b) => b.CreatedAt - a.CreatedAt);
+    res.json(Utils.createSuccessResponseModel(posts.length, data));
+  } catch (error) {
+    console.log(
+      "PostController -> HandleGetPostsByCategories: " + error.message
+    );
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
 
 const HandleGetPostsByUser = async (req, res) => {
   try {
@@ -36,8 +66,28 @@ const HandleCreatePost = async (req, res) => {
         );
     }
 
+    //get base64 from file path
+    const base64 = await _FileService.getBase64FromFile(Attachment.Thumbnail);
+    const text = await createQuestion();
+    const data = await _AIController.createNonStreamingMultipartContent(
+      "appstore-384314",
+      "us-central1",
+      "gemini-1.0-pro-vision",
+      base64,
+      "image/jpeg",
+      text
+    );
+
+    //response from AI
+    const resData = data
+      .split("\n")
+      .map((item) => item.substring(item.indexOf(".") + 2));
+    //add category to post
+    const listCategory = await AddCategoryToPost(resData);
+
     const newPost = req.body;
     newPost.Created = req.user.id;
+    newPost.Category = listCategory;
     const post = new _Post(newPost);
     await post.save();
     res.json(Utils.createSuccessResponseModel(0, true));
@@ -78,9 +128,35 @@ const HandleUpdatePost = async (req, res) => {
   }
 };
 
+const createQuestion = async () => {
+  const listCategory = await _Category.find({});
+  return listCategory
+    .map((category) => `${category.Index}.${category.Name}`)
+    .join(" ");
+};
+
+const AddCategoryToPost = async (listCategory) => {
+  let result = [];
+  for (const category of listCategory) {
+    const existCategory = await _Category.findOne({ Name: category });
+    if (!existCategory) {
+      const listCategory = [{ Name: category }];
+      const newCategory = await _CategoryController.CreateCategory(
+        listCategory
+      );
+      result.push(newCategory.Index);
+    } else {
+      result.push(existCategory.Index);
+    }
+  }
+  return result;
+};
+
 module.exports = {
+  HandleGetPostsByCategories: HandleGetPostsByCategories,
   HandleGetPostsByUser: HandleGetPostsByUser,
   HandleGetDetailPost: HandleGetDetailPost,
   HandleCreatePost: HandleCreatePost,
   HandleUpdatePost: HandleUpdatePost,
+  createQuestion: createQuestion,
 };
