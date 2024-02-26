@@ -12,11 +12,17 @@ const HandleGetPostsByCategories = async (req, res) => {
     const currentUser = await _User.findById(req.user.id);
     let posts = []; //nếu category của user rỗng thì lấy tất cả bài viết
     if (currentUser.Category.length === 0) {
-      posts = await _Post.find({});
+      posts = await _Post.find({}).populate("Created");
     } else {
-      posts = await _Post.find({
-        Category: { $in: currentUser.Category },
-      });
+      posts = await _Post
+        .find({
+          Category: { $in: currentUser.Category },
+        })
+        .populate({
+          path: "Created",
+          select: "UserName Avatar",
+        })
+        .select("-Category");
     }
     //phân trang
     const data = posts
