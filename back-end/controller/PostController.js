@@ -39,9 +39,10 @@ const HandleGetPostsByCategories = async (req, res) => {
 
 const HandleGetPostsByUser = async (req, res) => {
   try {
-    const posts = await _Post
-      .find({ Created: req.user.id })
-      .populate("Created");
+    const posts = await _Post.find({ Created: req.user.id }).populate({
+      path: "Created",
+      select: "UserName Avatar",
+    });
     res.json(Utils.createSuccessResponseModel(posts.length, posts));
   } catch (error) {
     console.log("PostController -> HandleGetPostsByUser: " + error.message);
@@ -52,7 +53,10 @@ const HandleGetPostsByUser = async (req, res) => {
 const HandleGetDetailPost = async (req, res) => {
   try {
     const { postId } = req.params;
-    const post = await _Post.findById(postId).populate("Created");
+    const post = await _Post.findById(postId).populate({
+      path: "Created",
+      select: "UserName Avatar",
+    });
     res.json(Utils.createSuccessResponseModel(1, post));
   } catch (error) {
     console.log("PostController -> HandleGetDetailPost: " + error.message);
