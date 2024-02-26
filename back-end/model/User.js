@@ -55,6 +55,10 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  FirstLogin: {
+    type: Boolean,
+    default: true,
+  },
   RefreshToken: {
     type: String,
     required: false,

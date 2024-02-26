@@ -74,6 +74,7 @@ const HandleLogin = async (req, res) => {
     //create token
     const accessToken = AuthenticateService.generateAccessToken(user);
     const refreshToken = AuthenticateService.generateRefreshToken(user);
+    if (!refreshToken === "") user.FirstLogin = false;
     //save refreshToken
     user.RefreshToken = refreshToken;
     await user.save();
