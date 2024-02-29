@@ -99,9 +99,15 @@ const Create = () => {
     try {
       setLoading(true)
       // Send request to backend to generate image based on text input
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/ai/create-image-from-text`, {
-        text: prompt
-      })
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/ai/create-image-from-text`,
+        {
+          text: prompt
+        },
+        {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        }
+      )
       console.log(res.data.data)
       const generatedImageLink = res.data.data
       setFile(generatedImageLink)
