@@ -31,7 +31,7 @@ const CreateImageToText = async (req, res) => {
       "Content-Type": "application/json",
       Accept: "image/png",
       Authorization:
-        "Bearer sk-JxvAc7eBG8ECeWf2XBH02y6brPbAuLP3NrrlaP0Fn8wAObZm",
+        "Bearer sk-vNnRAOk6q1Om9NKCVWCYs1ZFLHc6ux0sKpJjHhj7Y5MVon0B",
       Cookie:
         "__cf_bm=A2a9NF0mP90pmRH0_p3A.Hwue4AL3G31xu8VUCMGw7w-1708791502-1.0-ARFEAWCo3VtpWxENNac3ifuTdC9UiRyzBoyvLK0zQoSoZjWoyuyoQ73mJieWPMI8WCBuVeBJm47P4Ip4gG7DYMY=",
     },
