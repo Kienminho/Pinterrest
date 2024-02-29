@@ -61,8 +61,12 @@ function ModalListFollow({ followerList, followingList }) {
 
   return (
     <>
-      <Button onClick={() => setOpenModalFollowers(true)}>{followerList.length} người theo dõi</Button>
-      <Button onClick={() => setOpenModalFollowings(true)}>{followingList.length} đang theo dõi</Button>
+      <button className='font-normal' onClick={() => setOpenModalFollowers(true)}>
+        {followerList.length} người theo dõi
+      </button>
+      <button className='font-normal' onClick={() => setOpenModalFollowings(true)}>
+        {followingList.length} đang theo dõi
+      </button>
       <Modal show={openModalFollowers} onClose={() => setOpenModalFollowers(false)}>
         <Modal.Header>{followerList.length} người theo dõi</Modal.Header>
         <Modal.Body>

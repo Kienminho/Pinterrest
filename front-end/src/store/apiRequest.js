@@ -13,7 +13,9 @@ import {
 
 import toast from 'react-hot-toast'
 import { uploadFileFailed, uploadFileStart, uploadFileSuccess } from './slices/FileSlice'
-import { resetState } from './slices/UserSlice'
+import { resetState, updateState } from './slices/UserSlice'
+import { createAxios } from '../createInstance'
+import { useEffect } from 'react'
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart())
@@ -23,20 +25,18 @@ export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginSuccess(res.data))
     toast.success('Đăng nhập thành công')
     navigate('/')
+    return res.data
   } catch (error) {
     let errorMessage = 'Lỗi không xác định khi đăng nhập'
     toast.error('Đăng nhập thất bại')
 
-    // Nếu có dữ liệu phản hồi từ server
     if (error.response && error.response.data) {
       const { statusCode, message } = error.response.data
       console.error(`Mã lỗi ${statusCode}: ${message}`)
       errorMessage = `${message}`
     } else {
-      // Xử lý các trường hợp lỗi khác tùy theo cần thiết
       console.error('Lỗi không xác định khi đăng nhập:', error.message)
     }
-
     dispatch(loginFailed())
     throw new Error(errorMessage)
   }
@@ -171,13 +171,111 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
   }
 }
 
+export const uploadFilesAIAndCreatePost = async (files, postBody, dispatch, navigate, accessToken, axiosJWT) => {
+  dispatch(uploadFileStart())
+  try {
+    const formData = new FormData()
+    console.log(files)
+    formData.append('file', files[0])
+    console.log(formData.get('file'))
+
+    const uploadRes = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/file/upload`, formData, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+
+    console.log(uploadRes.data)
+
+    const { data: uploadData } = uploadRes
+
+    if (uploadData.statusCode === 200) {
+      dispatch(uploadFileSuccess(uploadData))
+      console.log('Upload files thành công')
+      toast.success('Upload files thành công')
+
+      // Thêm đường dẫn tải lên vào postBody
+      postBody.Link = uploadData // Thay đổi _id bằng trường Id của đối tượng File của bạn
+      console.log(postBody)
+
+      // Gọi API tạo bài đăng
+      const createPostRes = await axios.post(`${process.env.REACT_APP_API_URL}/post/create-post`, postBody, {
+        headers: { authorization: `Bearer ${accessToken}` }
+      })
+
+      console.log('Create post response:', createPostRes.data)
+
+      const { data: postData } = createPostRes
+
+      // Xử lý phản hồi từ server nếu cần
+      if (postData.statusCode === 200) {
+        toast.success('Tạo bài đăng thành công')
+        navigate('/')
+        return createPostRes.data.data // Trả về thông tin bài đăng nếu cần
+      } else {
+        toast.error('Tạo bài đăng thất bại')
+        throw new Error(createPostRes.data.message)
+      }
+    } else {
+      console.error('Lỗi khi upload files:', uploadData.message)
+      toast.error('Upload files thất bại')
+      throw new Error(uploadData.message)
+    }
+  } catch (error) {
+    dispatch(uploadFileFailed())
+    console.error('Lỗi không xác định khi upload files hoặc tạo bài đăng:', error.message)
+    toast.error('Xảy ra lỗi không xác định')
+    throw new Error('Lỗi không xác định khi upload files hoặc tạo bài đăng')
+  }
+}
+// Tạo một hàm để tạo ID ngẫu nhiên
+function generateRandomId() {
+  const characters = 'abcdef0123456789'
+  const length = 24
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
+}
+
+export const createPostAI = async (linkImageAI, postBody, dispatch, navigate, accessToken, axiosJWT) => {
+  try {
+    // Thêm đường dẫn tải lên vào postBody
+    postBody.Attachment.Id = '65dbf999d3431c34958551b7'
+    postBody.Attachment.Thumbnail = linkImageAI
+    console.log(postBody)
+
+    // Gọi API tạo bài đăng
+    const createPostRes = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/post/create-post`, postBody, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+
+    console.log('Create post response:', createPostRes.data)
+
+    const { data: postData } = createPostRes
+
+    // Xử lý phản hồi từ server nếu cần
+    if (postData.statusCode === 200) {
+      toast.success('Tạo bài đăng thành công')
+      navigate('/')
+      return createPostRes.data.data // Trả về thông tin bài đăng nếu cần
+    } else {
+      toast.error('Tạo bài đăng thất bại')
+      throw new Error(createPostRes.data.message)
+    }
+  } catch (error) {
+    console.error('Lỗi không xác định khi tạo bài đăng:', error.message)
+    toast.error('Xảy ra lỗi không xác định')
+    throw new Error('Lỗi không xác định khi tạo bài đăng')
+  }
+}
+
 export const updatePost = async (updatedData, accessToken, axiosJWT) => {
   try {
     const updateData = {
       PostId: updatedData.id,
       Title: updatedData.Title,
-      Description: updatedData.Description
-      // IsComment: true
+      Description: updatedData.Description,
+      IsComment: updatedData.IsComment
     }
 
     // Gọi API cập nhật bài viết
@@ -261,8 +359,10 @@ export const createComment = async (postId, content, attachment, accessToken, ax
         headers: { authorization: `Bearer ${accessToken}` }
       }
     )
+    toast.success('Bình luận thành công')
     console.log('day la comment moi: ', res.config.data)
   } catch (error) {
+    toast.error('Bình luận thất bại')
     console.log(error)
   }
 }

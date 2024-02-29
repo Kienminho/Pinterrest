@@ -6,49 +6,58 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
+import CategoryPicker from '../../components/Intro/CategoryPicker'
+import { useFetchUserInfo } from '../../customHooks/useFetchUserInfo'
+import PostsLayoutHome from '../../components/PostsGrid/PostsLayoutHome'
 
 const Home = () => {
+  useFetchUserInfo()
   const user = useSelector((state) => state.Auth.login?.currentUser)
-
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
-
   const accessToken_daniel = user?.data?.AccessToken
   const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(false)
 
+  let { FirstLogin } = useSelector((state) => state.User)
+  console.log('check first login: ', FirstLogin)
+
+  // lấy tất cả các bài viết theo danh mục
   useEffect(() => {
-    const getDataFromServer = async () => {
+    const getPostsByCategories = async () => {
       try {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-posts-by-user`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
-        console.log(resData)
+        const resData = await axios.get(
+          `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=1&pageSize=15`,
+          {
+            headers: { Authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
+        console.log(resData.data.data)
 
-        const postData = resData.data.data
-        console.log(postData)
-
-        if (postData) {
-          setPosts(postData)
+        if (resData.data.data) {
+          setPosts(resData.data.data)
+          setLoading(true)
         }
       } catch (error) {
         console.log(error)
       }
     }
-    getDataFromServer()
+    getPostsByCategories()
   }, [])
+
+  console.log(posts)
   return (
     <>
-      <div className='posts-container pt-8 minus-nav-100vh max-sm:pt-3'>
-        <PostsLayout postsCount={posts.length} fallback={'Nothing to see yet.'}>
-          {' '}
-          {posts &&
-            posts.map((post, i) => {
-              return <Post data={post} key={i} />
-            })}
-        </PostsLayout>
-      </div>
+      {FirstLogin ? (
+        <CategoryPicker />
+      ) : (
+        <div className='user-home-posts mt-5'>
+          <PostsLayoutHome loading={loading}>
+            {posts &&
+              posts.map((post, i) => {
+                return <Post data={post} key={i} type={'home-post'} />
+              })}
+          </PostsLayoutHome>
+        </div>
+      )}
     </>
   )
 }

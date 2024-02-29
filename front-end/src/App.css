@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply font-bevietnampro;
+    @apply font-roboto;
   }
 
   h1 {
@@ -34,15 +34,43 @@
 
 @layer components {
   .btn-henry {
-    @apply border-2 border-primary_henry px-4 py-2 rounded uppercase text-xl font-semibold cursor-pointer hover:bg-primary_henry hover:text-white;
+    @apply border-2 border-primary_henry px-4 py-2 rounded uppercase text-xl text-center font-semibold cursor-pointer hover:bg-primary_henry hover:text-white;
   }
 
   .btn-basic {
-    @apply px-5 py-2 cursor-pointer text-base font-medium rounded-md hover:bg-primary_henry hover:text-white;
+    @apply px-5 py-2 cursor-pointer text-base text-center font-medium rounded-md hover:bg-indigo-500 hover:text-white transition duration-300 ease-in-out;
+  }
+
+  .btn-circle {
+    @apply px-2 py-2 cursor-pointer rounded-full hover:bg-indigo-300 hover:text-white transition duration-300 ease-in-out;
   }
 
   .btn-link {
     @apply rounded-lg px-3 py-2 text-dark_color font-medium hover:bg-zinc-300/60;
+  }
+
+  .btn-linkhover {
+    @apply rounded-lg px-3 py-2 text-dark_color font-medium bg-zinc-300/60 hover:bg-zinc-300/90 transition duration-300 ease-in-out;
+  }
+
+  .btn-category {
+    @apply rounded-lg px-4 py-3 text-dark_color font-medium bg-zinc-300/50 hover:bg-zinc-300/80 transition duration-300 ease-in-out;
+  }
+
+  .btn-chosen {
+    @apply rounded-lg px-4 py-3 text-white font-medium bg-purple_btn;
+  }
+
+  .btn-upload {
+    @apply rounded-lg px-6 py-3 text-white font-medium bg-red-600 hover:bg-red-700 transition duration-300 ease-in-out;
+  }
+
+  .btn-chosen-normal {
+    @apply rounded-lg px-6 py-2.5 text-dark_color font-medium bg-zinc-300/60 hover:bg-zinc-300/90 transition duration-300 ease-in-out;
+  }
+
+  .btn-upload-ai {
+    @apply rounded-lg px-4 py-2.5 text-white font-medium bg-purple_btn hover:bg-[#5850e9] transition duration-300 ease-in-out;
   }
 
   .btn-red {
@@ -57,8 +85,8 @@
     @apply text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-base px-5 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900;
   }
 
-  .btn-yellow {
-    @apply text-white bg-yellow-700 hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-base px-5 py-2 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-900;
+  .btn-home {
+    @apply hover:bg-indigo-500 hover:text-white transition duration-300 ease-in-out rounded-full;
   }
 
   .link {
@@ -74,7 +102,7 @@
   }
 
   .btn-save {
-    @apply bg-[#e60023] text-white text-base font-medium px-6 py-3 rounded-[30px] hover:bg-[#c5001e];
+    @apply bg-red-600 text-white text-base font-medium px-6 py-3 rounded-[30px] hover:bg-red-700;
   }
 }
 

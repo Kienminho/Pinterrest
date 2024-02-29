@@ -1,7 +1,7 @@
 .category-selector .active .category-link::after {
-  content: "";
+  content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: 2px;
   left: 8px;
   height: 3px;
   background-color: black;
