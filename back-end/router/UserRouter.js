@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 const AuthenticateService = require("../common/AuthenticateService");
 const UserController = require("../controller/UserController");
 
@@ -11,6 +10,9 @@ router.get(
   AuthenticateService.authenticateToken,
   UserController.HandleLogout
 );
+router.get("/google", UserController.AuthenticateGoogle);
+router.get("/google/callback", UserController.AuthenticateGoogleCallback);
+
 router.get(
   "/user-by-email/:email",
   AuthenticateService.authenticateToken,
@@ -62,5 +64,11 @@ router.get(
   "/get-follower",
   AuthenticateService.authenticateToken,
   UserController.GetFollower
+);
+
+router.get(
+  "/search",
+  AuthenticateService.authenticateToken,
+  UserController.SearchUser
 );
 module.exports = router;

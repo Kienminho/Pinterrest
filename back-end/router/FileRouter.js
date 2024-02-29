@@ -11,4 +11,7 @@ router.post(
   FileController.HandleUploadFile
 );
 
+router.get("/get-all-attachments", FileController.GetAllAttachments);
+router.get("/get-attachment-by-id/:id", FileController.GetAttachmentById);
+
 module.exports = router;

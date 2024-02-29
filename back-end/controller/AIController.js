@@ -4,6 +4,7 @@ const axios = require("axios");
 const fs = require("fs");
 
 const _FileService = require("../common/FileService");
+const _FileController = require("./FileController");
 const Utils = require("../common/Utils");
 const translate = new Translate({ keyFilename: "./public/credentials.json" });
 
@@ -43,6 +44,13 @@ const CreateImageToText = async (req, res) => {
       // Save the image to the public folder
       fs.writeFileSync(imagePath, response.data);
       const fileSanity = await _FileService.uploadImageToSanity(imagePath);
+      //create attachment
+      await _FileController.createFileAttachment(
+        "AI-Generated-Image",
+        fileSanity,
+        "AI"
+      );
+
       res.json(Utils.createSuccessResponseModel(0, fileSanity.url));
     })
     .catch((error) => {

@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
   },
   Password: {
     type: String,
-    required: true,
+    required: false,
     min: 6,
     max: 255,
   },
@@ -58,6 +58,11 @@ const UserSchema = new mongoose.Schema({
   FirstLogin: {
     type: Boolean,
     default: true,
+  },
+  TypeLogin: {
+    type: String,
+    enum: ["local", "facebook", "google"],
+    default: "local",
   },
   RefreshToken: {
     type: String,

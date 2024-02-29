@@ -1,9 +1,92 @@
+const axios = require("axios");
+
 const EmailService = require("../common/EmailService");
 const Utils = require("../common/Utils");
 const AuthenticateService = require("../common/AuthenticateService");
-
 const _User = require("../model/User");
 const _Follow = require("../model/Follow");
+
+const AuthenticateGoogle = async (req, res) => {
+  const REDIRECT_URI = "http://localhost:3000/api/user/google/callback";
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
+  res.redirect(url);
+};
+
+const AuthenticateGoogleCallback = async (req, res) => {
+  const { code } = req.query;
+  const { data } = await axios.post(
+    "https://oauth2.googleapis.com/token",
+    {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      redirect_uri: "http://localhost:3000/api/user/google/callback",
+      code,
+      grant_type: "authorization_code",
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const { access_token } = data;
+  const user = await axios.get(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+  const { email, name, picture } = user.data;
+  let userExist = await _User.findOne({ Email: email, TypeLogin: "google" });
+  if (userExist) {
+    if (userExist.FirstLogin) userExist.FirstLogin = false;
+    const accessToken = AuthenticateService.generateAccessToken(userExist);
+    const refreshToken = AuthenticateService.generateRefreshToken(userExist);
+    userExist.RefreshToken = refreshToken;
+    if (userExist.Avatar === picture) userExist.Avatar = picture;
+    await userExist.save();
+    return res.json(
+      Utils.createSuccessResponseModel(1, {
+        UserName: userExist.UserName,
+        Email: userExist.Email,
+        Avatar: userExist.Avatar,
+        FirstLogin: userExist.FirstLogin,
+        AccessToken: accessToken,
+        RefreshToken: refreshToken,
+      })
+    );
+  } else {
+    userExist = {
+      Email: email,
+      FullName: name,
+      Password: "",
+      UserName: Utils.getUserNameByEmail(email),
+      Avatar: picture,
+      FirstLogin: true,
+      TypeLogin: "google",
+    };
+
+    const user = new _User(userExist);
+    await user.save();
+    const accessToken = AuthenticateService.generateAccessToken(user);
+    const refreshToken = AuthenticateService.generateRefreshToken(user);
+    user.RefreshToken = refreshToken;
+    await user.save();
+    return res.json(
+      Utils.createSuccessResponseModel(1, {
+        UserName: user.UserName,
+        Email: user.Email,
+        Avatar: user.Avatar,
+        FirstLogin: user.FirstLogin,
+        AccessToken: accessToken,
+        RefreshToken: refreshToken,
+      })
+    );
+  }
+};
 
 /// <summary>
 /// Handle register
@@ -82,6 +165,8 @@ const HandleLogin = async (req, res) => {
     const userResponse = {
       UserName: user.UserName,
       Email: user.Email,
+      Avatar: user.Avatar,
+      FirstLogin: user.FirstLogin,
       AccessToken: accessToken,
       RefreshToken: refreshToken,
     };
@@ -351,7 +436,45 @@ const GetFollower = async (req, res) => {
   }
 };
 
+const SearchUser = async (req, res) => {
+  try {
+    const { keyword, pageIndex, pageSize } = req.query;
+
+    const pipeline = [
+      {
+        $match: {
+          UserName: { $regex: keyword, $options: "i" },
+          IsDeleted: false,
+          Role: "user",
+        },
+      },
+      {
+        $facet: {
+          totalRecord: [{ $count: "count" }],
+          userList: [
+            { $skip: (pageIndex - 1) * pageSize },
+            { $limit: parseInt(pageSize) },
+            { $project: { UserName: 1, Avatar: 1, FullName: 1, _id: 0 } },
+          ],
+        },
+      },
+    ];
+
+    const result = await _User.aggregate(pipeline);
+
+    const totalRecord = result[0]?.totalRecord[0]?.count || 0;
+    const userList = result[0]?.userList || [];
+
+    return res.json(Utils.createSuccessResponseModel(totalRecord, userList));
+  } catch (error) {
+    console.log("UserController -> SearchUser: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
 module.exports = {
+  AuthenticateGoogleCallback: AuthenticateGoogleCallback,
+  AuthenticateGoogle: AuthenticateGoogle,
   HandleRegister: HandleRegister,
   HandleLogin: HandleLogin,
   HandleLogout: HandleLogout,
@@ -365,4 +488,5 @@ module.exports = {
   HandleUnFollow: HandleUnFollow,
   GetFollowing: GetFollowing,
   GetFollower: GetFollower,
+  SearchUser: SearchUser,
 };

@@ -30,6 +30,10 @@ const AttachmentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  AttachmentType: {
+    type: String,
+    required: true,
+  },
   PostId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post",
