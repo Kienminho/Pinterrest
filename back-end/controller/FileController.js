@@ -10,12 +10,12 @@ const HandleUploadFile = async (req, res) => {
     //upload file to cloud
     const fileSanity = await _FileService.uploadImageToSanity(req.file.path);
     console.log(fileSanity);
+    const data = {
+      name: req.user.name,
+      filename: req.file.filename,
+    };
     //create attachment
-    const attachment = await createFileAttachment(
-      req.file.filename,
-      fileSanity,
-      "UPLOAD"
-    );
+    const attachment = await createFileAttachment(data, fileSanity, "UPLOAD");
     const ThumbnailPath = fileSanity.url;
 
     return res.status(200).json(
@@ -32,16 +32,16 @@ const HandleUploadFile = async (req, res) => {
   }
 };
 
-const createFileAttachment = async (fileName, fileSanity, type) => {
+const createFileAttachment = async (data, fileSanity, type) => {
   const attachment = new _Attachment({
     OriginalFileName: fileSanity.originalFilename,
     AttachmentType: type,
     FilePath: fileSanity.path,
-    FileName: fileName,
+    FileName: data.filename,
     FileSize: Utils.calcFileSize(fileSanity.size),
     FileType: fileSanity.mimeType,
     FileExtension: Utils.getFileExtension(fileSanity.originalFilename),
-    CreatedName: req.user.name,
+    CreatedName: data.name,
   });
   await attachment.save();
   return attachment;
@@ -72,7 +72,7 @@ const GetAllAttachments = async (req, res) => {
       {
         $project: {
           totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
-          data: 1, 
+          data: 1,
         },
       },
     ];
@@ -111,4 +111,5 @@ module.exports = {
   HandleUploadFile: HandleUploadFile,
   GetAllAttachments: GetAllAttachments,
   GetAttachmentById: GetAttachmentById,
+  createFileAttachment: createFileAttachment,
 };

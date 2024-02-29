@@ -44,9 +44,13 @@ const CreateImageToText = async (req, res) => {
       // Save the image to the public folder
       fs.writeFileSync(imagePath, response.data);
       const fileSanity = await _FileService.uploadImageToSanity(imagePath);
+      const data = {
+        name: req.user.name,
+        filename: "AI-Generated-Image",
+      };
       //create attachment
-      await _FileController.createFileAttachment(
-        "AI-Generated-Image",
+      const fileAI = await _FileController.createFileAttachment(
+        data,
         fileSanity,
         "AI"
       );
@@ -54,6 +58,7 @@ const CreateImageToText = async (req, res) => {
       res.json(Utils.createSuccessResponseModel(0, fileSanity.url));
     })
     .catch((error) => {
+      console.log(error);
       console.log(
         "GenerationController -> CreateImageToText: " + error.message
       );

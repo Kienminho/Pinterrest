@@ -1,8 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const GenerationController = require("../controller/AIController");
+const AuthenticateService = require("../common/AuthenticateService");
 
-router.post("/create-image-from-text", GenerationController.CreateImageToText);
+router.post(
+  "/create-image-from-text",
+  AuthenticateService.authenticateToken,
+  GenerationController.CreateImageToText
+);
 router.post("/summarizes-content", GenerationController.SummarizesContent);
 
 module.exports = router;
