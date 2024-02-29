@@ -4,18 +4,29 @@ import { NavLink } from 'react-router-dom'
 import SuspenseImg from '../SuspenseImg/SuspenseImg'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
 import UpdatePost from '../UpdatePost/UpdatePost'
+import { useSelector } from 'react-redux'
 
 const Post = ({ data, type }) => {
-  const { _id, Attachment, Created, Description, Title } = data
+  const { _id, Attachment, Created, Description, Title, IsComment } = data
+  console.log(data)
   const thumbnail = Attachment?.Thumbnail
+  console.log(thumbnail)
+  const authorId = Created
   const avatar = Created?.Avatar
   const username = Created?.UserName || 'Stranger'
-  const avatarAlt = 'https://static-images.vnncdn.net/files/publish/2023/6/30/mason-mount-1-228.jpg'
+
+  const { _id: UserId } = useSelector((state) => state.User)
 
   return (
     <div className='post-container rounded-xl overflow-hidden mb-4 relative max-sm:mb-2'>
       <NavLink to={`/pin/${_id}`} className={'relative'}>
-        <SuspenseImg className='w-full' src={thumbnail} fileName={avatar} alt={'error image'} height={360} />
+        <SuspenseImg
+          className='w-full'
+          src={thumbnail}
+          fileName={avatar ? avatar : 'image.jpg'}
+          alt={'error image'}
+          height={360}
+        />
       </NavLink>
 
       <div className='creator-container h-full absolute top-0 left-0 right-0 pointer-events-none'>
@@ -31,7 +42,11 @@ const Post = ({ data, type }) => {
               </div>
             </div>
 
-            <UpdatePost id={_id} Description={Description} Title={Title} />
+            {authorId === UserId && (
+              <div className='flex gap-2'>
+                <UpdatePost id={_id} Description={Description} Title={Title} IsComment={IsComment} />
+              </div>
+            )}
 
             {/* {type === 'user-post' && <DeletePost id={_id} />} */}
           </div>

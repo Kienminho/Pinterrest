@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react'
 
 const InputField = forwardRef(({ id, label, name, type = 'text', placeholder, handleChange }, ref) => {
   return (
-    <label htmlFor={id} className='flex flex-col text-dark_color text-md gap-2 capitalize'>
+    <label htmlFor={id} className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize'>
       {label}
       <input
         ref={ref}
@@ -10,7 +10,7 @@ const InputField = forwardRef(({ id, label, name, type = 'text', placeholder, ha
         name={name}
         type={type}
         placeholder={placeholder}
-        className='border border-[#cdcdcd] text-gray-900 text-sm block w-full ps-7 p-2.5 rounded-3xl bg-gray-50 focus:ring-blue-300 focus:border-blue-300 outline-none focus:ring-1 shadow-sm'
+        className='ps-7 rounded-3xl bg-gray-50 outline-none block w-full border-0 py-3 text-dark_color shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-normal focus:ring-inset focus:ring-[#818cf8] focus:ring-2 font-normal'
         onChange={handleChange}
       />
     </label>

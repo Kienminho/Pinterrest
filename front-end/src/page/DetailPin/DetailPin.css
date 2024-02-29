@@ -1,15 +1,19 @@
 .divide-y > button {
-  background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important;
+  background-color: white;
   border: none !important;
   box-shadow: none !important;
   padding: 20px 0px !important;
   outline: none !important;
 }
 
+.divide-y > button:hover {
+  background-color: white;
+}
+
 .divide-y button:focus {
   outline: none !important;
   box-shadow: none !important;
-  color: #333333;
+  color: #555555;
 }
 
 .divide-y button:focus-visible {

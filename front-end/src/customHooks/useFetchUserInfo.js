@@ -29,6 +29,7 @@ export const useFetchUserInfo = () => {
             Role: userData.data.Role,
             Avatar: userData.data.Avatar,
             FullName: userData.data.FullName,
+            FirstLogin: userData.data.FirstLogin
           }
           dispatch(updateState(filteredData))
           console.log('đã dispatch dữ liệu')
@@ -38,5 +39,5 @@ export const useFetchUserInfo = () => {
       }
     }
     fetchData()
-  }, [])
+  }, [dispatch])
 }

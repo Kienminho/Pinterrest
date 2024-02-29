@@ -41,7 +41,7 @@ const ImageUploader = ({ setFile }) => {
   return (
     <>
       <div
-        className={`img-Uploader bg-[#e9e9e9] w-[24rem] max-sm:w-auto rounded-3xl border-dashed border-[#dadada]  hover:border-[#929292] border-2 cursor-pointer overflow-hidden relative ${
+        className={`img-Uploader bg-[#e9e9e9] w-[26rem] max-sm:w-auto rounded-3xl border-dashed border-gray-300 hover:border-[#929292] border-2 cursor-pointer overflow-hidden relative ${
           // check if not image, set default height
           selectedFile && imageHeight ? `h-[${imageHeight}]` : 'h-[32rem] max-sm:h-[25rem]'
         }`}
@@ -60,10 +60,10 @@ const ImageUploader = ({ setFile }) => {
             />
           ) : (
             <>
-              <UploadIcon size='2rem' />
-              <h4 className='text-center pointer-events-none break-words max-w-[230px] mt-3'>
-                Choose a file or drag and drop it here
-              </h4>
+              <UploadIcon size='2.5rem' className='rounded-full' />
+              <span className='text-center font-normal text-base pointer-events-none break-words max-w-[250px] mt-3'>
+                Chọn một tệp hoặc kéo và thả tệp ở đây
+              </span>
             </>
           )}
         </div>
@@ -71,7 +71,7 @@ const ImageUploader = ({ setFile }) => {
         {selectedFile && (
           <div className='flex items-center justify-center  flex-col w-full h-full z-20 bg-[#ffffff8f] absolute opacity-0 hover:opacity-100 top-0'>
             <UploadIcon size='2rem' />
-            <h4 className='text-center pointer-events-none break-words max-w-[210px]'>Choose another file</h4>
+            <h4 className='text-center pointer-events-none break-words max-w-[210px]'>Chọn file ảnh khác</h4>
           </div>
         )}
         <input

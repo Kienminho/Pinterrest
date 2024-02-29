@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, lazy, createContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import './Profile.css'
 import { useDispatch, useSelector } from 'react-redux'
+import './Profile.css'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
-import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts'
-import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
 import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import ModalListFollow from '../../components/ModalListFollow/ModalListFollow'
-import { updateState } from '../../store/slices/UserSlice'
+import SuspenseLoader from '../../components/SuspenseLoader/SuspenseLoader'
+
+// const UserCreatedPosts = lazy(() => import('../../components/UserCreatedPosts/UserCreatedPosts'))
+// const UserSavedPosts = lazy(() => import('../../components/UserSavedPosts/UserSavedPosts'))
+
+import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts'
+import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
+export const LoadingContext = createContext()
 
 const Profile = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const { Avatar, FullName, UserName } = useSelector((state) => state.User)
   const [tempPic, setTempPic] = useState(null)
-
   const dispatch = useDispatch()
-
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
@@ -26,6 +29,7 @@ const Profile = () => {
   const [selectedTab, setSelectedTab] = useState('created')
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getPostsFromServer = async () => {
@@ -38,6 +42,7 @@ const Profile = () => {
 
         if (postData) {
           setCreatePosts(postData)
+          setLoading(true)
         }
       } catch (error) {
         console.log(error)
@@ -80,9 +85,9 @@ const Profile = () => {
   }, [])
 
   return (
-    <>
-      <div className='user_profile minus-nav-100vh'>
-        <div className='profile-header flex flex-col items-center pt-10 bg-gradient-to-r from-green-400 to-blue-500'>
+    <LoadingContext.Provider value={loading}>
+      <div className='user_profile minus-nav-100vh '>
+        <div className='profile-header flex flex-col items-center pt-10 '>
           {/* Avatar part */}
           <div className='relative profile-pic-main mb-4'>
             <div className='w-32 flex justify-center rounded-full aspect-square overflow-hidden'>
@@ -115,12 +120,15 @@ const Profile = () => {
           </div>
 
           {/* Activity part */}
-          <div className='profile-activity mt-2 flex gap-3 items-center font-medium'>
-            <div className='save-pic'>{savedPosts?.length} đã lưu</div>
-            <div className='create-pic'>{createPosts?.length} đã tạo</div>
+          <div className='profile-activity mt-2 flex gap-3 items-center'>
+            <NavLink to='/settings'>
+              <button className='rounded-3xl text-dark_color font-medium px-[18px] py-3 hover:bg-zinc-300/90 bg-zinc-300/60'>
+                Chỉnh sửa hồ sơ
+              </button>
+            </NavLink>
           </div>
         </div>
-        <div className='profile-pins mt-8 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400'>
+        <div className='profile-pins mt-8 text-[#333333]'>
           <div className='flex flex-col items-center'>
             {/* Category divided part */}
             <div className='category-selector flex gap-5'>
@@ -140,19 +148,23 @@ const Profile = () => {
             </div>
 
             {/* Create and Saved Posts part */}
-            <div className='user-posts-container mt-14'>
+            <div className='user-posts-container mt-10'>
               <div className='user-created-posts'>
                 {selectedTab === 'saved' ? (
-                  <UserSavedPosts posts={savedPosts} />
+                  <SuspenseLoader>
+                    <UserSavedPosts posts={savedPosts} />
+                  </SuspenseLoader>
                 ) : (
-                  <UserCreatedPosts posts={createPosts} />
+                  <SuspenseLoader>
+                    <UserCreatedPosts posts={createPosts} />
+                  </SuspenseLoader>
                 )}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </LoadingContext.Provider>
   )
 }
 
