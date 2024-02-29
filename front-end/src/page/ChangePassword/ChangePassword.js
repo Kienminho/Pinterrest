@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
-import { FaPinterest } from 'react-icons/fa6'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { changePassword, loginUser } from '../../store/apiRequest'
-import { MdEmail } from 'react-icons/md'
-import { RiLockPasswordFill } from 'react-icons/ri'
+import { changePassword } from '../../store/apiRequest'
+import logo from '../../components/Nav/PLogo.svg'
+import { HiInformationCircle } from 'react-icons/hi'
 
 const ChangePassword = () => {
   const navigate = useNavigate()
@@ -14,10 +13,11 @@ const ChangePassword = () => {
   const inputRef = useRef()
 
   const [error, setError] = useState('')
+  const [hideError, setHideError] = useState(false)
 
   useEffect(() => {
     return inputRef.current.focus()
-  }, [])
+  }, [error])
 
   const [formData, setFormData] = useState({
     Email: '',
@@ -46,15 +46,26 @@ const ChangePassword = () => {
       ...prevState,
       [name]: value
     }))
+
+    // Khi người dùng bắt đầu nhập lại thông tin, ẩn thông báo lỗi
+    if (hideError) {
+      setError('')
+      setHideError(false)
+    }
   }
 
   return (
     <FormWrapper>
       <div className='flex flex-col items-center'>
-        <div className='logo aspect-square w-9 mb-3 rounded-full'>
-          <FaPinterest size='2.2rem' color='red' />
+        <div className='logo aspect-square w-12 mb-3 '>
+          <img src={logo} className='rounded-full' alt='Pinspired' />
         </div>
-        <h3 className='text-center text-dark_color tracking-normal leading-tight'>Thay đổi mật khẩu</h3>
+        <div className='items-center block justify-center text-center px-4;'>
+          <h3 className='text-dark_color tracking-normal leading-tight'>Thay đổi mật khẩu Pinspired</h3>
+        </div>
+        <div className='block items-center justify-center mt-1'>
+          <p className='text-center text-dark_color font-normal'>Vui lòng điền thông tin bên dưới</p>
+        </div>
 
         <div className='w-[360px] mt-6 flex flex-col gap-3'>
           <div className='relative'>
@@ -87,18 +98,24 @@ const ChangePassword = () => {
           </div>
 
           {/* Hiển thị thông báo lỗi nếu có */}
-          {error && (
-            <div className='w-[400px] mt-1'>
-              <p class='text-sm text-red-600 dark:text-red-500'>
-                <span class='font-medium'>Oops!</span> {error}
-              </p>
+          {error ? (
+            <div className='w-full mt-1'>
+              <p className='text-red-500 font-medium text-sm leading-6 tracking-wide'>{error}</p>
             </div>
+          ) : (
+            <p class='flex items-center gap-1 mt-2 font-sans text-sm antialiased font-normal leading-normal text-gray-600'>
+              <HiInformationCircle size='1.4rem' />
+              Mật khẩu mới không được trùng với mật khẩu cũ.
+            </p>
           )}
 
-          <div className='flex justify-center mt-3'>
+          <div className='flex justify-center'>
             <button
-              className='text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-medium rounded-3xl text-md px-2 py-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 text-decoration-none w-80 text-center mt-2'
-              onClick={handleChangePassword}
+              className='text-white bg-[#6366f1] hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
+              onClick={() => {
+                handleChangePassword()
+                setHideError(true)
+              }}
             >
               Đặt lại mật khẩu
             </button>

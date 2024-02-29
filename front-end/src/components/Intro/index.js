@@ -5,18 +5,16 @@ import ExploreSection from './ExploreSection'
 import HeroSection from './HeroSection'
 import SaveIdeaSection from './SaveIdeaSection'
 import SearchIdeaSection from './SearchIdeaSection'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { jwtDecode } from 'jwt-decode'
-import { loginSuccess } from '../../store/slices/AuthSlice'
-import { createAxios } from '../../createInstance'
 import { Carousel } from 'flowbite-react'
+import { useFetchUserInfo } from '../../customHooks/useFetchUserInfo'
+import CategoryPicker from './CategoryPicker'
 
 const IntroContainer = () => {
+  useFetchUserInfo()
   return (
     <div>
-      <HeroSection />
+      <CategoryPicker />
+      {/* <HeroSection />
       <div className='h-72 sm:h-64 xl:h-100 2xl:h-[44rem]'>
         <Carousel>
           <img src='https://pxwall.com/wp-content/uploads/2021/06/1920x1080-4k-Wallpaper.jpg' alt='...' />
@@ -29,7 +27,7 @@ const IntroContainer = () => {
       <SearchIdeaSection />
       <SaveIdeaSection />
       <ExploreSection />
-      <CTASection />
+      <CTASection /> */}
     </div>
   )
 }

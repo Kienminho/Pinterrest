@@ -9,7 +9,8 @@ const initialState = {
   Avatar: '',
   Gender: '',
   Birthday: '',
-  Role: ''
+  Role: '',
+  FirstLogin: ''
 }
 
 const filterPayload = (payload, initialState) => {
@@ -27,6 +28,12 @@ const UserSlice = createSlice({
     updateState: (state, action) => {
       const filteredPayload = filterPayload(action.payload, initialState)
       return { ...state, ...filteredPayload }
+    },
+    updateFirstLogin: (state, action) => {
+      return {
+        ...state,
+        FirstLogin: action.payload
+      }
     },
     updateStateSavedPosts: (state, action) => {
       return {
@@ -51,6 +58,7 @@ const UserSlice = createSlice({
   }
 })
 
-export const { updateState, updateStateSavedPosts, updateStatePosts, deleteStatePost, resetState } = UserSlice.actions
+export const { updateState, updateFirstLogin, updateStateSavedPosts, updateStatePosts, deleteStatePost, resetState } =
+  UserSlice.actions
 
 export default UserSlice.reducer

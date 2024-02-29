@@ -4,9 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
-import { HiOutlineArrowRight } from 'react-icons/hi'
+import { MdSend } from 'react-icons/md'
 import SuspenseImg from '../../components/SuspenseImg/SuspenseImg'
-import { Accordion, Button, Textarea } from 'flowbite-react'
+import { Accordion, Button, Spinner, Textarea } from 'flowbite-react'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import { createComment, followUser, replyComment, unfollowUser } from '../../store/apiRequest'
 import moment from 'moment'
@@ -24,33 +24,29 @@ const DetailPin = () => {
 
     return diffInMinutes < 60 ? `${diffInMinutes}m` : diffInHours < 24 ? `${diffInHours}h` : `${diffInDays}d`
   }
+  const [fetchComments, setFetchComments] = useState(true)
 
   const [postData, setPostData] = useState({})
-  console.log(postData)
   const [isReplying, setIsReplying] = useState(false)
   const [commentContent, setCommentContent] = useState('')
   const [replyContent, setReplyContent] = useState('')
   const [comments, setComments] = useState([])
   const [selectedCommentId, setSelectedCommentId] = useState(null)
-  console.log(comments)
   const [isReplyingToReply, setIsReplyingToReply] = useState(false)
   const [selectedReplyId, setSelectedReplyId] = useState(null)
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
+  const [loadingCmt, setLoadingCmt] = useState(true)
+  const [loadingPost, setLoadingPost] = useState(true)
 
-  // Khi cần sử dụng giá trị isFollowing trong component
-  const isFollowing = useSelector((state) => state.Following.isFollowing)
-  console.log(isFollowing)
   const user = useSelector((state) => state.Auth.login?.currentUser)
+  const isFollowing = useSelector((state) => state.Following.isFollowing)
   const { Avatar: UserAvatar, _id: UserId } = useSelector((state) => state.User)
+  const isCurrentUser = user && UserId === postData?.Created?._id
   const { id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
-  const isCurrentUser = user && UserId === postData?.Created?._id
-
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
-
   const accessToken_daniel = user?.data?.AccessToken
 
   const handleGoBack = () => {
@@ -84,83 +80,6 @@ const DetailPin = () => {
     setReplyContent('')
   }
 
-  // Lấy thông tin chi tiết 1 post từ server
-  useEffect(() => {
-    const getDetailPostFromServer = async () => {
-      try {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-detail-post/${id}`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
-        console.log('🚀', resData)
-
-        const postData = resData.data.data
-        console.log(postData)
-
-        if (postData) {
-          setPostData(postData)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getDetailPostFromServer()
-  }, [id])
-
-  // Lấy danh sách bình luận của 1 post (mainComment + replyComments) từ server
-  useEffect(() => {
-    const getCommentsFromServer = async () => {
-      try {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/comment/get-comments-by-post/${id}`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
-
-        const allComments = resData.data.data
-        console.log('🚀', allComments)
-
-        setComments(allComments)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    if (id) {
-      getCommentsFromServer()
-    }
-  }, [id])
-
-  // Lấy danh sách follower và following của người dùng hiện tại
-  useEffect(() => {
-    const fetchDataFromServer = async () => {
-      try {
-        // Gọi API để lấy danh sách follower
-        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
-
-        const followersData = followersRes.data.data
-        console.log(followersData)
-
-        if (followersData) {
-          setFollowers(followersData)
-        }
-
-        // Gọi API để lấy danh sách following
-        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
-
-        const followingData = followingRes.data.data
-        console.log(followingData)
-
-        if (followingData) {
-          setFollowing(followingData)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    fetchDataFromServer()
-  }, [])
-
   const handleSendComment = async () => {
     try {
       // Gọi hàm createComment với các thông tin cần thiết
@@ -168,7 +87,6 @@ const DetailPin = () => {
     } catch (error) {
       console.log('Error creating comment:', error)
     }
-
     setCommentContent('')
   }
 
@@ -183,10 +101,9 @@ const DetailPin = () => {
         accessToken_daniel,
         axiosJWT
       )
-      console.log(result)
 
       if (result) {
-        console.log('New reply comment created successfully:', result)
+        console.log('trả lời cmt thành công:', result)
       }
     } catch (error) {
       console.log('Error replying comment:', error)
@@ -214,7 +131,7 @@ const DetailPin = () => {
       )
 
       if (result) {
-        console.log('New reply comment created successfully:', result)
+        console.log('trả lời cmt thành công: ', result)
       }
     } catch (error) {
       console.log('Error replying comment:', error)
@@ -227,11 +144,9 @@ const DetailPin = () => {
     setReplyContent('')
   }
 
-  console.log(following)
   // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
   const handleFollowToggle = async () => {
     const targetFollow = following.find((f) => f.following.UserName === postData?.Created?.UserName)
-    console.log(targetFollow?._id)
     try {
       if (isFollowing) {
         // Nếu đang theo dõi, thực hiện hành động "Bỏ theo dõi"
@@ -249,20 +164,6 @@ const DetailPin = () => {
     }
   }
 
-  // Nếu là người dùng hiện tại, ẩn nút "Theo dõi"
-  const followButton = !isCurrentUser && (
-    <div className='creator-follow ml-auto'>
-      <Button
-        // gradientDuoTone='greenToBlue'
-        color='blue'
-        className='rounded-full px-1 py-1.5'
-        onClick={handleFollowToggle}
-      >
-        <span className='text-base'>{isFollowing ? 'Bỏ theo dõi' : 'Theo dõi'}</span>
-      </Button>
-    </div>
-  )
-
   const getTotalCommentsAndReplies = (comments) => {
     let total = 0
     comments.forEach((comment) => {
@@ -274,21 +175,95 @@ const DetailPin = () => {
     return total
   }
 
+  // Lấy thông tin chi tiết 1 post từ server
+  useEffect(() => {
+    const getDetailPostFromServer = async () => {
+      try {
+        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-detail-post/${id}`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
+        const postData = resData.data.data
+        if (postData) {
+          setPostData(postData)
+          setLoadingPost(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getDetailPostFromServer()
+  }, [id])
+
+  // Lấy danh sách bình luận của 1 post (mainComment + replyComments) từ server
+  useEffect(() => {
+    const getCommentsFromServer = async () => {
+      try {
+        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/comment/get-comments-by-post/${id}`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
+
+        const allComments = resData.data.data
+        console.log('', allComments)
+
+        setComments(allComments)
+        setLoadingCmt(false)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (id && fetchComments) {
+      getCommentsFromServer()
+      setFetchComments(false) // Prevent re-fetching unless manually triggered
+    }
+  }, [id, fetchComments])
+
+  // Lấy danh sách follower và following của người dùng hiện tại
+  useEffect(() => {
+    const fetchDataFromServer = async () => {
+      try {
+        // Gọi API để lấy danh sách follower
+        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
+        const followersData = followersRes.data.data
+        if (followersData) {
+          setFollowers(followersData)
+        }
+
+        // Gọi API để lấy danh sách following
+        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
+        const followingData = followingRes.data.data
+        if (followingData) {
+          setFollowing(followingData)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchDataFromServer()
+  }, [])
+
   return (
-    <div className='detail-pin-container minus-nav-100vh bg-gradient-to-r from-teal-200 to-lime-200'>
+    <div className='detail-pin-container minus-nav-100vh'>
       <div className='flex min-h-full justify-center relative '>
         {/* back button */}
         <div className='absolute go-back top-7 left-7 max-sm:hidden'>
           <button className='left-arrow rounded-full hover:bg-gray-200 p-2  transition' onClick={handleGoBack}>
-            <FaRegArrowAltCircleLeft size='2rem' color='darkgreen' />
+            <FaRegArrowAltCircleLeft size='2rem' color='#5850ec' />
           </button>
         </div>
         {/* pin section */}
-        <div className='pin-section flex m-20 rounded-3xl overflow-hidden max-w-5xl my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full'>
+        <div
+          className='pin-section flex m-20 rounded-3xl overflow-hidden max-w-5xl my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] '
+          style={{ minHeight: '400px' }}
+        >
           {/* image left handside */}
-          <div className='visual-pin-container w-[512px] max-sm:w-auto '>
+          <div className='visual-pin-container py-5 pl-5 w-[500px] max-sm:w-auto '>
             <SuspenseImg
-              className='w-full'
+              className='w-full rounded-3xl'
               src={postData?.Attachment?.Thumbnail}
               fileName={postData?.Attachment?.Thumbnail}
               alt='post_image'
@@ -297,27 +272,22 @@ const DetailPin = () => {
           </div>
 
           {/* description right handside */}
-          <div className=' w-[570px] desc-container max-sm:px-2 max-sm:w-auto bg-gradient-to-r from-orange-200 to-red-200 relative'>
+          <div className='w-[550px] desc-container max-sm:px-2 max-sm:w-auto relative'>
             <div className='desc-container-header pt-9 px-9 pb-5 flex justify-end max-sm:pt-5 max-sm:justify-start'>
               {/* <Button pinId={id} savedBy={saves} /> */}
-              <Button
-                pill
-                color='failure'
-                // gradientDuoTone='pinkToOrange'
-                className='px-2 py-1.5 text-base focus:box-shadow-none focus:ring-0'
-              >
+              <Button pill color='failure' className='px-2 py-1.5 text-base focus:box-shadow-none focus:ring-0'>
                 <span className='text-base'>Lưu</span>
               </Button>
             </div>
 
-            <div className='desc-body flex flex-col gap-6 px-9 max-sm:gap-3 overflow-y-auto rounded-xl overflow-scroll max-h-[33rem]'>
-              <h1 className='text-3xl font-semibold max-sm:text-2xl'>{postData?.Title}</h1>{' '}
-              <p className=' text-xl font-normal max-sm:text-base'>{postData?.Description}</p>
+            <div className='desc-body flex flex-col gap-4 px-9 max-sm:gap-3 overflow-scroll max-h-[440px] max-h-[40rem]'>
+              <span className='text-3xl font-medium max-sm:text-2xl text-dark_color'>{postData?.Title}</span>{' '}
+              <span className='text-[20px] font-normal max-sm:text-base text-gray-700'>{postData?.Description}</span>
               {/* User info part */}
               <div className='creator-profile flex w-full items-center mt-auto gap-3'>
-                <div className='creator-image rounded-full w-14 aspect-square overflow-hidden  shrink-0'>
+                <div className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0'>
                   {user ? (
-                    <ProfileImage src={postData?.Created?.Avatar} alt='avatar' />
+                    <ProfileImage src={postData?.Created?.Avatar} />
                   ) : (
                     <ProfileImage
                       src='https://static-images.vnncdn.net/files/publish/2023/6/30/mason-mount-1-228.jpg'
@@ -326,25 +296,38 @@ const DetailPin = () => {
                     />
                   )}
                 </div>
-                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
+                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-dark_color'>
                   <div className='font-semibold'>{postData?.Created?.UserName}</div>
-                  <div>{followers.length} người theo dõi</div>
+                  <div className=''>{followers.length} người theo dõi</div>
                 </div>
-                {followButton}
+                {/* Nếu là người dùng hiện tại, ẩn nút "Theo dõi" */}
+                {!isCurrentUser && (
+                  <div className='creator-follow ml-auto'>
+                    <Button color='blue' className='rounded-full px-1 py-1.5' onClick={handleFollowToggle}>
+                      <span className='text-base'>{isFollowing ? 'Bỏ theo dõi' : 'Theo dõi'}</span>
+                    </Button>
+                  </div>
+                )}
               </div>
               {/* Comment part  */}
               <div>
                 <Accordion className='hover:bg-none focus:ring-0 border-none hover:none dark:border-none focus:border-none'>
                   <Accordion.Panel className='hover:bg-none focus:ring-0'>
                     <Accordion.Title>
-                      <h6 className='font-medium'>Nhận xét</h6>
+                      <h6 className='font-medium text-dark_color'>Nhận xét</h6>
                     </Accordion.Title>
                     {postData.IsComment === false ? (
-                      <div className='text-stone-700'>Đã tắt nhận xét cho Ghim này</div>
+                      <button disabled className='text-gray-500 -mt-10'>
+                        Đã tắt nhận xét cho Ghim này
+                      </button>
                     ) : // Điều kiện thứ hai
-                    postData.IsComment === true && comments.length === 0 ? (
-                      <div className='text-stone-700'>
-                        Chưa có nhận xét nào! Thêm nhận xét để bắt đầu cuộc trò chuyện.
+                    !loadingCmt && !loadingPost && postData.IsComment === true && comments.length === 0 ? (
+                      <button disabled className='text-gray-500 -mt-10'>
+                        Chưa có nhận xét nào! Thêm nhận xét để bắt đầu.aaa
+                      </button>
+                    ) : loadingCmt && loadingPost ? (
+                      <div className='flex items-center justify-center absolute inset-0 bg-white'>
+                        <Spinner color='gray' aria-label='Spinner button' size='xl' />
                       </div>
                     ) : (
                       <Accordion.Content>
@@ -358,7 +341,7 @@ const DetailPin = () => {
                               <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
                                 <div className='flex'>
                                   <div className='mr-3 text-red-700 font-semibold'>{comment.author.name}</div>
-                                  <div>{comment.content}</div>
+                                  <div className='text-base text-dark_color'>{comment.content}</div>
                                 </div>
 
                                 <div className='flex gap-5'>
@@ -368,7 +351,7 @@ const DetailPin = () => {
 
                                   <div
                                     onClick={() => handleReplyClick(comment._id)}
-                                    className='cursor-pointer text-[#5F5F5F] text-base font-semibold'
+                                    className='cursor-pointer text-[#767676] text-base font-medium'
                                   >
                                     {'Trả lời'}
                                   </div>
@@ -385,14 +368,15 @@ const DetailPin = () => {
                                     value={replyContent}
                                     onChange={(e) => setReplyContent(e.target.value)}
                                     required
-                                    className='px-4 py-3 rounded-xl bg-slate-100 resize-none'
+                                    autoFocus
+                                    className='px-4 py-3.5 rounded-full resize-none outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white'
                                     rows={1}
                                   />
                                   <div className='flex gap-2 justify-end mt-3'>
-                                    <Button outline gradientDuoTone='tealToLime' onClick={handleCancelReply}>
+                                    <Button pill color='light' onClick={handleCancelReply}>
                                       Huỷ
                                     </Button>
-                                    <Button gradientDuoTone='purpleToPink' onClick={handleSendReply}>
+                                    <Button pill outline gradientDuoTone='tealToLime' onClick={handleSendReply}>
                                       Gửi
                                     </Button>
                                   </div>
@@ -414,7 +398,7 @@ const DetailPin = () => {
                                     <div className='flex'>
                                       <div className='mr-3 text-red-700 font-semibold'>{reply.author.name}</div>
                                       <div className='mr-1 text-blue-700 font-semibold'>@{comment.author.name}</div>
-                                      <div>{reply.content}</div>
+                                      <div className='text-base text-dark_color'>{reply.content}</div>
                                     </div>
                                     <div className='flex gap-5'>
                                       <div className='cursor-pointer text-[#5F5F5F] text-base'>
@@ -422,7 +406,7 @@ const DetailPin = () => {
                                       </div>
                                       <div
                                         onClick={() => handleReplyToReplyClick(reply._id)}
-                                        className='cursor-pointer text-[#5F5F5F] text-base font-semibold'
+                                        className='cursor-pointer text-[#767676] text-base font-medium'
                                       >
                                         {'Trả lời'}
                                       </div>
@@ -435,14 +419,15 @@ const DetailPin = () => {
                                           value={replyContent}
                                           onChange={(e) => setReplyContent(e.target.value)}
                                           required
-                                          className='px-4 py-3 rounded-xl bg-slate-100 resize-none'
+                                          autoFocus
+                                          className='mt-2 px-4 py-3.5 rounded-full resize-none outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white'
                                           rows={1}
                                         />
                                         <div className='flex gap-2 justify-end mt-3'>
-                                          <Button outline gradientDuoTone='tealToLime' onClick={handleCancelReply1}>
+                                          <Button pill color='light' onClick={handleCancelReply1}>
                                             Huỷ
                                           </Button>
-                                          <Button gradientDuoTone='purpleToPink' onClick={handleSendReply1}>
+                                          <Button pill outline gradientDuoTone='tealToLime' onClick={handleSendReply1}>
                                             Gửi
                                           </Button>
                                         </div>
@@ -475,7 +460,7 @@ const DetailPin = () => {
                                           </div>
                                           <div
                                             onClick={() => handleReplyClick(comment._id)}
-                                            className='cursor-pointer text-[#5F5F5F] text-base font-semibold'
+                                            className='cursor-pointer text-[#767676] text-base font-medium'
                                           >
                                             {'Trả lời'}
                                           </div>
@@ -495,40 +480,46 @@ const DetailPin = () => {
               </div>
             </div>
 
-            {/* Comment box section */}
-            {postData.IsComment ? (
-              <div className='comment-box flex flex-col gap-3 px-5 py-3 max-sm:gap-2 rounded overflow-hidden min-h-30 mt-4 bg-gradient-to-r from-orange-300 to-red-300 absolute bottom-0 w-full border-t-2 border-zinc-400'>
-                <h6>{getTotalCommentsAndReplies(comments)} Nhận xét</h6>
+            <div className='desc-commentbox absolute bottom-0 right-0 left-0'>
+              {/* Comment box section */}
+              {postData.IsComment ? (
+                <div
+                  className={`comment-box flex flex-col gap-4 px-6 pt-4 pb-5 max-sm:gap-2 rounded overflow-scroll bg-white relative border-t-2 border-gray-100 ${
+                    parseInt(postData?.Attachment?.Thumbnail.split('-')[1].split('x')[1].split('.')[0]) > 600
+                      ? 'absolute'
+                      : ''
+                  }`}
+                >
+                  <h6 className='text-dark_color font-medium ml-1'>
+                    {getTotalCommentsAndReplies(comments) === 0
+                      ? 'Bạn nghĩ gì?'
+                      : `${getTotalCommentsAndReplies(comments)} Nhận xét`}
+                  </h6>
 
-                <div className='flex gap-3'>
-                  <div className='creator-image rounded-full w-12 aspect-square  shrink-0'>
-                    <ProfileImage src={UserAvatar} alt='stranger' className='w-10 h-10' />
+                  <div className='flex gap-3'>
+                    <div className='creator-image rounded-full w-12 aspect-square  shrink-0'>
+                      <ProfileImage src={UserAvatar} alt='stranger' className='w-10 h-10' />
+                    </div>
+                    <div className='creator-name whitespace-nowrap text-ellipsis w-full'>
+                      <Textarea
+                        id='comment'
+                        placeholder='Thêm nhận xét...'
+                        value={commentContent}
+                        onChange={(e) => setCommentContent(e.target.value)}
+                        required
+                        rows={1}
+                        className='px-4 py-3.5 rounded-full resize-none outline-none hover:bg-[#e1e1e1] text-gray-800 bg-gray_input focus:ring-gray-300 focus:border-white focus:bg-white'
+                      />
+                    </div>
+                    <button onClick={handleSendComment} className='btn-linkhover rounded-xl px-5'>
+                      <MdSend className='h-6 w-6' />
+                    </button>
                   </div>
-                  <div className='creator-name font-medium whitespace-nowrap text-ellipsis w-full'>
-                    <Textarea
-                      id='comment'
-                      placeholder='Chia sẻ gì đó...'
-                      value={commentContent}
-                      onChange={(e) => setCommentContent(e.target.value)}
-                      required
-                      rows={1}
-                      className='px-4 py-3.5 rounded-full resize-none'
-                    />
-                  </div>
-                  <Button
-                    pill
-                    onClick={handleSendComment}
-                    gradientDuoTone='pinkToOrange'
-                    color='failure'
-                    className='px-2'
-                  >
-                    <HiOutlineArrowRight className='h-6 w-6' />
-                  </Button>
                 </div>
-              </div>
-            ) : (
-              ''
-            )}
+              ) : (
+                ''
+              )}
+            </div>
           </div>
         </div>
       </div>
