@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { changePassword } from '../../store/apiRequest'
 import logo from '../../components/Nav/PLogo.svg'

@@ -1,4 +1,4 @@
-import React, { lazy } from 'react'
+import React, { lazy, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import './App.css'
@@ -17,6 +17,9 @@ import Create from './page/Create/Create'
 import Home from './page/Home/Home'
 import Setting from './page/Setting/Setting'
 import Messenger from './page/Messenger/Messenger'
+import { SearchBar } from './components/SearchBar/SearchBar'
+import { SearchResult } from './components/SearchBar/SearchResult'
+import { SearchResultsList } from './components/SearchBar/SearchResultList'
 
 // const DetailPin = lazy(() => import('./page/DetailPin/DetailPin'))
 // const Profile = lazy(() => import('./page/Profile/Profile'))
@@ -25,10 +28,14 @@ import Messenger from './page/Messenger/Messenger'
 // const Setting = lazy(() => import('./page/Setting/Setting'))
 
 const App = () => {
+  const [results, setResults] = useState([])
+  console.log(results)
   useFetchUserInfo()
   return (
     <>
       <Nav />
+      <SearchBar setResults={setResults} />
+      <SearchResultsList results={results} />
       <Routes>
         {/* <Route path='/login' element={<Login />} /> */}
         <Route path='/login' element={<Login />} />

@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
-import { FaFacebook, FaGoogle, FaPinterest } from 'react-icons/fa6'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loginUser } from '../../store/apiRequest'
-import { MdEmail } from 'react-icons/md'
-import { RiLockPasswordFill } from 'react-icons/ri'
 import logo from '../../components/Nav/PLogo.svg'
+import { loginUser } from '../../store/apiRequest'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -41,6 +38,10 @@ const Login = () => {
     } catch (error) {
       console.log(error.message)
     }
+  }
+
+  const handleLoginGoogle = () => {
+    window.location.href = `${process.env.REACT_APP_API_URL}/user/google`
   }
 
   const formDataString = JSON.stringify(formDataObject)
@@ -139,7 +140,10 @@ const Login = () => {
             <hr class='border-gray-400' />
           </div>
           <div className='flex justify-center'>
-            <button class='bg-white border py-2.5 mt-2 flex justify-center items-center text-dark_color hover:bg-[#f1f1f1] focus:ring-4 focus:ring-gray-200 font-medium rounded-3xl text-base px-2 text-decoration-none w-80 text-center transition duration-300 ease-in-out'>
+            <button
+              className='bg-white border py-2.5 mt-2 flex justify-center items-center text-dark_color hover:bg-[#f1f1f1] focus:ring-4 focus:ring-gray-200 font-medium rounded-3xl text-base px-2 text-decoration-none w-80 text-center transition duration-300 ease-in-out'
+              onClick={handleLoginGoogle}
+            >
               <svg class='mr-3' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='25px'>
                 <path
                   fill='#FFC107'
@@ -158,6 +162,7 @@ const Login = () => {
                   d='M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z'
                 />
               </svg>
+              {/* <a href={`${process.env.REACT_APP_API_URL}/user/google`}>Tiếp tục truy cập Google</a> */}
               Tiếp tục truy cập Google
             </button>
           </div>

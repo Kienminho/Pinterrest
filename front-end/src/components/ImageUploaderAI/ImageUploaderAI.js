@@ -1,3 +1,4 @@
+import { Spin } from 'antd'
 import { Spinner } from 'flowbite-react'
 import { useRef, useState } from 'react'
 import { GrUploadOption as UploadIcon } from 'react-icons/gr'
@@ -35,7 +36,8 @@ const ImageUploaderAI = ({ imgSrc, loading }) => {
               {loading ? (
                 <div className='flex flex-col items-center justify-center gap-3'>
                   <span className=''>Đang tạo ảnh, vui lòng đợi...</span>
-                  <Spinner color='gray' aria-label='Spinner button' size='xl' />
+                  {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
+                  <Spin size='large' />
                 </div>
               ) : (
                 <>

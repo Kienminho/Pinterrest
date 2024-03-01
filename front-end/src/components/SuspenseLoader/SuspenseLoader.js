@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import HashLoader from 'react-spinners/HashLoader'
+import { HashLoader } from 'react-spinners'
 
 const SuspenseLoader = ({ children }) => {
   return (
