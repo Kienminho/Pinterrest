@@ -1,4 +1,5 @@
-import { Button, Datepicker, Label, Radio, Sidebar, TextInput } from 'flowbite-react'
+import { Button, Label, Sidebar, TextInput } from 'flowbite-react'
+import { Radio, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { BiBuoy } from 'react-icons/bi'
@@ -10,17 +11,23 @@ import { loginSuccess } from '../../store/slices/AuthSlice'
 import toast from 'react-hot-toast'
 import { updateState } from '../../store/slices/UserSlice'
 import './Setting.css'
-import { Upload } from 'antd'
+import { DatePicker, Upload } from 'antd'
 import ImgCrop from 'antd-img-crop'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+dayjs.extend(customParseFormat)
 
 const Setting = () => {
   const dispatch = useDispatch()
-  const [selectedDate, setSelectedDate] = useState(false)
+  const [selectedDate, setSelectedDate] = useState('')
   const [selectGender, setSelectGender] = useState('')
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const accessToken_daniel = user?.data?.AccessToken
+  const [loading, setLoading] = useState(true)
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const isGenderSelected = (value) => selectGender === value
+  const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY']
+
   const [fileList, setFileList] = useState([])
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList)
@@ -44,7 +51,7 @@ const Setting = () => {
     UserName: '',
     Email: '',
     Gender: '',
-    Birthday: ''
+    Birthday: selectedDate
   })
 
   const handleChangeAvatar = async (e) => {
@@ -86,27 +93,6 @@ const Setting = () => {
     }
   }
 
-  const handleRadioClick = (event) => {
-    setSelectGender(event.currentTarget.value)
-  }
-
-  const handleDatePickerChange = (selectedDate) => {
-    // Đảm bảo selectedDate là một đối tượng Date
-    if (selectedDate instanceof Date) {
-      // Format ngày thành chuỗi theo định dạng "yyyy-MM-dd"
-      const formattedDate = moment(selectedDate).format('YYYY/MM/DD')
-
-      console.log(formattedDate)
-
-      // Cập nhật state hoặc thực hiện các xử lý khác tùy theo yêu cầu của bạn
-      setUserData((prevState) => ({
-        ...prevState,
-        Birthday: formattedDate
-      }))
-      setSelectedDate(formattedDate)
-    }
-  }
-
   const handleInputChange = (event) => {
     const { name, value } = event.target
 
@@ -119,12 +105,23 @@ const Setting = () => {
   //  Xử lý submit Save
   const handleSave = async () => {
     try {
+      console.log('save', selectedDate)
+      const userCurrentEmail = user.data.Email
+      const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
+      console.log(userCurrent.data.Birthday)
       const updateBody = {
         FullName: userData.FullName,
         UserName: userData.UserName,
         Email: userData.Email,
         Gender: selectGender,
-        Birthday: selectedDate
+        Birthday: selectedDate !== '' ? selectedDate : userCurrent.data.Birthday
+      }
+
+      const updateBodyWithOutBirthday = {
+        FullName: userData.FullName,
+        UserName: userData.UserName,
+        Email: userData.Email,
+        Gender: selectGender
       }
 
       console.log(updateBody)
@@ -132,7 +129,7 @@ const Setting = () => {
       await updateUserInfo(updateBody, accessToken_daniel, axiosJWT)
 
       // // Gửi action để cập nhật thông tin người dùng trong Redux Toolkit
-      dispatch(updateState(updateBody))
+      dispatch(updateState(updateBodyWithOutBirthday))
 
       toast.success('Cập nhật thông tin thành công')
       console.log('Thông tin người dùng đã được cập nhật thành công.')
@@ -162,15 +159,16 @@ const Setting = () => {
     setSelectedDate(formattedDate)
   }
 
+  // Lấy thông tin người dùng từ API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userCurrentEmail = user.data.Email
         const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
-        console.log(userCurrent)
+        console.log(userCurrent.data.Birthday)
 
         const formattedDate = moment(userCurrent.data.Birthday).format('DD/MM/YYYY')
-
+        console.log('format date: ', formattedDate)
         // Cập nhật state với dữ liệu từ API
         setUserData({
           FullName: userCurrent.data.FullName,
@@ -181,7 +179,8 @@ const Setting = () => {
           Birthday: formattedDate
         })
         setSelectGender(userCurrent.data.Gender)
-        setSelectedDate(formattedDate)
+        // setSelectedDate(selectedDate)
+        setLoading(false)
       } catch (error) {
         console.error('Lỗi khi lấy thông tin người dùng', error)
       }
@@ -189,8 +188,21 @@ const Setting = () => {
     fetchData()
   }, [user])
 
-  console.log(fileList)
+  const onChangeDate = (_, dateStr) => {
+    console.log('onChange:', _.$d)
+    console.log('onChange:', dateStr)
+    setUserData((prevState) => ({
+      ...prevState,
+      Birthday: dateStr
+    }))
+    setSelectedDate(_.$d)
+    console.log(selectedDate)
+  }
 
+  const onChangeRadio = (e) => {
+    console.log('radio checked', e.target.value)
+    setSelectGender(e.target.value)
+  }
   return (
     <>
       {/* Phan binh thuong */}
@@ -216,155 +228,137 @@ const Setting = () => {
           </Sidebar.Items>
         </Sidebar>
 
-        <div class='min-h-fit py-2 px-48 flex items-center justify-center rounded-xl '>
-          <div class='container max-w-screen-lg mx-auto'>
-            <div class='rounded-xl p-4 px-4 md:p-10'>
-              <div class='grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1'>
-                <div class='text-gray-700 mb-6'>
-                  <h3 className='font-semibold mb-3'>Quản lý tài khoản</h3>
-                  <p className='text-base'>Thực hiện thay đổi thông tin cá nhân hoặc loại tài khoản của bạn..</p>
-                </div>
-
-                <div class='lg:col-span-2'>
-                  <div class='grid gap-4 grid-cols-1'>
-                    {/* Avatar */}
-                    <div className='flex gap-5 items-center'>
-                      <img
-                        src={userData.Avatar}
-                        className='-mt-2 h-12 w-12 sm:h-[100px] sm:w-[100px] rounded-full'
-                        alt='avatar'
-                      />
-                      <ImgCrop rotationSlider modalTitle='Chỉnh sửa hình ảnh' modalCancel='Huỷ' modalOk='Lưu'>
-                        <Upload
-                          action='https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188'
-                          listType='picture-circle'
-                          fileList={fileList}
-                          onChange={onChange}
-                          onPreview={onPreview}
-                          value={userData.Avatar}
-                        >
-                          {fileList.length === 0 && '+ Tải lên'}
-                        </Upload>
-                      </ImgCrop>
-                      <button className='btn-upload-ai shrink-0' onClick={handleChangeAvatar}>
-                        Lưu avatar
-                      </button>
-                    </div>
-                    {/* Fullname */}
-                    <div class='md:col-span-5 mb-4'>
-                      <div className='mb-2 block'>
-                        <Label htmlFor='full_name' className='text-base' value='Họ và Tên' />
+        <div className='min-h-fit py-2 px-40 flex items-center justify-center rounded-xl '>
+          {loading ? (
+            <Spin className='px-60 pt-20' size='large' />
+          ) : (
+            <div className='container max-w-screen-lg mx-auto'>
+              <div className='rounded-xl p-4 px-4 md:p-10'>
+                <div className='grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1'>
+                  <div className='text-gray-700 mb-6'>
+                    <h3 className='font-medium mb-3'>Quản lý tài khoản</h3>
+                    <p className='text-base'>Thực hiện thay đổi thông tin cá nhân hoặc loại tài khoản của bạn..</p>
+                  </div>
+                  <div className='lg:col-span-2'>
+                    <div className='grid gap-4 grid-cols-1'>
+                      {/* Avatar */}
+                      <div className='flex gap-5 items-center'>
+                        <img
+                          src={userData.Avatar}
+                          className='-mt-2 h-12 w-12 sm:h-[100px] sm:w-[100px] rounded-full'
+                          alt='avatar'
+                        />
+                        <ImgCrop rotationSlider modalTitle='Chỉnh sửa hình ảnh' modalCancel='Huỷ' modalOk='Lưu'>
+                          <Upload
+                            action='https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188'
+                            listType='picture-circle'
+                            fileList={fileList}
+                            onChange={onChange}
+                            onPreview={onPreview}
+                            value={userData.Avatar}
+                          >
+                            {fileList.length === 0 && '+ Tải lên'}
+                          </Upload>
+                        </ImgCrop>
+                        <button className='btn-upload-ai shrink-0' onClick={handleChangeAvatar}>
+                          Lưu avatar
+                        </button>
                       </div>
-                      <TextInput
-                        type='text'
-                        name='FullName'
-                        id='FullName'
-                        value={userData.FullName}
-                        onChange={handleInputChange}
-                        placeholder='Add your full name...'
-                      />
-                    </div>
-
-                    {/* Username */}
-                    <div class='md:col-span-5 mb-4'>
-                      <div className='mb-2 block'>
-                        <Label htmlFor='username' className='text-base' value='Tên người dùng' />
-                      </div>
-                      <TextInput
-                        type='text'
-                        id='UserName'
-                        name='UserName'
-                        placeholder='Bonnie Green'
-                        addon='@'
-                        value={userData.UserName}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div class='md:col-span-5 mb-4'>
-                      <div className='mb-2 block'>
-                        <Label htmlFor='email' className='text-base' value='Địa chỉ Email' />
-                      </div>
-                      <TextInput
-                        disabled
-                        id='Email'
-                        name='Email'
-                        type='email'
-                        rightIcon={HiMail}
-                        value={userData.Email}
-                        onChange={handleInputChange}
-                        placeholder='name@flowbite.com'
-                        required
-                      />
-                    </div>
-
-                    {/* Birthday */}
-                    <div class='md:col-span-5 mb-4'>
-                      <div className='mb-2 block'>
-                        <Label htmlFor='birthday' className='text-base' value='Ngày sinh' />
-                      </div>
-                      <Datepicker
-                        name='Birthday'
-                        value={userData.Birthday}
-                        onSelectedDateChanged={handleDatePickerChange}
-                        minDate={new Date(1900, 0, 1)}
-                      />
-                    </div>
-
-                    {/* Gender */}
-                    <div class='md:col-span-5 mb-4'>
-                      <fieldset className='flex max-w-md gap-4'>
-                        <legend className='mb-3 text-base'>Giới tính</legend>
-                        <div className='flex items-center gap-2'>
-                          <Radio
-                            id='Nam'
-                            name='Gender'
-                            value='Nam'
-                            onChange={handleRadioClick}
-                            checked={isGenderSelected('Nam')}
-                          />
-                          <Label htmlFor='Nam'>Nam</Label>
+                      {/* Fullname */}
+                      <div className='md:col-span-5 mb-4'>
+                        <div className='mb-2 block'>
+                          <Label htmlFor='full_name' className='text-base' value='Họ và Tên' />
                         </div>
-                        <div className='flex items-center gap-2'>
-                          <Radio
-                            id='Nữ'
-                            name='Gender'
-                            value='Nữ'
-                            onChange={handleRadioClick}
-                            checked={isGenderSelected('Nữ')}
-                          />
-                          <Label htmlFor='Nữ'>Nữ</Label>
-                        </div>
-                        <div className='flex items-center gap-2'>
-                          <Radio
-                            id='Khác'
-                            name='Gender'
-                            value='Khác'
-                            onChange={handleRadioClick}
-                            checked={isGenderSelected('Khác')}
-                          />
-                          <Label htmlFor='Khác'>Khác</Label>
-                        </div>
-                      </fieldset>
-                    </div>
+                        <TextInput
+                          type='text'
+                          name='FullName'
+                          id='FullName'
+                          value={userData.FullName}
+                          onChange={handleInputChange}
+                          placeholder='Add your full name...'
+                        />
+                      </div>
 
-                    <div class='md:col-span-5 text-right mt-3'>
-                      <div class='inline-flex items-end gap-2'>
-                        <Button size='lg' color='indigo' onClick={handleCancel}>
-                          Huỷ
-                        </Button>
-                        <Button size='lg' color='failure' onClick={handleSave}>
-                          Lưu
-                        </Button>
+                      {/* Username */}
+                      <div className='md:col-span-5 mb-4'>
+                        <div className='mb-2 block'>
+                          <Label htmlFor='username' className='text-base' value='Tên người dùng' />
+                        </div>
+                        <TextInput
+                          type='text'
+                          id='UserName'
+                          name='UserName'
+                          placeholder='Bonnie Green'
+                          addon='@'
+                          value={userData.UserName}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+
+                      {/* Email */}
+                      <div className='md:col-span-5 mb-4'>
+                        <div className='mb-2 block'>
+                          <Label htmlFor='email' className='text-base' value='Địa chỉ Email' />
+                        </div>
+                        <TextInput
+                          disabled
+                          id='Email'
+                          name='Email'
+                          type='email'
+                          rightIcon={HiMail}
+                          value={userData.Email}
+                          onChange={handleInputChange}
+                          placeholder='name@flowbite.com'
+                          required
+                        />
+                      </div>
+
+                      {/* Birthday */}
+                      <div className='md:col-span-5 mb-4'>
+                        <div className='mb-2 block'>
+                          <Label htmlFor='birthday' className='text-base' value='Ngày sinh' />
+                        </div>
+                        <DatePicker
+                          size='large'
+                          className='block'
+                          format={dateFormatList[0]}
+                          value={dayjs(userData.Birthday, dateFormatList[0])}
+                          onChange={onChangeDate}
+                        />
+                      </div>
+
+                      {/* Gender */}
+                      <div className='md:col-span-5 mb-4'>
+                        <Radio.Group size='large' onChange={onChangeRadio} value={selectGender}>
+                          <Radio value={'Nam'} checked={isGenderSelected('Nam')}>
+                            Nam
+                          </Radio>
+                          <Radio value={'Nữ'} checked={isGenderSelected('Nữ')}>
+                            Nữ
+                          </Radio>
+                          <Radio value={'Khác'} checked={isGenderSelected('Khác')}>
+                            Khác
+                          </Radio>
+                        </Radio.Group>
+                      </div>
+
+                      <div className='md:col-span-5 text-right mt-3'>
+                        <div className='inline-flex items-end gap-2'>
+                          <Button size='lg' color='indigo' onClick={handleCancel}>
+                            Huỷ
+                          </Button>
+                          <Button size='lg' color='failure' onClick={handleSave}>
+                            Lưu
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>

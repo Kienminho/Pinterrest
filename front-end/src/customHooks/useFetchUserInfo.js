@@ -24,7 +24,6 @@ export const useFetchUserInfo = () => {
             UserName: userData.data.UserName,
             Email: userData.data.Email,
             Gender: userData.data.Gender,
-            Birthday: userData.data.Birthday,
             Role: userData.data.Role,
             Avatar: userData.data.Avatar,
             FullName: userData.data.FullName,

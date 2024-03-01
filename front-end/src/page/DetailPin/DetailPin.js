@@ -27,11 +27,12 @@ const DetailPin = () => {
 
     return diffInMinutes < 60 ? `${diffInMinutes}m` : diffInHours < 24 ? `${diffInHours}h` : `${diffInDays}d`
   }
-  const [fetchComments, setFetchComments] = useState(true)
 
   const [postData, setPostData] = useState({})
   const [isReplying, setIsReplying] = useState(false)
   const [commentContent, setCommentContent] = useState('')
+  const [finishCmt, setFinishCmt] = useState(false)
+  const [finishRep, setFinishRep] = useState(false)
   const [replyContent, setReplyContent] = useState('')
   const [comments, setComments] = useState([])
   const [selectedCommentId, setSelectedCommentId] = useState(null)
@@ -86,11 +87,16 @@ const DetailPin = () => {
   const handleSendComment = async () => {
     try {
       // Gọi hàm createComment với các thông tin cần thiết
-      await createComment(postData?._id, commentContent, postData?.Attachment, accessToken_daniel, axiosJWT)
+      const res = await createComment(postData?._id, commentContent, postData?.Attachment, accessToken_daniel, axiosJWT)
+      if (res.statusCode === 200) {
+        toast.success('Bình luận thành công')
+        setCommentContent('')
+        setFinishCmt(true)
+      }
     } catch (error) {
+      toast.error('Bình luận thất bại')
       console.log('Error creating comment:', error)
     }
-    setCommentContent('')
   }
 
   const handleSendReply = async () => {
@@ -106,7 +112,9 @@ const DetailPin = () => {
       )
 
       if (result) {
-        console.log('trả lời cmt thành công:', result)
+        toast.success('Trả lời nhận xét thành công!')
+        setReplyContent('')
+        setFinishRep(true)
       }
     } catch (error) {
       console.log('Error replying comment:', error)
@@ -134,7 +142,9 @@ const DetailPin = () => {
       )
 
       if (result) {
-        console.log('trả lời cmt thành công: ', result)
+        toast.success('Trả lời nhận xét thành công!')
+        setReplyContent('')
+        setFinishRep(true)
       }
     } catch (error) {
       console.log('Error replying comment:', error)
@@ -215,11 +225,10 @@ const DetailPin = () => {
       }
     }
 
-    if (id && fetchComments) {
+    if (id) {
       getCommentsFromServer()
-      setFetchComments(false) // Prevent re-fetching unless manually triggered
     }
-  }, [id, fetchComments])
+  }, [id, finishCmt, finishRep])
 
   // Lấy danh sách follower và following của người dùng hiện tại
   useEffect(() => {
@@ -248,6 +257,8 @@ const DetailPin = () => {
     }
     fetchDataFromServer()
   }, [])
+
+  console.log(finishCmt)
 
   return (
     <div className='detail-pin-container minus-nav-100vh'>
@@ -284,7 +295,7 @@ const DetailPin = () => {
               </Button>
             </div>
 
-            <div className='desc-body flex flex-col gap-4 px-9 max-sm:gap-3 overflow-scroll max-h-[440px] max-h-[40rem]'>
+            <div className='desc-body flex flex-col gap-4 px-9 max-sm:gap-3 overflow-scroll max-h-[40rem]'>
               <span className='text-3xl font-medium max-sm:text-2xl text-dark_color'>{postData?.Title}</span>{' '}
               <span className='text-[20px] font-normal max-sm:text-base text-gray-700'>{postData?.Description}</span>
               {/* User info part */}
@@ -381,7 +392,7 @@ const DetailPin = () => {
                                     <Button pill color='light' onClick={handleCancelReply}>
                                       Huỷ
                                     </Button>
-                                    <Button pill outline gradientDuoTone='tealToLime' onClick={handleSendReply}>
+                                    <Button pill onClick={handleSendReply}>
                                       Gửi
                                     </Button>
                                   </div>
@@ -393,13 +404,13 @@ const DetailPin = () => {
                             {comment.replies.map((reply) => (
                               <div
                                 key={reply._id}
-                                className='reply-comment-section flex flex-col gap-2.5 ml-5 mt-[-8px]'
+                                className='reply-comment-section flex flex-col gap-2.5 ml-7 mt-[-8px]'
                               >
                                 <div className='flex gap-3'>
                                   <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden shrink-0'>
                                     <ProfileImage src={reply.author.avatar} alt='stranger' />
                                   </div>
-                                  <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
+                                  <div className='creator-name whitespace-nowrap flex flex-col'>
                                     <div className='flex'>
                                       <div className='mr-3 text-red-700 font-semibold'>{reply.author.name}</div>
                                       <div className='mr-1 text-blue-700 font-semibold'>@{comment.author.name}</div>
@@ -416,28 +427,30 @@ const DetailPin = () => {
                                         {'Trả lời'}
                                       </div>
                                     </div>
-                                    {isReplying && selectedReplyId === reply._id && (
-                                      <div>
-                                        <Textarea
-                                          id='reply'
-                                          placeholder={`Trả lời ${reply.author.name}...`}
-                                          value={replyContent}
-                                          onChange={(e) => setReplyContent(e.target.value)}
-                                          required
-                                          autoFocus
-                                          className='mt-2 px-4 py-3.5 rounded-full resize-none outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white'
-                                          rows={1}
-                                        />
-                                        <div className='flex gap-2 justify-end mt-3'>
-                                          <Button pill color='light' onClick={handleCancelReply1}>
-                                            Huỷ
-                                          </Button>
-                                          <Button pill outline gradientDuoTone='tealToLime' onClick={handleSendReply1}>
-                                            Gửi
-                                          </Button>
+                                    <div className='w-full'>
+                                      {isReplying && selectedReplyId === reply._id && (
+                                        <div>
+                                          <Textarea
+                                            id='reply'
+                                            placeholder={`Trả lời ${reply.author.name}...`}
+                                            value={replyContent}
+                                            onChange={(e) => setReplyContent(e.target.value)}
+                                            required
+                                            autoFocus
+                                            className='mt-2 ml-5 px-24 py-3.5 ps-5 rounded-full resize-none outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white'
+                                            rows={1}
+                                          />
+                                          <div className='flex gap-2 justify-end mt-3'>
+                                            <Button pill color='light' onClick={handleCancelReply1}>
+                                              Huỷ
+                                            </Button>
+                                            <Button pill onClick={handleSendReply1}>
+                                              Gửi
+                                            </Button>
+                                          </div>
                                         </div>
-                                      </div>
-                                    )}
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
                                 <div>
@@ -451,7 +464,7 @@ const DetailPin = () => {
                                       <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden shrink-0'>
                                         <ProfileImage src={nestedReply.author.avatar} alt='stranger' />
                                       </div>
-                                      <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col  '>
+                                      <div className='creator-name whitespace-nowrap text-ellipsis flex flex-col  '>
                                         <div className='flex'>
                                           <div className='mr-3 text-red-700 font-semibold'>
                                             {nestedReply.author.name}

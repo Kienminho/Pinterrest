@@ -355,10 +355,9 @@ export const createComment = async (postId, content, attachment, accessToken, ax
         headers: { authorization: `Bearer ${accessToken}` }
       }
     )
-    toast.success('Bình luận thành công')
     console.log('day la comment moi: ', res.config.data)
+    return res.data
   } catch (error) {
-    toast.error('Bình luận thất bại')
     console.log(error)
   }
 }
