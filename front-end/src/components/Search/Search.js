@@ -34,6 +34,8 @@ export default function Search() {
     fetchApi()
   }, [debounced])
 
+  
+
   const handleClear = () => {
     setSearchValue('')
     setSearchResult([])

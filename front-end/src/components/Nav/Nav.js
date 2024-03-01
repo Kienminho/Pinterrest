@@ -1,10 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { PinterestLogo } from '../Icon/PinterestLogo'
-import { ProfileImage } from '../ProfileImage/ProfileImage'
-import Search from '../Search/Search'
 import { FaSignOutAlt } from 'react-icons/fa'
-import { RiUpload2Fill } from 'react-icons/ri'
 import { IoNotifications } from 'react-icons/io5'
 import { AiFillMessage } from 'react-icons/ai'
 import 'tippy.js/dist/tippy.css'
@@ -13,7 +9,7 @@ import { logoutSuccess } from '../../store/slices/AuthSlice'
 import { logoutUser } from '../../store/apiRequest'
 import { createAxios } from '../../createInstance'
 
-import { Button, Tooltip } from 'flowbite-react'
+import { Tooltip } from 'flowbite-react'
 import { Avatar, Dropdown, Navbar } from 'flowbite-react'
 import { HiOutlineAdjustments, HiUserCircle } from 'react-icons/hi'
 import { MdPrivacyTip } from 'react-icons/md'
@@ -132,9 +128,9 @@ const NavCopy = () => {
       </Navbar.Collapse>
       {/* Search bar */}
       {user && (
-        <form class='w-full md:w-[40%] lg:w-[50%] xl:w-[60%] 2xl:w-[70%]'>
+        <div class='w-full md:w-[40%] lg:w-[50%] xl:w-[60%] 2xl:w-[70%]'>
           <label for='default-search' class='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'>
-            Search
+            Tìm kiếm
           </label>
           <div class='relative'>
             <div class='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
@@ -157,7 +153,7 @@ const NavCopy = () => {
             <input
               type='search'
               id='default-search'
-              class='block w-full p-4 ps-10 text-sm text-gray-800 border border-gray-200 rounded-full bg-gray_input hover:bg-[#e1e1e1] focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
+              class='block w-full p-4 ps-10 placeholder:text-sm font-medium text-gray-800 border border-gray-200 rounded-full bg-gray_input hover:bg-[#e1e1e1] focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
               placeholder='Tìm kiếm hình ảnh, video..'
               required
             />
@@ -168,42 +164,10 @@ const NavCopy = () => {
               Tìm kiếm
             </button>
           </div>
-        </form>
+        </div>
       )}
     </Navbar>
   )
-}
-
-const ProfileAvatar = () => {
-  // const { userPic, username } = useSelector((state) => {
-  //   return state.User
-  // })
-
-  const userPic = true
-  let username = 'nhan'
-
-  // src={`/pic_uploads/${userPic}`}
-  return (
-    <div className='profile_pic p-2.5 aspect-square w-12 hover:bg-[#0000000f] rounded-full flex'>
-      {userPic ? (
-        <ProfileImage
-          className='rounded-full'
-          src='https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png'
-          alt={username + 'profile image'}
-        />
-      ) : (
-        <ProfileImage
-          className='rounded-full'
-          // src={require('../../images/icons/blank_profile.jpg')}
-          alt={username + 'blank profile image'}
-        />
-      )}
-    </div>
-  )
-}
-
-const NavWrapper = ({ className, children }) => {
-  return <div className={`w-[3.2rem] rounded-full p-3 hover:bg-[#0000000f] ${className}`}>{children}</div>
 }
 
 export default NavCopy

@@ -1,6 +1,5 @@
-import { Spinner } from 'flowbite-react'
+import { Spin } from 'antd'
 import React from 'react'
-import { NavLink } from 'react-router-dom'
 
 const PostsLayoutHome = ({ children, loading }) => {
   return (
@@ -12,7 +11,8 @@ const PostsLayoutHome = ({ children, loading }) => {
       ) : (
         <div className='flex flex-col items-center justify-center gap-3'>
           <span className=''>Đang tải dữ liệu, vui lòng đợi...</span>
-          <Spinner color='gray' aria-label='Spinner button' size='xl' />
+          {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
+          <Spin size='large' />
         </div>
       )}
     </>

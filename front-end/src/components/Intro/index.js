@@ -1,5 +1,5 @@
 // IntroPageContainer.jsx
-import React, { useEffect } from 'react'
+import React from 'react'
 import CTASection from './CTASection'
 import ExploreSection from './ExploreSection'
 import HeroSection from './HeroSection'

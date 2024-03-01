@@ -1,9 +1,7 @@
-import React, { useRef, useState } from 'react'
-import axios from 'axios'
+import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-// import { updateState } from '../../store/slices/UserSlice'
 import { MdOutlineEdit } from 'react-icons/md'
-import { updateAvatar, uploadFiles } from '../../store/apiRequest'
+import { uploadFiles } from '../../store/apiRequest'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 

@@ -13,9 +13,7 @@ import {
 
 import toast from 'react-hot-toast'
 import { uploadFileFailed, uploadFileStart, uploadFileSuccess } from './slices/FileSlice'
-import { resetState, updateState } from './slices/UserSlice'
-import { createAxios } from '../createInstance'
-import { useEffect } from 'react'
+import { resetState } from './slices/UserSlice'
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart())
@@ -40,6 +38,14 @@ export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginFailed())
     throw new Error(errorMessage)
   }
+}
+
+export const loginGoogle = async (req, res) => {
+  try {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/google`)
+    console.log(res)
+    return res
+  } catch (error) {}
 }
 
 export const registerUser = async (user, dispatch, navigate) => {
@@ -225,16 +231,6 @@ export const uploadFilesAIAndCreatePost = async (files, postBody, dispatch, navi
     toast.error('Xảy ra lỗi không xác định')
     throw new Error('Lỗi không xác định khi upload files hoặc tạo bài đăng')
   }
-}
-// Tạo một hàm để tạo ID ngẫu nhiên
-function generateRandomId() {
-  const characters = 'abcdef0123456789'
-  const length = 24
-  let result = ''
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return result
 }
 
 export const createPostAI = async (linkImageAI, postBody, dispatch, navigate, accessToken, axiosJWT) => {

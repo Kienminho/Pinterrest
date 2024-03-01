@@ -3,28 +3,42 @@ import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { BiBuoy } from 'react-icons/bi'
 import { HiMail, HiTable, HiUser, HiViewBoards } from 'react-icons/hi'
-import { getUserByEmail, updateUserInfo } from '../../store/apiRequest'
+import { getUserByEmail, updateUserInfo, uploadFiles } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import toast from 'react-hot-toast'
 import { updateState } from '../../store/slices/UserSlice'
-import Avvvatars from 'avvvatars-react'
-import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
-import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
-import AvatarUploader from '../../components/UserPicUploader/AvatarUploader'
 import './Setting.css'
+import { Upload } from 'antd'
+import ImgCrop from 'antd-img-crop'
 
 const Setting = () => {
   const dispatch = useDispatch()
   const [selectedDate, setSelectedDate] = useState(false)
   const [selectGender, setSelectGender] = useState('')
-  const [tempPic, setTempPic] = useState(null)
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const accessToken_daniel = user?.data?.AccessToken
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const isGenderSelected = (value) => selectGender === value
-
+  const [fileList, setFileList] = useState([])
+  const onChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList)
+  }
+  const onPreview = async (file) => {
+    let src = file.url
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file.originFileObj)
+        reader.onload = () => resolve(reader.result)
+      })
+    }
+    const image = new Image()
+    image.src = src
+    const imgWindow = window.open(src)
+    imgWindow?.document.write(image.outerHTML)
+  }
   const [userData, setUserData] = useState({
     FullName: '',
     UserName: '',
@@ -32,6 +46,45 @@ const Setting = () => {
     Gender: '',
     Birthday: ''
   })
+
+  const handleChangeAvatar = async (e) => {
+    const File = fileList[0].originFileObj
+    console.log(File)
+
+    try {
+      // Gọi hàm uploadFiles để tải file lên
+      const uploadData = await uploadFiles([File], dispatch, accessToken_daniel, axiosJWT)
+
+      // Kiểm tra xem việc tải lên file có thành công hay không
+      if (uploadData) {
+        // Lấy đường dẫn của file đã tải lên
+        const newAvatarPath = uploadData.ThumbnailPath
+
+        // Gọi API cập nhật avatar sử dụng đường dẫn mới
+        const updateAvatarData = {
+          newAvatar: newAvatarPath
+        }
+
+        const updateResponse = await axiosJWT.put(
+          `${process.env.REACT_APP_API_URL}/user/update-avatar`,
+          updateAvatarData,
+          {
+            headers: { authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
+        if (updateResponse.data.statusCode === 200) {
+          toast.success('Thay đổi avatar thành công!')
+          setFileList([])
+          console.log(updateResponse.data)
+        }
+      } else {
+        toast.error('Thay đổi avatar thất bại!')
+        console.log('Thay đổi avatar thất bại')
+      }
+    } catch (error) {
+      console.log('Xảy ra lỗi khi thực hiện tải lên và cập nhật avatar:', error)
+    }
+  }
 
   const handleRadioClick = (event) => {
     setSelectGender(event.currentTarget.value)
@@ -136,10 +189,11 @@ const Setting = () => {
     fetchData()
   }, [user])
 
-  console.log(userData)
+  console.log(fileList)
 
   return (
     <>
+      {/* Phan binh thuong */}
       <div className='flex gap-10'>
         <Sidebar className='ml-3 mt-10' aria-label='Sidebar with content separator example'>
           <Sidebar.Items>
@@ -172,30 +226,29 @@ const Setting = () => {
                 </div>
 
                 <div class='lg:col-span-2'>
-                  <div class='grid gap-4 gap-y-2 text-sm grid-cols-1'>
+                  <div class='grid gap-4 grid-cols-1'>
                     {/* Avatar */}
-                    <div class='md:col-span-5 mb-4'>
-                      <div className='mb-2 block'>
-                        <Label htmlFor='avatar' className='text-base' value='Ảnh' />
-                      </div>
-                      <div className='flex items-center gap-4'>
-                        {/* Avatar part */}
-                        <div className=' profile-pic-main mb-4 flex gap-5 items-center'>
-                          <div className='w-32 flex justify-center rounded-full aspect-square overflow-hidden'>
-                            {tempPic ? (
-                              <ProfileImage src={URL.createObjectURL(tempPic)} alt='pic' />
-                            ) : (
-                              <ProfileImage src={userData.Avatar} alt='pic' />
-                            )}
-                          </div>
-                          <AvatarUploader setTempPic={(file) => setTempPic(file)} />
-                        </div>
-
-                        {/* <div>
-                          {' '}
-                          <Avvvatars value={userData.Email} />
-                        </div> */}
-                      </div>
+                    <div className='flex gap-5 items-center'>
+                      <img
+                        src={userData.Avatar}
+                        className='-mt-2 h-12 w-12 sm:h-[100px] sm:w-[100px] rounded-full'
+                        alt='avatar'
+                      />
+                      <ImgCrop rotationSlider modalTitle='Chỉnh sửa hình ảnh' modalCancel='Huỷ' modalOk='Lưu'>
+                        <Upload
+                          action='https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188'
+                          listType='picture-circle'
+                          fileList={fileList}
+                          onChange={onChange}
+                          onPreview={onPreview}
+                          value={userData.Avatar}
+                        >
+                          {fileList.length === 0 && '+ Tải lên'}
+                        </Upload>
+                      </ImgCrop>
+                      <button className='btn-upload-ai shrink-0' onClick={handleChangeAvatar}>
+                        Lưu avatar
+                      </button>
                     </div>
                     {/* Fullname */}
                     <div class='md:col-span-5 mb-4'>
@@ -299,10 +352,10 @@ const Setting = () => {
 
                     <div class='md:col-span-5 text-right mt-3'>
                       <div class='inline-flex items-end gap-2'>
-                        <Button size='lg' color='indigo' pill onClick={handleCancel}>
+                        <Button size='lg' color='indigo' onClick={handleCancel}>
                           Huỷ
                         </Button>
-                        <Button size='lg' pill color='failure' onClick={handleSave}>
+                        <Button size='lg' color='failure' onClick={handleSave}>
                           Lưu
                         </Button>
                       </div>

@@ -5,15 +5,18 @@ import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 import { MdSend } from 'react-icons/md'
+
 import SuspenseImg from '../../components/SuspenseImg/SuspenseImg'
-import { Accordion, Button, Spinner, Textarea } from 'flowbite-react'
+import { Accordion, Button, Textarea } from 'flowbite-react'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import { createComment, followUser, replyComment, unfollowUser } from '../../store/apiRequest'
 import moment from 'moment'
 import 'moment/locale/vi'
-import { resetFollowingStatus, setFollowingStatus } from '../../store/slices/FollowingSlice'
+import { setFollowingStatus } from '../../store/slices/FollowingSlice'
 import toast from 'react-hot-toast'
 import './DetailPin.css'
+import { Spin } from 'antd'
+import ImageDownloader from '../../components/ImageDownloader/ImageDownloader'
 
 const DetailPin = () => {
   const formatRelativeTime = (timestamp, now = moment()) => {
@@ -273,7 +276,8 @@ const DetailPin = () => {
 
           {/* description right handside */}
           <div className='w-[550px] desc-container max-sm:px-2 max-sm:w-auto relative'>
-            <div className='desc-container-header pt-9 px-9 pb-5 flex justify-end max-sm:pt-5 max-sm:justify-start'>
+            <div className='desc-container-header pt-9 px-9 pb-5 flex justify-between items-center max-sm:pt-5 max-sm:justify-start'>
+              <ImageDownloader imageUrl={postData?.Attachment?.Thumbnail} />
               {/* <Button pinId={id} savedBy={saves} /> */}
               <Button pill color='failure' className='px-2 py-1.5 text-base focus:box-shadow-none focus:ring-0'>
                 <span className='text-base'>Lưu</span>
@@ -327,7 +331,8 @@ const DetailPin = () => {
                       </button>
                     ) : loadingCmt && loadingPost ? (
                       <div className='flex items-center justify-center absolute inset-0 bg-white'>
-                        <Spinner color='gray' aria-label='Spinner button' size='xl' />
+                        {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
+                        <Spin size='large' />
                       </div>
                     ) : (
                       <Accordion.Content>

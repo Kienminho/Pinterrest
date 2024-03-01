@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ImageUploader from '../../components/ImageUploader/ImageUploader'
 import InputField from '../../components/Input/InputField'
 import axios from 'axios'
 
-import { Button, ToggleSwitch, Spinner, Progress } from 'flowbite-react'
-import { createPostAI, uploadFilesAIAndCreatePost, uploadFilesAndCreatePost } from '../../store/apiRequest'
+import { ToggleSwitch } from 'flowbite-react'
+import { createPostAI, uploadFilesAndCreatePost } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
@@ -13,7 +13,7 @@ import ImageUploaderAI from '../../components/ImageUploaderAI/ImageUploaderAI'
 
 const Create = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
-
+  const inputRef = useRef()
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -94,7 +94,12 @@ const Create = () => {
     }
   }
 
-  // Function to handle image generation by text
+  const handleResetPrompt = () => {
+    setPrompt('')
+    setFile(null)
+    inputRef.current.focus()
+  }
+
   const handleGenerateImage = async () => {
     try {
       setLoading(true)
@@ -129,12 +134,6 @@ const Create = () => {
         <div className='flex items-center justify-between border-b border-gray-300 py-5 px-7'>
           <span className='font-medium text-xl text-dark_color'>Tạo ghim</span>
           <div className='upload-option flex justify-center items-center gap-4'>
-            {/* <button
-              className='btn-upload-ai mr-2 focus:ring-4 focus:ring-indigo-400'
-              onClick={() => handleUploadType('AI')}
-            >
-              Tạo ảnh bằng AI
-            </button> */}
             <button
               onClick={() => handleUploadType('AI')}
               className='box-border relative z-30 inline-flex items-center justify-center w-auto px-8 py-2.5 overflow-hidden font-medium text-white transition-all duration-300 bg-purple_btn rounded-md cursor-pointer group focus:ring-2 focus:ring-indigo-400  ease focus:outline-none hover:bg-[#5850e9]'
@@ -167,12 +166,11 @@ const Create = () => {
             </button>
           </div>
           <div className='upload-button'>
-            {uploadType === 'AI' && (
+            {uploadType === 'AI' ? (
               <button className='btn-upload' disabled={underUpload} onClick={handlePostCreateAI}>
                 Đăng
               </button>
-            )}
-            {uploadType === 'Normal' && (
+            ) : (
               <button className='btn-upload' disabled={underUpload} onClick={handlePostCreate}>
                 Đăng
               </button>
@@ -190,21 +188,26 @@ const Create = () => {
             {uploadType === 'AI' && (
               <div className='prompt-input'>
                 <InputField
+                  ref={inputRef}
                   name={'prompt'}
                   id={'prompt'}
+                  value={prompt}
                   handleChange={(e) => setPrompt(e.target.value)}
                   placeholder='Nhập mô tả ảnh.. ( nếu muốn tạo ảnh AI )'
                   label={'Prompt Tạo ảnh AI'}
                 />
-                {/* <Button color='dark' className='mt-4 w-3/5 mx-auto' onClick={handleGenerateImage}>
-                  Tạo ảnh AI
-                </Button> */}
-                <div className='flex justify-center'>
+                <div className='flex justify-evenly gap-3'>
                   <button
-                    className='btn-chosen-normal bg-red-100 hover:bg-red-200 hover:text-red-600 text-red-500 focus:ring-2 focus:ring-red-400 mt-4 w-3/5'
+                    className='btn-chosen-normal bg-red-100 hover:bg-red-200 hover:text-red-600 text-red-500 focus:ring-2 focus:ring-red-400 mt-4 w-[70%]'
                     onClick={handleGenerateImage}
                   >
                     Tạo ảnh AI
+                  </button>
+                  <button
+                    className='btn-chosen-normal bg-gray-100 hover:bg-gray-200 hover:text-gray-600 text-gray-500 focus:ring-2 focus:ring-gray-400 mt-4 w-[30%]'
+                    onClick={handleResetPrompt}
+                  >
+                    Tạo ảnh khác
                   </button>
                 </div>
               </div>

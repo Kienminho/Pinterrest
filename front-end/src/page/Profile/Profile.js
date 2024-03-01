@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, createContext } from 'react'
+import React, { useEffect, useState, createContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import './Profile.css'

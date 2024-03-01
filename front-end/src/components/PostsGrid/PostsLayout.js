@@ -1,7 +1,7 @@
-import { Spinner } from 'flowbite-react'
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { LoadingContext } from '../../page/Profile/Profile'
+import { Spin } from 'antd'
 
 const PostsLayout = ({ children, postsCount, fallback }) => {
   const loading = useContext(LoadingContext)
@@ -23,7 +23,8 @@ const PostsLayout = ({ children, postsCount, fallback }) => {
       ) : (
         <div className='flex flex-col items-center justify-center gap-3'>
           <span className=''>Đang tải dữ liệu, vui lòng đợi...</span>
-          <Spinner color='gray' aria-label='Spinner button' size='xl' />
+          {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
+          <Spin size='large' />
         </div>
       )}
     </>

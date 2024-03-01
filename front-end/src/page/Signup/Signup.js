@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
-import { FaFacebook, FaGoogle, FaPinterest } from 'react-icons/fa6'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { registerUser } from '../../store/apiRequest'
-import { useDispatch, useSelector } from 'react-redux'
-import toast, { Toaster } from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
 import { HiInformationCircle } from 'react-icons/hi'
-import { MdOutlineEmail } from 'react-icons/md'
-import { MdEmail } from 'react-icons/md'
-import { RiLockPasswordFill } from 'react-icons/ri'
 import logo from '../../components/Nav/PLogo.svg'
 
 const Signup = () => {
