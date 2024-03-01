@@ -18,7 +18,6 @@ import Home from './page/Home/Home'
 import Setting from './page/Setting/Setting'
 import Messenger from './page/Messenger/Messenger'
 import { SearchBar } from './components/SearchBar/SearchBar'
-import { SearchResult } from './components/SearchBar/SearchResult'
 import { SearchResultsList } from './components/SearchBar/SearchResultList'
 
 // const DetailPin = lazy(() => import('./page/DetailPin/DetailPin'))
