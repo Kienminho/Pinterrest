@@ -6,8 +6,9 @@ const AuthenticateService = require("../common/AuthenticateService");
 const _User = require("../model/User");
 const _Follow = require("../model/Follow");
 
+const REDIRECT_URI = `${process.env.BASE_URL}/api/user/google/callback`;
+
 const AuthenticateGoogle = async (req, res) => {
-  const REDIRECT_URI = "http://localhost:3000/api/user/google/callback";
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
   res.redirect(url);
 };
@@ -19,7 +20,7 @@ const AuthenticateGoogleCallback = async (req, res) => {
     {
       client_id: process.env.CLIENT_ID,
       client_secret: process.env.CLIENT_SECRET,
-      redirect_uri: "http://localhost:3000/api/user/google/callback",
+      redirect_uri: REDIRECT_URI,
       code,
       grant_type: "authorization_code",
     },
