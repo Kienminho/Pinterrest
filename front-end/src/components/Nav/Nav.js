@@ -33,7 +33,11 @@ const NavCopy = () => {
     console.log('done handle logout')
   }
   return (
-    <Navbar fluid rounded className='border-b-2 border-gray-50 shadow-md text-dark_color px-4 py-3 sm:px-6 sm:py-5'>
+    <Navbar
+      fluid
+      rounded
+      className='border-b-2 border-gray-50 shadow-md text-dark_color px-4 py-3 sm:px-6 sm:py-[14px]'
+    >
       <Navbar.Brand>
         <NavLink to='/' className='flex'>
           {/* <PinterestLogo alt='Pinterest Logo' /> */}
@@ -69,9 +73,8 @@ const NavCopy = () => {
               <div className='flex gap-3'>
                 <Avatar alt='User settings' img={AvatarUser} rounded />
                 <div className='flex flex-col gap-0.5'>
-                  <span className='truncate text-sm font-semibold'>{FullName}</span>
-                  <span className='truncate text-sm font-normal text-gray-500'>Username: {UserName}</span>
-                  <span className='truncate text-sm font-normal text-gray-500'>{Email}</span>
+                  <span className='truncate font-semibold'>{FullName}</span>
+                  <span className='truncate font-medium text-gray-700'>@{UserName}</span>
                 </div>
               </div>
             </Dropdown.Header>
@@ -153,13 +156,13 @@ const NavCopy = () => {
             <input
               type='search'
               id='default-search'
-              class='block w-full p-4 ps-10 placeholder:text-sm font-medium text-gray-800 border border-gray-200 rounded-full bg-gray_input hover:bg-[#e1e1e1] focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
+              class='block w-full p-4 ps-10 placeholder:text-sm font-medium text-gray-800 border border-gray-200 rounded-full bg-gray_input hover:bg-[#e1e1e1] focus:ring-indigo-400 focus:border-indigo-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
               placeholder='Tìm kiếm hình ảnh, video..'
               required
             />
             <button
               type='submit'
-              class='text-white absolute end-2.5 bottom-2.5 bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-full text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800'
+              class='text-white absolute end-2.5 bottom-2.5 bg-[#6366f1] hover:bg-[#4f46e5] focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-full text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition duration-300 ease-in-out'
             >
               Tìm kiếm
             </button>

@@ -1,6 +1,6 @@
 import React from 'react'
 import './Post.css'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import SuspenseImg from '../SuspenseImg/SuspenseImg'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
 import UpdatePost from '../UpdatePost/UpdatePost'
@@ -11,11 +11,18 @@ const Post = ({ data, type }) => {
   console.log(data)
   const thumbnail = Attachment?.Thumbnail
   console.log(thumbnail)
-  const authorId = Created
+  const authorId = Created._id
   const avatar = Created?.Avatar
   const username = Created?.UserName || 'Stranger'
 
   const { _id: UserId } = useSelector((state) => state.User)
+  console.log(UserId)
+  console.log(authorId)
+
+  // Lấy đường dẫn hiện tại
+  const location = useLocation()
+  const isProfilePage = location.pathname === '/profile' || location.pathname === '/profile/created'
+  console.log(isProfilePage)
 
   return (
     <div className='post-container rounded-xl overflow-hidden mb-4 relative max-sm:mb-2'>
@@ -42,9 +49,15 @@ const Post = ({ data, type }) => {
               </div>
             </div>
 
-            {authorId === UserId && (
+            {isProfilePage && authorId === UserId && (
               <div className='flex gap-2'>
-                <UpdatePost id={_id} Description={Description} Title={Title} IsComment={IsComment} />
+                <UpdatePost
+                  id={_id}
+                  ImageSrc={thumbnail}
+                  Description={Description}
+                  Title={Title}
+                  IsComment={IsComment}
+                />
               </div>
             )}
 

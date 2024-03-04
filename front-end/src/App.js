@@ -19,6 +19,7 @@ import Setting from './page/Setting/Setting'
 import Messenger from './page/Messenger/Messenger'
 import { SearchBar } from './components/SearchBar/SearchBar'
 import { SearchResultsList } from './components/SearchBar/SearchResultList'
+import AuthLayout from './components/AuthLayout/AuthLayout'
 
 // const DetailPin = lazy(() => import('./page/DetailPin/DetailPin'))
 // const Profile = lazy(() => import('./page/Profile/Profile'))
@@ -33,12 +34,26 @@ const App = () => {
   return (
     <>
       <Nav />
-      <SearchBar setResults={setResults} />
-      <SearchResultsList results={results} />
+      {/* <SearchBar setResults={setResults} />
+      <SearchResultsList results={results} /> */}
+
       <Routes>
-        {/* <Route path='/login' element={<Login />} /> */}
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Signup />} />
+        <Route
+          path='/login'
+          element={
+            <AuthLayout>
+              <Login />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path='/register'
+          element={
+            <AuthLayout>
+              <Signup />
+            </AuthLayout>
+          }
+        />
         <Route
           path='/'
           element={
