@@ -4,7 +4,7 @@ import InputField from '../../components/Input/InputField'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import logo from '../../components/Nav/PLogo.svg'
-import { loginUser } from '../../store/apiRequest'
+import { loginGoogle, loginUser } from '../../store/apiRequest'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -41,7 +41,8 @@ const Login = () => {
   }
 
   const handleLoginGoogle = () => {
-    window.location.href = `${process.env.REACT_APP_API_URL}/user/google`
+    const res = loginGoogle()
+    console.log(res)
   }
 
   const formDataString = JSON.stringify(formDataObject)
@@ -125,7 +126,7 @@ const Login = () => {
 
           <div className='flex justify-center'>
             <button
-              className='text-white bg-purple_btn hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
+              className='text-white bg-purple_btn hover:bg-orange-500 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
               onClick={() => {
                 handleLogin()
                 setHideError(true)

@@ -40,8 +40,9 @@ export const loginUser = async (user, dispatch, navigate) => {
   }
 }
 
-export const loginGoogle = async (req, res) => {
+export const loginGoogle = async () => {
   try {
+    // window.location.href = `${process.env.REACT_APP_API_URL}/user/google`
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/google`)
     console.log(res)
     return res
@@ -121,10 +122,6 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
   try {
     const formData = new FormData()
     console.log(files)
-    // Thêm ảnh vào formData
-    // files.forEach((file) => {
-    //   formData.append('files', file)
-    // })
     formData.append('file', files[0])
     console.log(formData.get('file'))
 
@@ -139,7 +136,6 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
     if (uploadData.statusCode === 200) {
       dispatch(uploadFileSuccess(uploadData))
       console.log('Upload files thành công')
-      toast.success('Upload files thành công')
 
       // Thêm đường dẫn tải lên vào postBody
       postBody.Attachment.Id = uploadData?.data._id // Thay đổi _id bằng trường Id của đối tượng File của bạn
@@ -151,84 +147,17 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
         headers: { authorization: `Bearer ${accessToken}` }
       })
 
-      console.log('Create post response:', createPostRes.data)
+      console.log('Create post response normal:', createPostRes.data)
 
       const { data: postData } = createPostRes
-
-      // Xử lý phản hồi từ server nếu cần
-      if (postData.statusCode === 200) {
-        toast.success('Tạo bài đăng thành công')
-        navigate('/')
-        return createPostRes.data.data // Trả về thông tin bài đăng nếu cần
-      } else {
-        toast.error('Tạo bài đăng thất bại')
-        throw new Error(createPostRes.data.message)
-      }
+      console.log(postData)
+      return postData
     } else {
-      console.error('Lỗi khi upload files:', uploadData.message)
-      toast.error('Upload files thất bại')
       throw new Error(uploadData.message)
     }
   } catch (error) {
     dispatch(uploadFileFailed())
     console.error('Lỗi không xác định khi upload files hoặc tạo bài đăng:', error.message)
-    toast.error('Xảy ra lỗi không xác định')
-    throw new Error('Lỗi không xác định khi upload files hoặc tạo bài đăng')
-  }
-}
-
-export const uploadFilesAIAndCreatePost = async (files, postBody, dispatch, navigate, accessToken, axiosJWT) => {
-  dispatch(uploadFileStart())
-  try {
-    const formData = new FormData()
-    console.log(files)
-    formData.append('file', files[0])
-    console.log(formData.get('file'))
-
-    const uploadRes = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/file/upload`, formData, {
-      headers: { authorization: `Bearer ${accessToken}` }
-    })
-
-    console.log(uploadRes.data)
-
-    const { data: uploadData } = uploadRes
-
-    if (uploadData.statusCode === 200) {
-      dispatch(uploadFileSuccess(uploadData))
-      console.log('Upload files thành công')
-      toast.success('Upload files thành công')
-
-      // Thêm đường dẫn tải lên vào postBody
-      postBody.Link = uploadData // Thay đổi _id bằng trường Id của đối tượng File của bạn
-      console.log(postBody)
-
-      // Gọi API tạo bài đăng
-      const createPostRes = await axios.post(`${process.env.REACT_APP_API_URL}/post/create-post`, postBody, {
-        headers: { authorization: `Bearer ${accessToken}` }
-      })
-
-      console.log('Create post response:', createPostRes.data)
-
-      const { data: postData } = createPostRes
-
-      // Xử lý phản hồi từ server nếu cần
-      if (postData.statusCode === 200) {
-        toast.success('Tạo bài đăng thành công')
-        navigate('/')
-        return createPostRes.data.data // Trả về thông tin bài đăng nếu cần
-      } else {
-        toast.error('Tạo bài đăng thất bại')
-        throw new Error(createPostRes.data.message)
-      }
-    } else {
-      console.error('Lỗi khi upload files:', uploadData.message)
-      toast.error('Upload files thất bại')
-      throw new Error(uploadData.message)
-    }
-  } catch (error) {
-    dispatch(uploadFileFailed())
-    console.error('Lỗi không xác định khi upload files hoặc tạo bài đăng:', error.message)
-    toast.error('Xảy ra lỗi không xác định')
     throw new Error('Lỗi không xác định khi upload files hoặc tạo bài đăng')
   }
 }
@@ -245,22 +174,13 @@ export const createPostAI = async (linkImageAI, postBody, dispatch, navigate, ac
       headers: { authorization: `Bearer ${accessToken}` }
     })
 
-    console.log('Create post response:', createPostRes.data)
+    console.log('Create post response AI:', createPostRes.data)
 
     const { data: postData } = createPostRes
-
-    // Xử lý phản hồi từ server nếu cần
-    if (postData.statusCode === 200) {
-      toast.success('Tạo bài đăng thành công')
-      navigate('/')
-      return createPostRes.data.data // Trả về thông tin bài đăng nếu cần
-    } else {
-      toast.error('Tạo bài đăng thất bại')
-      throw new Error(createPostRes.data.message)
-    }
+    console.log(postData)
+    return postData
   } catch (error) {
     console.error('Lỗi không xác định khi tạo bài đăng:', error.message)
-    toast.error('Xảy ra lỗi không xác định')
     throw new Error('Lỗi không xác định khi tạo bài đăng')
   }
 }
@@ -315,7 +235,6 @@ export const uploadFiles = async (files, dispatch, accessToken, axiosJWT) => {
     if (uploadData.statusCode === 200) {
       dispatch(uploadFileSuccess(uploadData))
       console.log('Upload files thành công')
-      toast.success('Upload files thành công')
 
       return uploadData.data // Trả về thông tin file tải lên nếu cần
     } else {

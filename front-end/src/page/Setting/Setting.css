@@ -1,3 +1,33 @@
 .gap-10 > nav > div {
   background-color: white !important;
 }
+
+.ant-btn.ant-btn-primary {
+  background-color: #6366f1;
+  border-color: #6366f1;
+}
+
+.ant-btn.css-dev-only-do-not-override-1k979oh.ant-btn-primary:hover {
+  background-color: #4f52eb;
+  border-color: #4f52eb;
+}
+
+.ant-input-affix-wrapper {
+  padding: 10px 16px;
+}
+
+.ant-input-affix-wrapper:focus-within {
+  border: 1px solid #818cf8;
+}
+
+.ant-picker {
+  padding: 10px 16px;
+}
+
+.ant-picker:hover {
+  border: 1px solid #818cf8;
+}
+
+.ant-picker:focus-within {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}

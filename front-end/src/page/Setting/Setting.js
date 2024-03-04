@@ -1,17 +1,19 @@
 import { Button, Label, Sidebar, TextInput } from 'flowbite-react'
-import { Radio, Spin } from 'antd'
+import { Input, Radio, Spin, DatePicker, Upload } from 'antd'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
-import { BiBuoy } from 'react-icons/bi'
-import { HiMail, HiTable, HiUser, HiViewBoards } from 'react-icons/hi'
 import { getUserByEmail, updateUserInfo, uploadFiles } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
-import toast from 'react-hot-toast'
 import { updateState } from '../../store/slices/UserSlice'
+import toast from 'react-hot-toast'
 import './Setting.css'
-import { DatePicker, Upload } from 'antd'
+import { MailOutlined, UserOutlined } from '@ant-design/icons'
+import { HiMail, HiTable, HiUser, HiViewBoards } from 'react-icons/hi'
+import { MdDriveFileRenameOutline } from 'react-icons/md'
+
+import { BiBuoy } from 'react-icons/bi'
 import ImgCrop from 'antd-img-crop'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -93,8 +95,8 @@ const Setting = () => {
     }
   }
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
 
     setUserData((prevState) => ({
       ...prevState,
@@ -186,7 +188,7 @@ const Setting = () => {
       }
     }
     fetchData()
-  }, [user])
+  }, [user, fileList])
 
   const onChangeDate = (_, dateStr) => {
     console.log('onChange:', _.$d)
@@ -203,6 +205,8 @@ const Setting = () => {
     console.log('radio checked', e.target.value)
     setSelectGender(e.target.value)
   }
+
+  console.log(userData)
   return (
     <>
       {/* Phan binh thuong */}
@@ -269,13 +273,13 @@ const Setting = () => {
                         <div className='mb-2 block'>
                           <Label htmlFor='full_name' className='text-base' value='Họ và Tên' />
                         </div>
-                        <TextInput
-                          type='text'
+                        <Input
+                          size='large'
                           name='FullName'
-                          id='FullName'
+                          prefix={<MdDriveFileRenameOutline />}
+                          placeholder='Thêm họ tên của bạn...'
                           value={userData.FullName}
                           onChange={handleInputChange}
-                          placeholder='Add your full name...'
                         />
                       </div>
 
@@ -284,15 +288,12 @@ const Setting = () => {
                         <div className='mb-2 block'>
                           <Label htmlFor='username' className='text-base' value='Tên người dùng' />
                         </div>
-                        <TextInput
-                          type='text'
-                          id='UserName'
+                        <Input
+                          size='large'
                           name='UserName'
-                          placeholder='Bonnie Green'
-                          addon='@'
+                          prefix={<UserOutlined />}
                           value={userData.UserName}
                           onChange={handleInputChange}
-                          required
                         />
                       </div>
 
@@ -301,16 +302,12 @@ const Setting = () => {
                         <div className='mb-2 block'>
                           <Label htmlFor='email' className='text-base' value='Địa chỉ Email' />
                         </div>
-                        <TextInput
-                          disabled
-                          id='Email'
-                          name='Email'
-                          type='email'
-                          rightIcon={HiMail}
+                        <Input
+                          disabled={true}
+                          size='large'
+                          prefix={<MailOutlined />}
                           value={userData.Email}
                           onChange={handleInputChange}
-                          placeholder='name@flowbite.com'
-                          required
                         />
                       </div>
 
@@ -345,10 +342,10 @@ const Setting = () => {
 
                       <div className='md:col-span-5 text-right mt-3'>
                         <div className='inline-flex items-end gap-2'>
-                          <Button size='lg' color='indigo' onClick={handleCancel}>
+                          <Button size='md' color='indigo' onClick={handleCancel}>
                             Huỷ
                           </Button>
-                          <Button size='lg' color='failure' onClick={handleSave}>
+                          <Button size='md' color='failure' onClick={handleSave}>
                             Lưu
                           </Button>
                         </div>

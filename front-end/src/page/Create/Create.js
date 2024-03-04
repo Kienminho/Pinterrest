@@ -10,6 +10,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import ImageUploaderAI from '../../components/ImageUploaderAI/ImageUploaderAI'
+import { Form, Input, Spin, Switch } from 'antd'
+import './Create.css'
+import toast from 'react-hot-toast'
 
 const Create = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
@@ -35,6 +38,8 @@ const Create = () => {
   const [underUpload, setUnderUpload] = useState(false)
   const [uploadType, setUploadType] = useState('Normal')
   const [loading, setLoading] = useState(false)
+  const [loadingAI, setLoadingAI] = useState(false)
+  const [loadingPostAI, setLoadingPostAI] = useState(false)
   const handleUploadType = (type) => {
     setUploadType(type)
   }
@@ -58,6 +63,7 @@ const Create = () => {
 
   const handlePostCreate = async () => {
     try {
+      setLoading(true)
       const postBody = {
         Title: fileInfo.Title,
         Description: fileInfo.Description,
@@ -69,14 +75,22 @@ const Create = () => {
       }
       console.log(postBody)
       const res = await uploadFilesAndCreatePost([file], postBody, dispatch, navigate, accessToken_daniel, axiosJWT)
-      console.log(res)
+      if (res.statusCode === 200) {
+        toast.success('Tạo bài đăng thành công')
+        navigate('/')
+        setLoading(false)
+      } else {
+        toast.error('Tạo bài đăng thất bại')
+        setLoading(false)
+      }
     } catch (error) {
-      console.error('Failed to create post:', error.message)
+      console.error('Lỗi khi tạo bài đăng:', error.message)
     }
   }
 
   const handlePostCreateAI = async () => {
     try {
+      setLoadingPostAI(true)
       const postBody = {
         Title: fileInfo.Title,
         Description: fileInfo.Description,
@@ -88,21 +102,28 @@ const Create = () => {
       }
       console.log(postBody)
       const res = await createPostAI(file, postBody, dispatch, navigate, accessToken_daniel, axiosJWT)
-      console.log(res)
+      if (res.statusCode === 200) {
+        toast.success('Tạo bài đăng thành công')
+        navigate('/')
+        setLoadingPostAI(false)
+      } else {
+        toast.error('Tạo bài đăng thất bại')
+        setLoadingPostAI(false)
+      }
     } catch (error) {
-      console.error('Failed to create post:', error.message)
+      console.error('Lỗi khi tạo bài đăng:', error.message)
     }
   }
 
   const handleResetPrompt = () => {
     setPrompt('')
-    setFile(null)
+    setFile('')
     inputRef.current.focus()
   }
 
   const handleGenerateImage = async () => {
     try {
-      setLoading(true)
+      setLoadingAI(true)
       // Send request to backend to generate image based on text input
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/ai/create-image-from-text`,
@@ -116,9 +137,9 @@ const Create = () => {
       console.log(res.data.data)
       const generatedImageLink = res.data.data
       setFile(generatedImageLink)
-      setLoading(false)
+      setLoadingAI(false)
     } catch (error) {
-      setLoading(false)
+      setLoadingAI(false)
       console.error('Failed to generate image:', error.message)
     }
   }
@@ -181,8 +202,12 @@ const Create = () => {
         {/* <FileUpload/> */}
         <div className='pin-form m-12 max-sm:m-5 px-48 flex justify-center gap-12 max-sm:gap-5 max-sm:flex-col w-full'>
           <div className='upload-field flex flex-col gap-8'>
-            {uploadType === 'AI' && <ImageUploaderAI imgSrc={file} loading={loading} />}
-            {uploadType === 'Normal' && <ImageUploader setFile={(selectedFile) => setFile(selectedFile)} />}
+            {uploadType === 'AI' && (
+              <ImageUploaderAI imgSrc={file} loadingAI={loadingAI} loadingPostAI={loadingPostAI} />
+            )}
+            {uploadType === 'Normal' && (
+              <ImageUploader setFile={(selectedFile) => setFile(selectedFile)} loading={loading} />
+            )}
           </div>
           <div className='pin-details-inputs mt-1 w-[36rem] max-sm:w-auto gap-6 flex flex-col max-sm:gap-3'>
             {uploadType === 'AI' && (
@@ -213,32 +238,39 @@ const Create = () => {
               </div>
             )}
 
-            <InputField
-              name={'Title'}
-              id={'pinTitle'}
-              handleChange={handleChange}
-              label={'Tiêu đề'}
-              placeholder='Thêm tiêu đề'
-            />
-            <label htmlFor='pinDesc' className='flex flex-col text-[#111111] text-base gap-2 font-medium'>
-              Mô tả
+            <div className='title-input flex flex-col'>
+              <InputField
+                name={'Title'}
+                id={'pinTitle'}
+                handleChange={handleChange}
+                label={'Tiêu đề'}
+                placeholder='Thêm tiêu đề...'
+              />
+            </div>
+            <div className='desc-input flex flex-col'>
+              <label className='text-[#111111] text-base font-medium mb-2 capitalize'>Mô tả </label>
               <textarea
                 type='text'
                 name='Description'
                 id='pinDesc'
-                rows={3}
+                rows={4}
                 placeholder='Thêm mô tả chi tiết'
-                className='border-[#cdcdcd] placeholder:text-gray-400 px-4 py-2 ps-5 text-base text-gray-900 rounded-3xl bg-gray-50 focus:ring-blue-300 focus:border-blue-300 outline-none border focus:border-1 focus:ring-1 resize-none font-normal'
+                className='border-[#cdcdcd] placeholder:text-gray-400 px-4 py-2 ps-5 text-base text-gray-900 rounded-xl bg-gray-50 hover:ring-indigo-300 focus:ring-indigo-400 focus:border-indigo-400 focus:border-1 focus:ring-1 resize-none font-normal outline-none block w-full border-1'
                 onChange={handleChange}
               />
-            </label>
+            </div>
 
-            <ToggleSwitch
+            {/* <ToggleSwitch
               color='indigo'
               checked={allowComment}
               label='Cho phép bình luận'
               onChange={handleToggleSwitchChange}
-            />
+            /> */}
+            <div className='flex gap-3 items-center'>
+              <span className='font-medium'>Cho phép bình luận</span>
+              <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />
+              {/* <Switch checked={allowComment} onChange={handleToggleSwitchChange} /> */}
+            </div>
           </div>
         </div>
       </div>

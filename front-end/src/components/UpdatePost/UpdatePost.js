@@ -1,13 +1,16 @@
-import { Button, Label, Modal, TextInput, ToggleSwitch } from 'flowbite-react'
+import { Button, Label, TextInput, ToggleSwitch } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { updatePost } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { FaRegEdit } from 'react-icons/fa'
+import { Image, Modal, Switch } from 'antd'
+import InputField from '../Input/InputField'
+import './UpdatePost.css'
 
-export default function UpdatePost({ id, Title, Description, IsComment }) {
-  const [openModal, setOpenModal] = useState(false)
+export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc }) {
+  const [open, setOpen] = useState(false)
   const [title, setTitle] = useState(Title)
   const [description, setDescription] = useState(Description)
   const [allowComment, setAllowComment] = useState(IsComment)
@@ -17,6 +20,10 @@ export default function UpdatePost({ id, Title, Description, IsComment }) {
   const dispatch = useDispatch()
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
+
+  const handleToggleSwitchChange = (newValue) => {
+    setAllowComment(newValue)
+  }
 
   const handleSave = async () => {
     const newData = { id, Title: title.trim(), Description: description.trim(), IsComment: allowComment }
@@ -30,71 +37,79 @@ export default function UpdatePost({ id, Title, Description, IsComment }) {
   }
 
   function onCloseModal() {
-    setOpenModal(false)
+    setOpen(false)
   }
 
-  useEffect(() => {}, [openModal])
+  useEffect(() => {}, [open])
 
   return (
     <>
       <FaRegEdit
-        size='1.5rem'
-        color='#e8e8e8'
-        className='pointer-events-auto cursor-pointer shrink-0 hover:opacity-80 transition-opacity duration-200'
-        onClick={() => setOpenModal(true)}
+        size='1.4rem'
+        color='#d9d9d9'
+        className='pointer-events-auto cursor-pointer shrink-0 hover:opacity-70 transition-opacity duration-200'
+        onClick={() => setOpen(true)}
       />
-      <Modal show={openModal} size='lg' onClose={onCloseModal} popup>
-        <Modal.Header />
-        <Modal.Body>
-          <div className='space-y-6'>
-            <h3 className='text-2xl text-center font-medium text-gray-900 dark:text-white'>
-              Cập nhật bài viết của bạn
-            </h3>
-            <div>
+      <Modal
+        title='Cập nhật bài viết của bạn'
+        centered
+        open={open}
+        okText='Lưu thay đổi'
+        cancelText='Hủy'
+        onOk={handleSave}
+        onCancel={() => setOpen(false)}
+        width={1000}
+      >
+        <div className='edit-form-container grid grid-cols-3 gap-5'>
+          <div className='part1 flex flex-col gap-10 col-span-2'>
+            <div className='flex gap-20'>
               <div className='mb-2 block'>
-                <Label htmlFor='title' value='Tiêu đề' />
+                <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize'>Tiêu đề</label>
               </div>
-              <TextInput
-                id='title'
-                placeholder='Tiêu đề bài viết'
+              <InputField
+                name={'Title'}
+                id={'pinTitle'}
+                handleChange={(event) => setTitle(event.target.value)}
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <div className='mb-2 block'>
-                <Label htmlFor='description' value='Mô tả' />
-              </div>
-              <TextInput
-                id='description'
-                placeholder='Mô tả về bài viết'
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                required
+                placeholder='Thêm tiêu đề...'
               />
             </div>
 
-            <div className='flex items-center'>
-              <input
-                type='checkbox'
-                color='indigo'
-                className='w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500'
-                checked={allowComment}
-                label='Cho phép bình luận'
-                onChange={(event) => setAllowComment(event.target.checked)}
+            <div className='flex gap-20'>
+              <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize w-[73px]'>
+                Mô tả
+              </label>
+              <textarea
+                type='text'
+                name='Description'
+                id='pinDesc'
+                value={description}
+                rows={4}
+                placeholder='Thêm mô tả chi tiết'
+                className='border-[#cdcdcd] placeholder:text-gray-400 px-4 py-2 ps-5 text-base text-gray-900 rounded-xl bg-gray-50 hover:ring-indigo-300 focus:ring-indigo-400 focus:border-indigo-400 focus:border-1 focus:ring-1 resize-none font-normal outline-none block w-full border-1'
+                onChange={(event) => setDescription(event.target.value)}
               />
-              <div className='ml-2 block'>
-                <Label htmlFor='description' value='Cho phép bình luận' />
-              </div>
             </div>
-            <div className='w-full flex justify-evenly'>
-              <Button color='failure' onClick={handleSave}>
-                Cập nhật bài viết
-              </Button>
+
+            <div className='flex gap-11'>
+              <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize w-[90px]'>
+                Bình luận
+              </label>
+              {/* <Switch checked={allowComment} onChange={handleToggleSwitchChange} /> */}
+              <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />
             </div>
           </div>
-        </Modal.Body>
+          <div className='part2 col-span-1'>
+            <Image
+              width={300}
+              // height={120}
+              className='rounded-3xl'
+              src={ImageSrc}
+              alt='preview-img-upload'
+              preview={true}
+            />
+          </div>
+        </div>
       </Modal>
     </>
   )

@@ -1,10 +1,14 @@
-import { useRef, useState } from 'react'
+import { Image, Spin } from 'antd'
+import { useEffect, useRef, useState } from 'react'
 import { GrUploadOption as UploadIcon } from 'react-icons/gr'
 
-const ImageUploader = ({ setFile }) => {
+const ImageUploader = ({ setFile, loading }) => {
   const [selectedFile, setSelectedFile] = useState(null)
   const [imageHeight, setImageHeight] = useState(null)
+  const [previousImages, setPreviousImages] = useState([])
+  const [previousFiles, setPreviousFiles] = useState([])
 
+  console.log(previousImages)
   const inputRef = useRef(null)
   const previewImg = useRef(null)
 
@@ -25,6 +29,7 @@ const ImageUploader = ({ setFile }) => {
     if (file.type.startsWith('image/')) {
       setFile(file)
       setSelectedFile(file)
+      setPreviousImages([...previousImages, URL.createObjectURL(file)])
       console.log('drop img done!', file)
     } else {
       setFile(null)
@@ -36,6 +41,61 @@ const ImageUploader = ({ setFile }) => {
   const onDragOut = (event) => {
     event.preventDefault()
     console.log('image has been dragged!')
+  }
+
+  const handlePreviousImageClick = (imageURL, event) => {
+    console.log(event)
+    setPreviousImages(previousImages.filter((image) => image !== imageURL))
+    setPreviousImages([imageURL, ...previousImages.filter((image) => image !== imageURL).slice(0, 2)])
+    setPreviousFiles(previousFiles.filter((file) => file !== selectedFile))
+    setPreviousFiles([selectedFile, ...previousFiles.filter((file) => file !== selectedFile).slice(0, 2)])
+    setSelectedFile(previousFiles[2])
+  }
+
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0]
+    setFile(file)
+    setSelectedFile(file)
+    setPreviousImages([URL.createObjectURL(file), ...previousImages])
+    setPreviousFiles([...previousFiles, file])
+  }
+
+  console.log(selectedFile)
+  console.log(previousFiles)
+
+  const renderPreviousImages = () => {
+    return (
+      <>
+        <h5>Chọn lại ảnh trước đó, (lưu tối đa 3 ảnh)</h5>
+        <div className='flex gap-2 justify-around'>
+          {previousImages.map((imageURL, index) => (
+            <div className='rounded-3xl ring-2 hover:ring-indigo-400 hover:ring-4 '>
+              <img
+                key={index}
+                className='w-32 h-32 object-cover rounded-3xl cursor-pointer'
+                src={imageURL}
+                alt='preview-img-upload'
+                onClick={(event) => handlePreviousImageClick(imageURL, event)} // Thêm event vào đây
+              />
+            </div>
+          ))}
+        </div>
+        <h5>Chọn xem preview ảnh trước đó</h5>
+        <div className='flex gap-2 justify-around'>
+          {previousImages.map((imageURL, index) => (
+            <Image
+              key={index}
+              width={120}
+              height={120}
+              className='rounded-3xl'
+              src={imageURL}
+              alt='preview-img-upload'
+              preview={true}
+            />
+          ))}
+        </div>
+      </>
+    )
   }
 
   return (
@@ -50,14 +110,21 @@ const ImageUploader = ({ setFile }) => {
         onDragOver={onDragOut}
       >
         <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
-          {selectedFile ? (
+          {loading && (
+            <div className='flex flex-col gap-3 items-center justify-center absolute inset-0 bg-white bg-opacity-70'>
+              <span className=''>Đang tạo bài viết, vui lòng đợi...</span>
+              <Spin size='large' />
+            </div>
+          )}
+          {selectedFile && previousImages.length === 0 ? (
             <img
-              className='w-full'
               ref={previewImg}
               src={URL.createObjectURL(selectedFile)}
               alt='preview-img-upload'
               onLoad={getImageHeight}
             />
+          ) : selectedFile && previousImages.length >= 1 ? (
+            <img ref={previewImg} src={previousImages[0]} alt='preview-img-upload' onLoad={getImageHeight} />
           ) : (
             <>
               <UploadIcon size='2.5rem' className='rounded-full' />
@@ -78,15 +145,14 @@ const ImageUploader = ({ setFile }) => {
           type='file'
           accept='image/*'
           name='upload_file'
-          onChange={(e) => {
-            setSelectedFile(e.target.files[0])
-            setFile(e.target.files[0])
-          }}
+          onChange={handleFileInputChange}
           hidden
           multiple={false}
           ref={inputRef}
         />
       </div>
+      {/* Render previous images */}
+      {previousImages.length > 0 && renderPreviousImages()}
     </>
   )
 }

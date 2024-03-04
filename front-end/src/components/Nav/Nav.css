@@ -6,3 +6,8 @@ img {
   /* width: 16rem; */
   border-radius: 12px;
 }
+
+#default-search {
+  padding: 14px 16px;
+  padding-inline-start: 40px;
+}
