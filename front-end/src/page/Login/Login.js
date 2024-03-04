@@ -126,7 +126,7 @@ const Login = () => {
 
           <div className='flex justify-center'>
             <button
-              className='text-white bg-purple_btn hover:bg-orange-500 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
+              className='text-white bg-purple_btn hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
               onClick={() => {
                 handleLogin()
                 setHideError(true)
