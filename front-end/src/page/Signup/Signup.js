@@ -6,6 +6,8 @@ import { registerUser } from '../../store/apiRequest'
 import { useDispatch } from 'react-redux'
 import { HiInformationCircle } from 'react-icons/hi'
 import logo from '../../components/Nav/PLogo.svg'
+import toast from 'react-hot-toast'
+import { Spin } from 'antd'
 
 const Signup = () => {
   const navigate = useNavigate()
@@ -13,15 +15,15 @@ const Signup = () => {
   const inputRef = useRef()
   // const error = useSelector((state) => state.Auth.error)
 
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [hideError, setHideError] = useState(false)
 
   useEffect(() => {
-    return inputRef.current.focus()
+    return inputRef?.current?.focus()
   }, [error])
 
   const [formData, setFormData] = useState({
-    // username: '',
     Email: '',
     Password: ''
   })
@@ -29,7 +31,6 @@ const Signup = () => {
   console.log(formData)
 
   const formDataObject = {
-    // username: formData.username,
     Email: formData.Email,
     Password: formData.Password
   }
@@ -58,17 +59,29 @@ const Signup = () => {
       Password: formData.Password
     }
     try {
-      await registerUser(newUser, dispatch, navigate)
+      setLoading(true)
+      const res = await registerUser(newUser, dispatch, navigate)
+      if (res.statusCode === 200) {
+        toast.success('Đăng ký thành công')
+        setLoading(false)
+        navigate('/login')
+      } else {
+        toast.error('Đăng ký không thành công')
+        setLoading(false)
+      }
     } catch (error) {
       console.log(error.message)
-      // Hiển thị giá trị lỗi lên giao diện hoặc thực hiện các xử lý khác tùy ý
-      setError(error.message)
     }
   }
 
   return (
     <>
-      <FormWrapper>
+      {loading && (
+        <div className='flex items-center justify-center absolute inset-0 z-50 bg-black bg-opacity-70'>
+          <Spin size='large' />
+        </div>
+      )}
+      <FormWrapper loading={loading}>
         <div className='flex flex-col items-center'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />

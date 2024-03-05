@@ -19,7 +19,7 @@ import './Nav.css'
 
 const NavCopy = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const { Avatar: AvatarUser, FullName, UserName, Email } = useSelector((state) => state.User)
+  const { Avatar: AvatarUser, FullName, UserName } = useSelector((state) => state.User)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
