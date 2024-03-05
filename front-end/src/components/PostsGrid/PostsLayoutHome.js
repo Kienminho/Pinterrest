@@ -9,9 +9,8 @@ const PostsLayoutHome = ({ children, loading }) => {
           {children}
         </div>
       ) : (
-        <div className='flex flex-col items-center justify-center gap-3'>
-          <span className=''>Đang tải dữ liệu, vui lòng đợi...</span>
-          {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
+        <div className='flex flex-col items-center justify-center gap-3 font-medium text-center text-lg text-[#767676]'>
+          <span className='w-72'>Chúng tôi đang cá nhân hoá bảng tin của bạn, vui lòng đợi...</span>
           <Spin size='large' />
         </div>
       )}
