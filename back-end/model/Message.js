@@ -3,8 +3,8 @@ const MessageSchema = new mongoose.Schema({
   conversationId: {
     type: mongoose.Schema.Types.ObjectId,
   },
-  sender: {
-    type: String,
+  senderId: {
+    type: mongoose.Schema.Types.ObjectId,
   },
   message: {
     type: String,
