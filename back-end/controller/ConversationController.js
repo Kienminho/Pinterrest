@@ -20,10 +20,14 @@ const createConversation = async (req, res) => {
     const memberInfo = [
       {
         userId: senderId,
+        useName: userSender.UserName,
+        fullName: userSender.FullName,
         avatar: userSender.Avatar,
       },
       {
         userId: receiverId,
+        useName: userReceiver.UserName,
+        fullName: userReceiver.FullName,
         avatar: userReceiver.Avatar,
       },
     ];
@@ -45,8 +49,7 @@ const createConversation = async (req, res) => {
 
 const getConversationByUser = async (req, res) => {
   try {
-    //get id by token
-    const userId = req.user.id;
+    const { userId } = req.params;
     const conversation = await _Conversation.find({
       members: {
         $elemMatch: {
