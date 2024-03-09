@@ -49,7 +49,7 @@ const createConversation = async (req, res) => {
 
 const getConversationByUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const  userId  = req.user.id;
     const conversation = await _Conversation.find({
       members: {
         $elemMatch: {
