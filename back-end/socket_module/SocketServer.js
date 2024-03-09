@@ -1,25 +1,11 @@
 const _User = require("../model/User");
-const jwt = require("jsonwebtoken");
-const io = require("socket.io")({
+const io = require("socket.io")(Number(process.env.PORT_SOCKET), {
   cors: {
     origin: "*",
   },
 });
 
 let users = [];
-
-//check login user
-// io.use((socket, next) => {
-//   const token = socket.handshake.auth.accessToken;
-//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-//     if (err) {
-//       return next(new Error("Authentication error"));
-//     }
-//     socket.user = user;
-//     next();
-//   });
-// });
-
 io.on("connection", (socket) => {
   console.log(`A user connected with ${socket.id}`);
   socket.on("join", (userId) => {

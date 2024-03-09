@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 
+//socket
 const io = require("./socket_module/SocketServer");
 
 //middleware
