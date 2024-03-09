@@ -75,39 +75,35 @@ const readMessage = async (req, res) => {
 
 const getMessageByConversation = async (req, res) => {
   try {
-    const checkMessages = async (conversationId) => {
-      const messages = await _Message.find({ conversationId });
-      const messageUserData = Promise.all(
-        messages.map(async (message) => {
-          const user = await _User
-            .findById(message.senderId)
-            .select("UserName Avatar Email");
-          return { message, user };
-        })
-      );
-      return Utils.createSuccessResponseModel(0, messageUserData);
-    };
-
-    //get params
     const { conversationId } = req.params;
-    if (conversationId === "new") {
-      const checkConversation = await _Conversation.findOne({
-        members: { $all: [req.query.senderId, req.query.receiverId] },
-      });
-      if (checkConversation.length > 0) {
-        return checkMessages(checkConversation[0]._id);
-      } else {
-        return res.json(Utils.createSuccessResponseModel(0, []));
-      }
+    const checkConversation = await _Conversation.findById(conversationId);
+
+    if (checkConversation) {
+      return res.json(await checkMessages(checkConversation._id));
     } else {
-      checkMessages(conversationId);
+      return res.json(Utils.createSuccessResponseModel(0, []));
     }
   } catch (error) {
-    console.log(
+    console.error(
       "MessageController -> getMessageByConversation: " + error.message
     );
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
+};
+
+//private function
+const checkMessages = async (conversationId) => {
+  const messages = await _Message.find({ conversationId });
+  console.log(messages);
+  const messageUserData = await Promise.all(
+    messages.map(async (message) => {
+      const user = await _User
+        .findById(message.senderId)
+        .select("UserName Avatar Email");
+      return { message, user };
+    })
+  );
+  return Utils.createSuccessResponseModel(0, messageUserData);
 };
 
 module.exports = {
