@@ -12,7 +12,7 @@ router.post(
 
 //lấy tất cả cuộc trò chuyện của user
 router.get(
-  "/conversation-by-user/",
+  "/conversation-by-user",
   AuthenticateService.authenticateToken,
   ConversationController.getConversation
 );
