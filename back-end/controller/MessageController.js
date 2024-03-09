@@ -12,31 +12,38 @@ const createMessage = async (req, res) => {
         .json(Utils.createErrorResponseModel("Invalid request"));
     }
 
-    //find sender and receiver
+    // Find sender and receiver
     const sender = await _User.findById(senderId);
     const receiver = await _User.findById(receiverId);
 
-    const conversation = await _Conversation.findById(conversationId);
-    if (!conversation && receiver) {
-      const newConversation = new _Conversation({
+    if (!receiver) {
+      return res
+        .status(404)
+        .json(Utils.createErrorResponseModel("Không tìm thấy người nhận!"));
+    }
+
+    let conversation = await _Conversation.findById(conversationId);
+    if (!conversation) {
+      conversation = new _Conversation({
         members: [senderId, receiverId],
       });
-      await newConversation.save();
-      //create message
-      const newMessage = new _Message({
-        conversationId: newConversation._id,
-        senderId: sender._id,
-        message: message,
-        isRead: [],
-      });
-      await newMessage.save();
-
-      return res.json(
-        Utils.createSuccessResponseModel(0, "Gửi tin nhắn thành công!")
-      );
+      await conversation.save();
     }
+
+    // Create message
+    const newMessage = new _Message({
+      conversationId: conversation._id,
+      senderId: sender._id,
+      message: message,
+      isRead: [],
+    });
+    await newMessage.save();
+
+    return res.json(
+      Utils.createSuccessResponseModel(0, "Gửi tin nhắn thành công!")
+    );
   } catch (error) {
-    console.log("MessageController -> createMessage: " + error.message);
+    console.error("MessageController -> createMessage: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
