@@ -1,5 +1,5 @@
 const _User = require("../model/User");
-const io = require("socket.io")(process.env.PORT, {
+const io = require("socket.io")(process.env.PORT_SOCKET, {
   cors: {
     origin: "*",
   },
