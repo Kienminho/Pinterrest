@@ -14,14 +14,14 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users);
   });
 
-  socket.on("sendMessage", (data) => {
+  socket.on("sendMessage", async (data) => {
     console.log(users);
     console.log("data :>> ", data);
     console.log(data.message);
     const receiver = users.find((user) => user.userId === data.receiverId);
     const sender = users.find((user) => user.userId === data.senderId);
 
-    const user = _User.findById(data.senderId);
+    const user = await _User.findById(data.senderId);
     console.log("sender :>> ", sender, receiver);
     if (receiver) {
       console.log(41);
