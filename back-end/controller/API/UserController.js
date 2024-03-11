@@ -468,7 +468,7 @@ const SearchUser = async (req, res) => {
                 Gender: 1,
                 Birthday: 1,
                 Category: 1,
-                _id: 0,
+                _id: 1,
               },
             },
           ],
