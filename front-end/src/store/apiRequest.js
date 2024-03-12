@@ -325,3 +325,81 @@ export const getUserByEmail = async (email, accessToken, axiosJWT) => {
     console.log(error)
   }
 }
+
+export const createConversation = async (senderId, receiverId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.post(
+      `${process.env.REACT_APP_API_URL}/conversation/create-conversation`,
+      {
+        senderId,
+        receiverId
+      },
+      {
+        headers: { authorization: `Bearer ${accessToken}` }
+      }
+    )
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getConversationByUser = async (accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/conversation/conversation-by-user/`, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const createMessage = async (conversationId, senderId, receiverId, message, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.post(
+      `${process.env.REACT_APP_API_URL}/message/create-message`,
+      {
+        conversationId,
+        senderId,
+        receiverId,
+        message
+      },
+      {
+        headers: { authorization: `Bearer ${accessToken}` }
+      }
+    )
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const readMessage = async (messageId, readerId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.post(
+      `${process.env.REACT_APP_API_URL}/message/read-message`,
+      {
+        messageId,
+        readerId
+      },
+      {
+        headers: { authorization: `Bearer ${accessToken}` }
+      }
+    )
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getMessageByConversation = async (conversationId, senderId, receiverId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/message/get-message/${conversationId}`, {
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}

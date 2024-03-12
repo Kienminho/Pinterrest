@@ -17,27 +17,23 @@ import toast from 'react-hot-toast'
 import './DetailPin.css'
 import { Spin } from 'antd'
 import ImageDownloader from '../../components/ImageDownloader/ImageDownloader'
+import { Comment } from '../../components/Comment/Comment'
+import { ReplyInput } from '../../components/ReplyInput/ReplyInput'
+import { ReplyComment } from '../../components/ReplyComment/ReplyComment'
 
 const DetailPin = () => {
-  const formatRelativeTime = (timestamp, now = moment()) => {
-    const commentTime = moment(timestamp)
-    const diffInMinutes = now.diff(commentTime, 'minutes')
-    const diffInHours = now.diff(commentTime, 'hours')
-    const diffInDays = now.diff(commentTime, 'days')
-
-    return diffInMinutes < 60 ? `${diffInMinutes}m` : diffInHours < 24 ? `${diffInHours}h` : `${diffInDays}d`
-  }
-
   const [postData, setPostData] = useState({})
   const [isReplying, setIsReplying] = useState(false)
+  const [isReplyingToReply, setIsReplyingToReply] = useState(false)
+  const [isReplyingToNestedReply, setIsReplyingToNestedReply] = useState(false)
   const [commentContent, setCommentContent] = useState('')
   const [finishCmt, setFinishCmt] = useState(false)
   const [finishRep, setFinishRep] = useState(false)
   const [replyContent, setReplyContent] = useState('')
   const [comments, setComments] = useState([])
   const [selectedCommentId, setSelectedCommentId] = useState(null)
-  const [isReplyingToReply, setIsReplyingToReply] = useState(false)
   const [selectedReplyId, setSelectedReplyId] = useState(null)
+  const [selectedNestedReplyId, setSelectedNestedReplyId] = useState(null)
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
   const [loadingCmt, setLoadingCmt] = useState(true)
@@ -57,19 +53,31 @@ const DetailPin = () => {
     navigate(-1)
   }
 
-  const handleReplyClick = (idcuachinhno) => {
+  // Cấp 1: Cmt chính -> Reply (cmtId)
+  const handleReplyClick = (commentId) => {
     setIsReplying(true)
-    setSelectedCommentId(idcuachinhno)
+    setSelectedCommentId(commentId)
     setReplyContent('')
   }
 
+  // Cấp 2: Cmt phụ cấp 1 -> Reply (replyId)
   const handleReplyToReplyClick = (replyId) => {
-    setIsReplying(true)
     setSelectedCommentId(null) // Đặt về null để tránh trạng thái đang trả lời comment chính
     setIsReplyingToReply(true)
     setSelectedReplyId(replyId)
     setReplyContent('')
   }
+
+  // Cấp 3: Cmt phụ cấp 2 -> Reply (nestedReplyId)
+  const handleReplyToNestedReplyClick = (nestedReplyId) => {
+    setSelectedCommentId(null) // Đặt về null để tránh trạng thái đang trả lời comment chính
+    setSelectedReplyId(null) // Đặt về null để tránh trạng thái đang trả lời comment phụ cấp 1
+    setIsReplyingToNestedReply(true)
+    setSelectedNestedReplyId(nestedReplyId)
+    setReplyContent('')
+  }
+
+  console.log('selected reply id', selectedReplyId)
 
   const handleCancelReply = () => {
     setIsReplying(false)
@@ -84,6 +92,16 @@ const DetailPin = () => {
     setReplyContent('')
   }
 
+  const handleCancelReply2 = () => {
+    setIsReplying(false)
+    setIsReplyingToReply(false)
+    setIsReplyingToNestedReply(false)
+    setSelectedCommentId(null)
+    setSelectedReplyId(null)
+    setSelectedNestedReplyId(null)
+    setReplyContent('')
+  }
+
   const handleSendComment = async () => {
     try {
       // Gọi hàm createComment với các thông tin cần thiết
@@ -94,6 +112,7 @@ const DetailPin = () => {
         setFinishCmt(true)
       }
     } catch (error) {
+      setFinishCmt(false)
       toast.error('Bình luận thất bại')
       console.log('Error creating comment:', error)
     }
@@ -117,6 +136,7 @@ const DetailPin = () => {
         setFinishRep(true)
       }
     } catch (error) {
+      setFinishRep(false)
       console.log('Error replying comment:', error)
     }
 
@@ -126,15 +146,9 @@ const DetailPin = () => {
 
   const handleSendReply1 = async () => {
     try {
-      let commentIdToReply = selectedCommentId
-
-      if (isReplyingToReply) {
-        commentIdToReply = selectedReplyId
-      }
-
       const result = await replyComment(
         postData?._id,
-        commentIdToReply,
+        selectedReplyId,
         replyContent,
         postData?.Attachment,
         accessToken_daniel,
@@ -147,6 +161,7 @@ const DetailPin = () => {
         setFinishRep(true)
       }
     } catch (error) {
+      setFinishRep(false)
       console.log('Error replying comment:', error)
     }
 
@@ -154,6 +169,36 @@ const DetailPin = () => {
     setIsReplyingToReply(false)
     setSelectedCommentId(null)
     setSelectedReplyId(null)
+    setReplyContent('')
+  }
+
+  const handleSendReply2 = async () => {
+    try {
+      const result = await replyComment(
+        postData?._id,
+        selectedNestedReplyId,
+        replyContent,
+        postData?.Attachment,
+        accessToken_daniel,
+        axiosJWT
+      )
+
+      if (result) {
+        toast.success('Trả lời nhận xét thành công!')
+        setReplyContent('')
+        setFinishRep(true)
+      }
+    } catch (error) {
+      setFinishRep(false)
+      console.log('Error replying comment:', error)
+    }
+
+    setIsReplying(false)
+    setIsReplyingToReply(false)
+    setIsReplyingToNestedReply(false)
+    setSelectedCommentId(null)
+    setSelectedReplyId(null)
+    setSelectedNestedReplyId(null)
     setReplyContent('')
   }
 
@@ -214,18 +259,21 @@ const DetailPin = () => {
         const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/comment/get-comments-by-post/${id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
-
         const allComments = resData.data.data
         console.log('', allComments)
-
         setComments(allComments)
         setLoadingCmt(false)
+        setFinishCmt(false)
+        setFinishRep(false)
       } catch (error) {
+        setFinishCmt(false)
+        setFinishRep(false)
         console.log(error)
       }
     }
 
-    if (id) {
+    if (id || finishCmt || finishRep) {
+      // Thêm finishCmt và finishRep vào điều kiện
       getCommentsFromServer()
     }
   }, [id, finishCmt, finishRep])
@@ -258,10 +306,10 @@ const DetailPin = () => {
     fetchDataFromServer()
   }, [])
 
-  console.log(finishCmt)
+  console.log('finish cmt: ', finishCmt)
 
   return (
-    <div className='detail-pin-container minus-nav-100vh'>
+    <div className='detail-pin-container minus-nav-100vh font-roboto'>
       <div className='flex min-h-full justify-center relative '>
         {/* back button */}
         <div className='absolute go-back top-7 left-7 max-sm:hidden'>
@@ -271,11 +319,12 @@ const DetailPin = () => {
         </div>
         {/* pin section */}
         <div
-          className='pin-section flex m-20 rounded-3xl overflow-hidden max-w-5xl my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] '
-          style={{ minHeight: '400px' }}
+          className={`pin-section flex m-20 rounded-3xl overflow-hidden my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] ${
+            comments.length > 0 ? 'min-h-[800px]' : 'min-h-[600px]'
+          }`}
         >
           {/* image left handside */}
-          <div className='visual-pin-container py-5 pl-5 w-[500px] max-sm:w-auto '>
+          <div className='visual-pin-container py-5 pl-5 w-[550px] max-sm:w-auto '>
             <SuspenseImg
               className='w-full rounded-3xl'
               src={postData?.Attachment?.Thumbnail}
@@ -287,17 +336,17 @@ const DetailPin = () => {
 
           {/* description right handside */}
           <div className='w-[550px] desc-container max-sm:px-2 max-sm:w-auto relative'>
-            <div className='desc-container-header pt-9 px-9 pb-5 flex justify-between items-center max-sm:pt-5 max-sm:justify-start'>
+            <div className='desc-container-header pt-9 px-9 pb-7 flex justify-between items-center max-sm:pt-5 max-sm:justify-start'>
               <ImageDownloader imageUrl={postData?.Attachment?.Thumbnail} />
               {/* <Button pinId={id} savedBy={saves} /> */}
-              <Button pill color='failure' className='px-2 py-1.5 text-base focus:box-shadow-none focus:ring-0'>
+              <button className='btn-save'>
                 <span className='text-base'>Lưu</span>
-              </Button>
+              </button>
             </div>
 
-            <div className='desc-body flex flex-col gap-4 px-9 max-sm:gap-3 overflow-scroll max-h-[40rem]'>
+            <div className={`desc-body flex flex-col gap-7 px-9 max-sm:gap-3 overflow-y-auto max-h-[43rem] mb-5`}>
               <span className='text-3xl font-medium max-sm:text-2xl text-dark_color'>{postData?.Title}</span>{' '}
-              <span className='text-[20px] font-normal max-sm:text-base text-gray-700'>{postData?.Description}</span>
+              <span className='text-[18px] font-normal max-sm:text-base text-gray-700'>{postData?.Description}</span>
               {/* User info part */}
               <div className='creator-profile flex w-full items-center mt-auto gap-3'>
                 <div className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0'>
@@ -318,187 +367,126 @@ const DetailPin = () => {
                 {/* Nếu là người dùng hiện tại, ẩn nút "Theo dõi" */}
                 {!isCurrentUser && (
                   <div className='creator-follow ml-auto'>
-                    <Button color='blue' className='rounded-full px-1 py-1.5' onClick={handleFollowToggle}>
+                    <button color='blue' className='btn-chosen-normal rounded-full py-3' onClick={handleFollowToggle}>
                       <span className='text-base'>{isFollowing ? 'Bỏ theo dõi' : 'Theo dõi'}</span>
-                    </Button>
+                    </button>
                   </div>
                 )}
               </div>
               {/* Comment part  */}
               <div>
-                <Accordion className='hover:bg-none focus:ring-0 border-none hover:none dark:border-none focus:border-none'>
-                  <Accordion.Panel className='hover:bg-none focus:ring-0'>
-                    <Accordion.Title>
-                      <h6 className='font-medium text-dark_color'>Nhận xét</h6>
-                    </Accordion.Title>
-                    {postData.IsComment === false ? (
-                      <button disabled className='text-gray-500 -mt-10'>
-                        Đã tắt nhận xét cho Ghim này
-                      </button>
-                    ) : // Điều kiện thứ hai
-                    !loadingCmt && !loadingPost && postData.IsComment === true && comments.length === 0 ? (
-                      <button disabled className='text-gray-500 -mt-10'>
-                        Chưa có nhận xét nào! Thêm nhận xét để bắt đầu.aaa
-                      </button>
-                    ) : loadingCmt && loadingPost ? (
-                      <div className='flex items-center justify-center absolute inset-0 bg-white'>
-                        {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
-                        <Spin size='large' />
-                      </div>
-                    ) : (
-                      <Accordion.Content>
-                        {/* Hiển thị danh sách bình luận */}
-                        {comments.map((comment) => (
-                          <div key={comment._id} className='comment-section flex flex-col w-full gap-2.5 mt-2'>
-                            <div className='flex gap-3'>
-                              <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden shrink-0'>
-                                <ProfileImage src={comment.author.avatar} alt='strangers' />
-                              </div>
-                              <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
-                                <div className='flex'>
-                                  <div className='mr-3 text-red-700 font-semibold'>{comment.author.name}</div>
-                                  <div className='text-base text-dark_color'>{comment.content}</div>
-                                </div>
+                <>
+                  {postData.IsComment === false ? (
+                    <button disabled className='text-gray-500 -mt-10'>
+                      Đã tắt nhận xét cho Ghim này
+                    </button>
+                  ) : // Điều kiện thứ hai
+                  !loadingCmt && !loadingPost && postData.IsComment === true && comments.length === 0 ? (
+                    <button disabled className='text-gray-500 -mt-10'>
+                      Chưa có nhận xét nào! Thêm nhận xét để bắt đầu.
+                    </button>
+                  ) : loadingCmt && loadingPost ? (
+                    <div className='flex items-center justify-center absolute inset-0 bg-white'>
+                      <Spin size='large' />
+                    </div>
+                  ) : (
+                    <>
+                      {/* Hiển thị danh sách bình luận */}
+                      {comments.map((comment) => (
+                        <div
+                          key={comment._id}
+                          className={`comment-section flex flex-col w-full gap-2 ${
+                            comment.replies.length > 0 ? 'mt-5' : 'mt-3'
+                          }`}
+                        >
+                          {/* Hiển thị bình luận chính */}
+                          <Comment comment={comment} handleReplyClick={handleReplyClick} />
 
-                                <div className='flex gap-5'>
-                                  <div className='cursor-pointer text-[#5F5F5F] text-base'>
-                                    <div>{formatRelativeTime(comment.createdAt)}</div>
-                                  </div>
+                          {/* Ô input trả lời bình luận chính */}
+                          <ReplyInput
+                            isReplying={isReplying && selectedCommentId === comment._id}
+                            onReplyCancel={handleCancelReply}
+                            onReplySend={handleSendReply}
+                            handleChange={(e) => setReplyContent(e.target.value)}
+                            placeholder={`Trả lời ${comment.author.name}...`}
+                          />
 
-                                  <div
-                                    onClick={() => handleReplyClick(comment._id)}
-                                    className='cursor-pointer text-[#767676] text-base font-medium'
-                                  >
-                                    {'Trả lời'}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            {/* Hộp trả lời 1 bình luận */}
-                            <div className='w-4/5 ml-20'>
-                              {isReplying && selectedCommentId === comment._id && (
-                                <div>
-                                  <Textarea
-                                    id='reply'
-                                    placeholder='Trả lời...'
-                                    value={replyContent}
-                                    onChange={(e) => setReplyContent(e.target.value)}
-                                    required
-                                    autoFocus
-                                    className='px-4 py-3.5 rounded-full resize-none outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white'
-                                    rows={1}
+                          {/* Hiển thị danh sách trả lời của bình luận chính */}
+                          {comment.replies.map((reply) => (
+                            <div key={reply._id} className='reply-comment-section flex flex-col gap-1 ml-10'>
+                              {/* Hiển thị trả lời */}
+                              <ReplyComment
+                                comment={reply}
+                                parentAuthor={comment.author.name}
+                                handleClick={handleReplyToReplyClick}
+                              />
+
+                              {/* Ô input trả lời của 1 trả lời */}
+                              <ReplyInput
+                                isReplying={isReplyingToReply && selectedReplyId === reply._id}
+                                onReplyCancel={handleCancelReply1}
+                                onReplySend={handleSendReply1}
+                                handleChange={(e) => setReplyContent(e.target.value)}
+                                placeholder={`Trả lời ${reply.author.name}...`}
+                              />
+
+                              {/* Hiển thị danh sách trả lời của 1 trả lời */}
+                              {reply.replies.map((nestedReply) => (
+                                <div
+                                  key={nestedReply._id}
+                                  className={`reply-reply-section flex flex-col mt-1 mb-3 ml-10`}
+                                >
+                                  {/* Hiển thị trả lời cấp 2 */}
+                                  <ReplyComment
+                                    comment={nestedReply}
+                                    parentAuthor={reply.author.name}
+                                    handleClick={handleReplyToNestedReplyClick}
                                   />
-                                  <div className='flex gap-2 justify-end mt-3'>
-                                    <Button pill color='light' onClick={handleCancelReply}>
-                                      Huỷ
-                                    </Button>
-                                    <Button pill onClick={handleSendReply}>
-                                      Gửi
-                                    </Button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                                  {/* toi day roi la 3 cap */}
+                                  {/* Ô input trả lời của 1 trả lời cấp 2 */}
+                                  <ReplyInput
+                                    isReplying={isReplyingToNestedReply && selectedNestedReplyId === nestedReply._id}
+                                    onReplyCancel={handleCancelReply2}
+                                    onReplySend={handleSendReply2}
+                                    handleChange={(e) => setReplyContent(e.target.value)}
+                                    placeholder={`Trả lời ${nestedReply.author.name}...`}
+                                  />
 
-                            {/* Hiển thị danh sách trả lời của 1 bình luận */}
-                            {comment.replies.map((reply) => (
-                              <div
-                                key={reply._id}
-                                className='reply-comment-section flex flex-col gap-2.5 ml-7 mt-[-8px]'
-                              >
-                                <div className='flex gap-3'>
-                                  <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden shrink-0'>
-                                    <ProfileImage src={reply.author.avatar} alt='stranger' />
-                                  </div>
-                                  <div className='creator-name whitespace-nowrap flex flex-col'>
-                                    <div className='flex'>
-                                      <div className='mr-3 text-red-700 font-semibold'>{reply.author.name}</div>
-                                      <div className='mr-1 text-blue-700 font-semibold'>@{comment.author.name}</div>
-                                      <div className='text-base text-dark_color'>{reply.content}</div>
-                                    </div>
-                                    <div className='flex gap-5'>
-                                      <div className='cursor-pointer text-[#5F5F5F] text-base'>
-                                        {formatRelativeTime(reply.createdAt)}
-                                      </div>
-                                      <div
-                                        onClick={() => handleReplyToReplyClick(reply._id)}
-                                        className='cursor-pointer text-[#767676] text-base font-medium'
-                                      >
-                                        {'Trả lời'}
-                                      </div>
-                                    </div>
-                                    <div className='w-full'>
-                                      {isReplying && selectedReplyId === reply._id && (
-                                        <div>
-                                          <Textarea
-                                            id='reply'
-                                            placeholder={`Trả lời ${reply.author.name}...`}
-                                            value={replyContent}
-                                            onChange={(e) => setReplyContent(e.target.value)}
-                                            required
-                                            autoFocus
-                                            className='mt-2 ml-5 px-24 py-3.5 ps-5 rounded-full resize-none outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white'
-                                            rows={1}
-                                          />
-                                          <div className='flex gap-2 justify-end mt-3'>
-                                            <Button pill color='light' onClick={handleCancelReply1}>
-                                              Huỷ
-                                            </Button>
-                                            <Button pill onClick={handleSendReply1}>
-                                              Gửi
-                                            </Button>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div>
-                                  {reply.replies.map((nestedReply, index) => (
-                                    <div
-                                      key={nestedReply._id}
-                                      className={`nested-reply-comment-section flex gap-3 mb-3 ${
-                                        index !== 0 ? 'mt-2' : 'mt-1.5'
-                                      }`}
-                                    >
-                                      <div className='creator-image rounded-full w-10 h-10 aspect-square overflow-hidden shrink-0'>
-                                        <ProfileImage src={nestedReply.author.avatar} alt='stranger' />
-                                      </div>
-                                      <div className='creator-name whitespace-nowrap text-ellipsis flex flex-col  '>
-                                        <div className='flex'>
-                                          <div className='mr-3 text-red-700 font-semibold'>
-                                            {nestedReply.author.name}
-                                          </div>
-                                          <div className='mr-1 text-blue-700 font-semibold'>@{reply.author.name}</div>
-                                          <div>{nestedReply.content}</div>
-                                        </div>
-                                        <div className='flex gap-5'>
-                                          <div className='cursor-pointer text-[#5F5F5F] text-base'>
-                                            {formatRelativeTime(nestedReply.createdAt)}
-                                          </div>
-                                          <div
-                                            onClick={() => handleReplyClick(comment._id)}
-                                            className='cursor-pointer text-[#767676] text-base font-medium'
-                                          >
-                                            {'Trả lời'}
-                                          </div>
-                                        </div>
-                                      </div>
+                                  {/* Hiển thị danh sách trả lời của 1 trả lời cấp 2 */}
+                                  {nestedReply.replies.map((nestedReply1) => (
+                                    <div key={nestedReply1._id} className={`reply-reply-section flex flex-col mt-3`}>
+                                      {/* Hiển thị trả lời cấp 3 */}
+                                      <ReplyComment
+                                        comment={nestedReply1}
+                                        parentAuthor={nestedReply.author.name}
+                                        handleClick={handleReplyToNestedReplyClick}
+                                      />
+
+                                      {/* Ô input trả lời của 1 trả lời cấp 3 */}
+                                      <ReplyInput
+                                        isReplying={
+                                          isReplyingToNestedReply && selectedNestedReplyId === nestedReply1._id
+                                        }
+                                        onReplyCancel={handleCancelReply2}
+                                        onReplySend={handleSendReply2}
+                                        handleChange={(e) => setReplyContent(e.target.value)}
+                                        placeholder={`Trả lời cmt ${nestedReply1.author.name}...`}
+                                      />
                                     </div>
                                   ))}
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
-                      </Accordion.Content>
-                    )}
-                  </Accordion.Panel>
-                </Accordion>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </>
               </div>
             </div>
 
-            <div className='desc-commentbox absolute bottom-0 right-0 left-0'>
+            <div className={`desc-commentbox-main bottom-0 right-0 left-0 ${comments.length > 4 ? '' : 'absolute'}`}>
               {/* Comment box section */}
               {postData.IsComment ? (
                 <div
@@ -516,7 +504,7 @@ const DetailPin = () => {
 
                   <div className='flex gap-3'>
                     <div className='creator-image rounded-full w-12 aspect-square  shrink-0'>
-                      <ProfileImage src={UserAvatar} alt='stranger' className='w-10 h-10' />
+                      <ProfileImage src={UserAvatar} alt='stranger' className='w-8 h-8' />
                     </div>
                     <div className='creator-name whitespace-nowrap text-ellipsis w-full'>
                       <Textarea
@@ -526,10 +514,10 @@ const DetailPin = () => {
                         onChange={(e) => setCommentContent(e.target.value)}
                         required
                         rows={1}
-                        className='px-4 py-3.5 rounded-full resize-none outline-none hover:bg-[#e1e1e1] text-gray-800 bg-gray_input focus:ring-gray-300 focus:border-white focus:bg-white'
+                        className='text-[15px] px-4 py-3.5 rounded-full resize-none outline-none hover:bg-[#e1e1e1] text-gray-800 bg-gray_input focus:ring-gray-300 focus:border-white focus:bg-white border-none'
                       />
                     </div>
-                    <button onClick={handleSendComment} className='btn-linkhover rounded-xl px-5'>
+                    <button onClick={handleSendComment} className='btn-linkhover rounded-full px-5'>
                       <MdSend className='h-6 w-6' />
                     </button>
                   </div>

@@ -6,7 +6,7 @@ import { getUserByEmail, updateUserInfo, uploadFiles } from '../../store/apiRequ
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
-import { updateState } from '../../store/slices/UserSlice'
+import { updateAvatar, updateState } from '../../store/slices/UserSlice'
 import toast from 'react-hot-toast'
 import './Setting.css'
 import { MailOutlined, UserOutlined } from '@ant-design/icons'
@@ -17,6 +17,7 @@ import { BiBuoy } from 'react-icons/bi'
 import ImgCrop from 'antd-img-crop'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import Sider from 'antd/es/layout/Sider'
 dayjs.extend(customParseFormat)
 
 const Setting = () => {
@@ -86,6 +87,7 @@ const Setting = () => {
         )
         if (updateResponse.data.statusCode === 200) {
           toast.success('Thay đổi avatar thành công!')
+          dispatch(updateAvatar(newAvatarPath))
           setFileList([])
           setLoadingAvt(false)
         }
@@ -213,27 +215,26 @@ const Setting = () => {
     <>
       {/* Phan binh thuong */}
       <div className='flex gap-10'>
-        <Sidebar className='ml-3 mt-10' aria-label='Sidebar with content separator example'>
+        <Sidebar className='ml-3 mt-[2%]' aria-label='Sidebar with content separator example'>
           <Sidebar.Items>
             <Sidebar.ItemGroup>
-              <Sidebar.Item href='#' icon={HiUser}>
+              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiUser}>
                 Thông tin người dùng
               </Sidebar.Item>
-              <Sidebar.Item href='#' icon={HiTable}>
+              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiTable}>
                 Chính sách riêng tư
               </Sidebar.Item>
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
-              <Sidebar.Item href='#' icon={HiViewBoards}>
+              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiViewBoards}>
                 Tài liệu
               </Sidebar.Item>
-              <Sidebar.Item href='#' icon={BiBuoy}>
+              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={BiBuoy}>
                 Hỗ trợ
               </Sidebar.Item>
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </Sidebar>
-
         <div className='min-h-fit py-2 px-40 flex items-center justify-center rounded-xl '>
           <div className='container max-w-screen-lg mx-auto relative'>
             {loading || loadingAvt || loadingUpdate ? (
@@ -246,16 +247,16 @@ const Setting = () => {
             <div className='rounded-xl p-4 px-4 md:p-10 '>
               <div className='grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1'>
                 <div className='text-gray-700 mb-6'>
-                  <h3 className='font-medium mb-3'>Quản lý tài khoản</h3>
+                  <h3 className='font-medium mb-3'>Chỉnh sửa hồ sơ</h3>
                   <p className='text-base'>Thực hiện thay đổi thông tin cá nhân hoặc loại tài khoản của bạn..</p>
                 </div>
                 <div className='lg:col-span-2'>
                   <div className='grid gap-4 grid-cols-1'>
                     {/* Avatar */}
-                    <div className='flex gap-5 items-center'>
+                    <div className='flex gap-7 items-center'>
                       <img
                         src={userData.Avatar}
-                        className='-mt-2 h-12 w-12 sm:h-[100px] sm:w-[100px] rounded-full'
+                        className='-mt-2 h-12 w-12 sm:h-[100px] sm:w-[100px] rounded-full aspect-square	'
                         alt='avatar'
                       />
                       <ImgCrop rotationSlider modalTitle='Chỉnh sửa hình ảnh' modalCancel='Huỷ' modalOk='Lưu'>
@@ -270,8 +271,8 @@ const Setting = () => {
                           {fileList.length === 0 && '+ Tải lên'}
                         </Upload>
                       </ImgCrop>
-                      <button className='btn-upload-ai shrink-0' onClick={handleChangeAvatar}>
-                        Lưu avatar
+                      <button className='btn-greysave text-[15px] shrink-0' onClick={handleChangeAvatar}>
+                        Lưu Avatar
                       </button>
                     </div>
                     {/* Fullname */}
@@ -348,12 +349,15 @@ const Setting = () => {
 
                     <div className='md:col-span-5 text-right mt-3'>
                       <div className='inline-flex items-end gap-2'>
-                        <Button size='md' color='indigo' onClick={handleCancel}>
+                        <button
+                          className='btn-upload rounded-full px-6 py-3.5 text-base bg-zinc-300/60 hover:bg-zinc-300/90 transition duration-300 ease-in-out text-dark_color'
+                          onClick={handleCancel}
+                        >
                           Huỷ
-                        </Button>
-                        <Button size='md' color='failure' onClick={handleSave}>
+                        </button>
+                        <button className='btn-upload rounded-full px-6 py-3.5 text-base' onClick={handleSave}>
                           Lưu
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   </div>
