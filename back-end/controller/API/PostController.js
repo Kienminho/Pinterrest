@@ -162,11 +162,57 @@ const AddCategoryToPost = async (listCategory) => {
   return result;
 };
 
+const searchPost = async (req, res) => {
+  try {
+    const { keyword, pageIndex, pageSize } = req.query;
+    //search post by title, description and isDeleted== false and return totalRecords to client pagination
+    const pipeline = [
+      {
+        $match: {
+          $or: [
+            { Title: { $regex: keyword, $options: "i" } },
+            { Description: { $regex: keyword, $options: "i" } },
+          ],
+          IsDeleted: false,
+        },
+      },
+      {
+        $sort: { CreatedAt: -1 },
+      },
+      {
+        $facet: {
+          totalCount: [{ $count: "count" }],
+          data: [
+            { $skip: (parseInt(pageIndex) - 1) * parseInt(pageSize) },
+            { $limit: parseInt(pageSize) },
+          ],
+        },
+      },
+      {
+        $project: {
+          totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
+          data: 1,
+        },
+      },
+    ];
+
+    const result = await _Post.aggregate(pipeline);
+
+    const totalCount = result[0]?.totalCount || 0;
+    const data = result[0]?.data || [];
+    res.json(Utils.createSuccessResponseModel(totalCount, data));
+  } catch (error) {
+    console.log("PostController -> searchPost: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
 module.exports = {
   HandleGetPostsByCategories: HandleGetPostsByCategories,
   HandleGetPostsByUser: HandleGetPostsByUser,
   HandleGetDetailPost: HandleGetDetailPost,
   HandleCreatePost: HandleCreatePost,
   HandleUpdatePost: HandleUpdatePost,
-  createQuestion: createQuestion,
+  CreateQuestion: createQuestion,
+  SearchPost: searchPost,
 };

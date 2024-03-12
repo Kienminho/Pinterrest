@@ -33,4 +33,10 @@ router.put(
   PostController.HandleUpdatePost
 );
 
+router.get(
+  "/search",
+  AuthenticateService.authenticateToken,
+  PostController.SearchPost
+);
+
 module.exports = router;
