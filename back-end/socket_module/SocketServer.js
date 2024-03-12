@@ -2,8 +2,6 @@ const _User = require("../model/User");
 const io = require("socket.io")(443, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
   },
 });
 
