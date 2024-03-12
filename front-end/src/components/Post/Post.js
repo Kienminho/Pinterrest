@@ -8,21 +8,16 @@ import { useSelector } from 'react-redux'
 
 const Post = ({ data, type }) => {
   const { _id, Attachment, Created, Description, Title, IsComment } = data
-  console.log(data)
   const thumbnail = Attachment?.Thumbnail
-  console.log(thumbnail)
   const authorId = Created._id
   const avatar = Created?.Avatar
   const username = Created?.UserName || 'Stranger'
 
   const { _id: UserId } = useSelector((state) => state.User)
-  console.log(UserId)
-  console.log(authorId)
 
   // Lấy đường dẫn hiện tại
   const location = useLocation()
   const isProfilePage = location.pathname === '/profile' || location.pathname === '/profile/created'
-  console.log(isProfilePage)
 
   return (
     <div className='post-container rounded-xl overflow-hidden mb-4 relative max-sm:mb-2'>

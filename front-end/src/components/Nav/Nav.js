@@ -13,13 +13,17 @@ import { Tooltip } from 'flowbite-react'
 import { Avatar, Dropdown, Navbar } from 'flowbite-react'
 import { HiOutlineAdjustments, HiUserCircle } from 'react-icons/hi'
 import { MdPrivacyTip } from 'react-icons/md'
+import { BsInfoCircleFill } from 'react-icons/bs'
 
 import logo from './PLogo.svg'
 import './Nav.css'
+import { useEffect, useState } from 'react'
+import { SearchAndResultsImage } from '../SearchAndResultsImage/SearchAndResultsImage'
 
-const NavCopy = () => {
+const Nav = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const { Avatar: AvatarUser, FullName, UserName } = useSelector((state) => state.User)
+  const [activeBtn, setActiveBtn] = useState({ home: false, create: false })
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -28,19 +32,32 @@ const NavCopy = () => {
 
   const accessToken_daniel = user?.data?.AccessToken
 
+  const handleButtonClick = (btnName) => {
+    const updatedActiveBtn = {}
+    Object.keys(activeBtn).forEach((key) => {
+      // Duyệt qua tất cả các key trong activeBtn
+      // Đặt key tương ứng thành true nếu nó là btnName, ngược lại là false
+      updatedActiveBtn[key] = key === btnName
+    })
+    setActiveBtn(updatedActiveBtn)
+  }
+
   const handleLogout = () => {
     logoutUser(dispatch, navigate, accessToken_daniel, axiosJWT)
     console.log('done handle logout')
   }
+
+  useEffect(() => {}, [activeBtn])
+
+  console.log(activeBtn)
   return (
     <Navbar
       fluid
       rounded
-      className='border-b-2 border-gray-50 shadow-md text-dark_color px-4 py-3 sm:px-6 sm:py-[14px]'
+      className='font-roboto border-b-2 border-gray-50 shadow-md text-dark_color px-4 py-3 sm:px-6 sm:py-[14px]'
     >
       <Navbar.Brand>
         <NavLink to='/' className='flex'>
-          {/* <PinterestLogo alt='Pinterest Logo' /> */}
           <img src={logo} className='h-6 sm:h-9 rounded-full' alt='Flowbite React Logo' />
           <span className='self-center whitespace-nowrap text-xl font-semibold dark:text-white text-indigo-600 ml-1'>
             Pinspired
@@ -67,7 +84,14 @@ const NavCopy = () => {
             arrowIcon={false}
             inline
             className='px-1 py-2'
-            label={<Avatar alt='User settings' className='ml-2' img={AvatarUser} rounded />}
+            label={
+              <Avatar
+                alt='User settings'
+                className='ml-1 hover:bg-[#dfdede] hover:rounded-full p-1 -mt-1'
+                img={AvatarUser}
+                rounded
+              />
+            }
           >
             <Dropdown.Header>
               <div className='flex gap-3'>
@@ -86,7 +110,10 @@ const NavCopy = () => {
               <NavLink to='/settings'>Thông tin tài khoản</NavLink>
             </Dropdown.Item>
             <Dropdown.Item icon={MdPrivacyTip}>
-              <NavLink to='/privacy'>Xem điều khoản dịch vụ</NavLink>
+              <NavLink to='/terms-of-service'>Điều khoản dịch vụ</NavLink>
+            </Dropdown.Item>
+            <Dropdown.Item icon={BsInfoCircleFill}>
+              <NavLink to='/privacy-policy'>Quyền riêng tư của bạn</NavLink>
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleLogout} icon={FaSignOutAlt}>
@@ -98,18 +125,12 @@ const NavCopy = () => {
       ) : (
         <div className='flex md:order-2 gap-2 font-medium'>
           <NavLink to='/login'>
-            <div
-              // onClick={openLoginPopup}
-              className='rounded-3xl text-dark_color px-[18px] py-3 transition duration-300 ease-in-out hover:bg-zinc-300/90 bg-zinc-300/60'
-            >
+            <div className='rounded-3xl text-dark_color px-[18px] py-3 transition duration-300 ease-in-out hover:bg-zinc-300/90 bg-zinc-300/60'>
               Đăng nhập
             </div>
           </NavLink>
           <NavLink to='/register'>
-            <div
-              // onClick={openRegisterPopup}
-              className='rounded-3xl bg-purple_btn hover:bg-indigo-600 px-[20px] py-3 transition duration-300 ease-in-out text-white '
-            >
+            <div className='rounded-3xl bg-purple_btn hover:bg-indigo-600 px-[20px] py-3 transition duration-300 ease-in-out text-white'>
               Đăng ký
             </div>
           </NavLink>
@@ -117,14 +138,22 @@ const NavCopy = () => {
       )}
       <Navbar.Collapse>
         <NavLink to='/'>
-          <button color='gray' className='btn-home px-4 py-3'>
+          <button
+            className={`btn-home px-4 py-3 ${activeBtn['home'] ? 'bg-purple_btn hover:bg-purple_btn text-white' : ''}`}
+            onClick={() => handleButtonClick('home')}
+          >
             <span className='text-base'>{user && 'Trang chủ'}</span>
           </button>
         </NavLink>
         {user && (
           <NavLink to='/create'>
-            <button color='gray' className='btn-home px-5 py-3 md:-ml-6'>
-              <span className='text-base'>Tạo</span>
+            <button
+              className={`btn-home px-5 py-3 md:-ml-6 ${
+                activeBtn['create'] ? 'bg-purple_btn hover:bg-purple_btn text-white' : ''
+              }`}
+              onClick={() => handleButtonClick('create')}
+            >
+              <span className='text-base'>{user && 'Tạo'}</span>
             </button>
           </NavLink>
         )}
@@ -132,45 +161,11 @@ const NavCopy = () => {
       {/* Search bar */}
       {user && (
         <div class='w-full md:w-[40%] lg:w-[50%] xl:w-[60%] 2xl:w-[70%]'>
-          <label for='default-search' class='mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white'>
-            Tìm kiếm
-          </label>
-          <div class='relative'>
-            <div class='absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none'>
-              <svg
-                class='w-4 h-4 text-gray-500 dark:text-gray-400'
-                aria-hidden='true'
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 20 20'
-              >
-                <path
-                  stroke='currentColor'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='2'
-                  d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'
-                />
-              </svg>
-            </div>
-            <input
-              type='search'
-              id='default-search'
-              class='block w-full p-4 ps-10 placeholder:text-sm font-medium text-gray-800 border border-gray-200 rounded-full bg-gray_input hover:bg-[#e1e1e1] focus:ring-indigo-400 focus:border-indigo-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
-              placeholder='Tìm kiếm hình ảnh, video..'
-              required
-            />
-            <button
-              type='submit'
-              class='text-white absolute end-2.5 bottom-2.5 bg-[#6366f1] hover:bg-[#4f46e5] focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-full text-sm px-4 py-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition duration-300 ease-in-out'
-            >
-              Tìm kiếm
-            </button>
-          </div>
+          <SearchAndResultsImage />
         </div>
       )}
     </Navbar>
   )
 }
 
-export default NavCopy
+export default Nav

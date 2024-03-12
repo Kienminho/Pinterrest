@@ -7,9 +7,7 @@ const SuspenseImg = ({ src, height, alt, className, fileName }) => {
   const handleImageLoad = () => {
     setLoading(false)
   }
-  useEffect(() => {
-    console.log(loading)
-  }, [loading])
+  useEffect(() => {}, [loading])
 
   return (
     <div>
