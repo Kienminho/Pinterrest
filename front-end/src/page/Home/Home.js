@@ -14,7 +14,6 @@ const Home = () => {
   const [loading, setLoading] = useState(false)
 
   let { FirstLogin } = useSelector((state) => state.User)
-  console.log('check first login: ', FirstLogin)
 
   // lấy tất cả các bài viết theo danh mục
   useEffect(() => {
@@ -26,7 +25,6 @@ const Home = () => {
             headers: { Authorization: `Bearer ${accessToken_daniel}` }
           }
         )
-        console.log(resData.data.data)
 
         if (resData.data.data) {
           setPosts(resData.data.data)
@@ -39,7 +37,6 @@ const Home = () => {
     getPostsByCategories()
   }, [])
 
-  console.log(posts)
   return (
     <>
       {FirstLogin ? (

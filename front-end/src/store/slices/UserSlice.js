@@ -24,6 +24,10 @@ const UserSlice = createSlice({
   name: 'User',
   initialState,
   reducers: {
+    // Action creator để cập nhật avatar
+    updateAvatar: (state, action) => {
+      state.Avatar = action.payload // Cập nhật avatar mới từ payload
+    },
     updateState: (state, action) => {
       const filteredPayload = filterPayload(action.payload, initialState)
       return { ...state, ...filteredPayload }
@@ -57,7 +61,14 @@ const UserSlice = createSlice({
   }
 })
 
-export const { updateState, updateFirstLogin, updateStateSavedPosts, updateStatePosts, deleteStatePost, resetState } =
-  UserSlice.actions
+export const {
+  updateAvatar,
+  updateState,
+  updateFirstLogin,
+  updateStateSavedPosts,
+  updateStatePosts,
+  deleteStatePost,
+  resetState
+} = UserSlice.actions
 
 export default UserSlice.reducer

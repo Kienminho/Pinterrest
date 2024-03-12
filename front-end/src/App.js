@@ -1,12 +1,11 @@
-import React, { lazy, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import './App.css'
 import { useFetchUserInfo } from './customHooks/useFetchUserInfo'
 
 import Nav from './components/Nav/Nav'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'
-import IntroContainer from './components/Intro'
 import Login from './page/Login/Login'
 import Signup from './page/Signup/Signup'
 import ChangePassword from './page/ChangePassword/ChangePassword'
@@ -17,9 +16,10 @@ import Create from './page/Create/Create'
 import Home from './page/Home/Home'
 import Setting from './page/Setting/Setting'
 import Messenger from './page/Messenger/Messenger'
-import { SearchBar } from './components/SearchBar/SearchBar'
-import { SearchResultsList } from './components/SearchBar/SearchResultList'
 import AuthLayout from './components/AuthLayout/AuthLayout'
+import Terms from './page/Terms/Terms'
+import PrivacyPolicy from './page/PrivacyPolicy/PrivacyPolicy'
+import Explore from './page/Explore/Explore'
 
 // const DetailPin = lazy(() => import('./page/DetailPin/DetailPin'))
 // const Profile = lazy(() => import('./page/Profile/Profile'))
@@ -28,15 +28,10 @@ import AuthLayout from './components/AuthLayout/AuthLayout'
 // const Setting = lazy(() => import('./page/Setting/Setting'))
 
 const App = () => {
-  const [results, setResults] = useState([])
-  console.log(results)
   useFetchUserInfo()
   return (
     <>
       <Nav />
-      {/* <SearchBar setResults={setResults} />
-      <SearchResultsList results={results} /> */}
-
       <Routes>
         <Route
           path='/login'
@@ -59,6 +54,14 @@ const App = () => {
           element={
             <PrivateRoute>
               <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/explore'
+          element={
+            <PrivateRoute>
+              <Explore />
             </PrivateRoute>
           }
         />
@@ -102,7 +105,30 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route path='/forgot-password' element={<ChangePassword />} />
+        <Route
+          path='/terms-of-service'
+          element={
+            <PrivateRoute>
+              <Terms />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/privacy-policy'
+          element={
+            <PrivateRoute>
+              <PrivacyPolicy />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/forgot-password'
+          element={
+            <AuthLayout>
+              <ChangePassword />
+            </AuthLayout>
+          }
+        />
       </Routes>
       <Toaster position={window.innerWidth > 640 ? 'bottom-right' : 'top-center'} reverseOrder={true} />
     </>
