@@ -1,7 +1,7 @@
 const _User = require("../model/User");
-const io = require("socket.io")(process.env.PORT_SOCKET, {
+const io = require("socket.io")({
   cors: {
-    origin: "https://api-pinterrest.up.railway.app:6531",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -17,14 +17,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async (data) => {
-    console.log(users);
-    console.log("data :>> ", data);
-    console.log(data.message);
     const receiver = users.find((user) => user.userId === data.receiverId);
     const sender = users.find((user) => user.userId === data.senderId);
 
     const user = await _User.findById(data.senderId);
-    console.log("sender :>> ", sender, receiver);
     if (receiver) {
       console.log(41);
       io.to(receiver.socketId)
@@ -34,7 +30,6 @@ io.on("connection", (socket) => {
           user: { id: user._id, name: user.UserName, avatar: user.Avatar },
         });
     } else {
-      console.log(49);
       io.to(sender.socketId).emit("getMessage", {
         data,
         user: { id: user._id, name: user.UserName, avatar: user.Avatar },
