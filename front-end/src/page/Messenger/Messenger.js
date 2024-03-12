@@ -25,7 +25,7 @@ const Messenger = () => {
   const messageRef = useRef(null)
 
   useEffect(() => {
-    setSocket(io(`https://api-pinterrest.up.railway.app`))
+    setSocket(io(`https://api-pinterrest.up.railway.app:443`))
   }, [])
 
   useEffect(() => {
