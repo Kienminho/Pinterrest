@@ -30,3 +30,25 @@ export function formatDate(date) {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return new Date(date).toLocaleDateString("en-GB", options);
 }
+
+export function showToast(message, isSuccess) {
+  const toastElement = $("#liveToast");
+  const toastMessageElement = $(".toast-body");
+
+  // Set background color based on success or failure
+  if (isSuccess) {
+    toastElement.removeClass("bg-danger");
+    toastElement.addClass("bg-success");
+  } else {
+    toastElement.removeClass("bg-success");
+    toastElement.addClass("bg-danger");
+  }
+
+  // Set the message
+  toastMessageElement.text(message);
+  toastElement.show();
+
+  setTimeout(function () {
+    toastElement.hide();
+  }, 2000);
+}

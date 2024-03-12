@@ -13,5 +13,10 @@ router.post(
 
 router.get("/get-all-attachments", FileController.GetAllAttachments);
 router.get("/get-attachment-by-id/:id", FileController.GetAttachmentById);
+router.delete(
+  "/delete-attachment/:id",
+  AuthenticateService.authenticateToken,
+  FileController.RemoveAttachment
+);
 
 module.exports = router;

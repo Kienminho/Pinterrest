@@ -33,6 +33,10 @@ const HandleUploadFile = async (req, res) => {
 };
 
 const createFileAttachment = async (data, fileSanity, type) => {
+  let name = data.name;
+  if (type === "AI") {
+    name = "AI";
+  }
   const attachment = new _Attachment({
     OriginalFileName: fileSanity.originalFilename,
     AttachmentType: type,
@@ -41,7 +45,7 @@ const createFileAttachment = async (data, fileSanity, type) => {
     FileSize: Utils.calcFileSize(fileSanity.size),
     FileType: fileSanity.mimeType,
     FileExtension: Utils.getFileExtension(fileSanity.originalFilename),
-    CreatedName: data.name,
+    CreatedName: name,
   });
   await attachment.save();
   return attachment;
@@ -55,10 +59,14 @@ const GetAllAttachments = async (req, res) => {
       {
         $match: {
           $or: [
-            { OriginalFileName: { $regex: keyword, $options: "i" } },
-            { CreateName: { $regex: keyword, $options: "i" } },
+            { AttachmentType: { $regex: keyword, $options: "i" } },
+            { CreatedName: { $regex: keyword, $options: "i" } },
           ],
+          IsDeleted: false,
         },
+      },
+      {
+        $sort: { CreatedAt: -1 }, // Sort by CreatedAt in descending order
       },
       {
         $facet: {
@@ -107,9 +115,29 @@ const GetAttachmentById = async (req, res) => {
   }
 };
 
+const RemoveAttachment = async (req, res) => {
+  try {
+    const attachment = await _Attachment.findById(req.params.id);
+    if (!attachment) {
+      return res
+        .status(404)
+        .json(Utils.createErrorResponseModel(404, "Attachment not found!"));
+    }
+    attachment.IsDeleted = true;
+    await attachment.save();
+    return res.status(200).json(Utils.createSuccessResponseModel(0, true));
+  } catch (error) {
+    console.log("File Controller - Line 21: " + error.message);
+    return res
+      .status(500)
+      .json(Utils.createErrorResponseModel(500, error.message));
+  }
+};
+
 module.exports = {
   HandleUploadFile: HandleUploadFile,
   GetAllAttachments: GetAllAttachments,
   GetAttachmentById: GetAttachmentById,
   createFileAttachment: createFileAttachment,
+  RemoveAttachment: RemoveAttachment,
 };
