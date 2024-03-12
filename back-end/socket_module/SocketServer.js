@@ -1,7 +1,9 @@
 const _User = require("../model/User");
 const io = require("socket.io")(process.env.PORT_SOCKET, {
   cors: {
-    origin: "*",
+    origin: "https://api-pinterrest.up.railway.app:6531",
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
