@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import logo from '../../components/Nav/PLogo.svg'
 import { loginGoogle, loginUser } from '../../store/apiRequest'
 import toast from 'react-hot-toast'
-import { Spin } from 'antd'
+import { Alert, Spin } from 'antd'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -38,17 +38,10 @@ const Login = () => {
     }
     try {
       setLoading(true)
-      const res = await loginUser(newUser, dispatch, navigate)
-      if (res.statusCode === 200) {
-        toast.success('Đăng nhập thành công')
-        setLoading(false)
-        navigate('/')
-      } else {
-        toast.error('Đăng nhập thất bại')
-        setLoading(false)
-      }
+      await loginUser(newUser, dispatch, navigate)
     } catch (error) {
-      console.log(error.message)
+      setError(error.message)
+      setLoading(false)
     }
   }
 
@@ -83,7 +76,7 @@ const Login = () => {
         </div>
       )}
       <FormWrapper loading={loading}>
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center font-roboto'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />
           </div>
@@ -122,7 +115,12 @@ const Login = () => {
                 handleChange={handleChange}
               />
             </div>
-
+            {/* Hiển thị thông báo lỗi nếu có */}
+            {error && (
+              <div className='w-full mt-1'>
+                <Alert message={error} type='error' showIcon />
+              </div>
+            )}
             <div className='flex justify-end'>
               <label className='no-underline font-medium text-base text-blue-500 hover:underline hover:text-blue-600'>
                 <NavLink
@@ -133,16 +131,8 @@ const Login = () => {
                 </NavLink>
               </label>
             </div>
-            {/* Hiển thị thông báo lỗi nếu có */}
-            {error && (
-              <div className='w-[400px] mt-1'>
-                <p class='text-sm text-red-600 dark:text-red-500'>
-                  <span class='font-medium'>Oops!</span> {error}
-                </p>
-              </div>
-            )}
 
-            <div className='flex justify-center'>
+            <div className='flex justify-center mt-3'>
               <button
                 className='text-white bg-purple_btn hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
                 onClick={() => {
