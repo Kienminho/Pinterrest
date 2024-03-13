@@ -10,7 +10,7 @@ router.get(
 );
 
 router.get(
-  "/get-posts-by-user",
+  "/get-posts-by-user/:id",
   AuthenticateService.authenticateToken,
   PostController.HandleGetPostsByUser
 );

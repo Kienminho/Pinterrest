@@ -39,9 +39,9 @@ const HandleGetPostsByCategories = async (req, res) => {
 
 const HandleGetPostsByUser = async (req, res) => {
   try {
-    const posts = await _Post.find({ Created: req.user.id }).populate({
+    const posts = await _Post.find({ Created: req.params.id }).populate({
       path: "Created",
-      select: "UserName Avatar",
+      select: "UserName Avatar FullName Email",
     });
     res.json(Utils.createSuccessResponseModel(posts.length, posts));
   } catch (error) {
@@ -177,6 +177,15 @@ const searchPost = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "users", // replace with your actual users collection name
+          localField: "Created",
+          foreignField: "_id",
+          as: "Created",
+        },
+      },
+      { $unwind: "$Created" },
+      {
         $sort: { CreatedAt: -1 },
       },
       {
@@ -185,6 +194,19 @@ const searchPost = async (req, res) => {
           data: [
             { $skip: (parseInt(pageIndex) - 1) * parseInt(pageSize) },
             { $limit: parseInt(pageSize) },
+            {
+              $project: {
+                Title: 1,
+                Description: 1,
+                Attachment: 1,
+                TotalLike: 1,
+                TotalComment: 1,
+                IsComment: 1,
+                SimilarPosts: 1,
+                CreatedAt: 1,
+                Created: { _id: 1, UserName: 1, Avatar: 1 },
+              },
+            },
           ],
         },
       },
