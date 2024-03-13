@@ -6,9 +6,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helpers = require("./common/Helpers");
 const app = express();
-const http = require("http").createServer(app);
-//socket
-const io = require("./socket_module/SocketServer");
+
+require("./socket_module/SocketServer");
 
 //middleware
 app.use(
@@ -61,6 +60,8 @@ const adminRouter = require("./router/AdminRouter");
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 
-http.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server is running on: http://localhost:" + process.env.PORT);
 });
+
+//socket

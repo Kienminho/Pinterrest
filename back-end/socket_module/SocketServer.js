@@ -1,5 +1,10 @@
 const _User = require("../model/User");
-const io = require("socket.io")(443, {
+const httpServer = require("http").createServer();
+const Server = require("socket.io").Server;
+
+//socket
+const io = new Server(httpServer, {
+  path: "/socket",
   cors: {
     origin: "*",
   },
