@@ -3,6 +3,7 @@ const _FileService = require("../../common/FileService");
 const _Post = require("../../model/Post");
 const _User = require("../../model/User");
 const _Category = require("../../model/Category");
+const _SavePost = require("../../model/SavePost");
 const _AIController = require("./AIController");
 const _CategoryController = require("./CategoryController");
 
@@ -229,6 +230,87 @@ const searchPost = async (req, res) => {
   }
 };
 
+const HandleSavePost = async (req, res) => {
+  const { postId, userId } = req.body;
+  try {
+    const existPost = await _Post.findById(postId);
+    if (!existPost) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Bài đăng không tồn tại!"));
+    }
+
+    const existUser = await _User.findById(userId);
+    if (!existUser) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại!"));
+    }
+
+    const existSavePost = await _SavePost.findOne({
+      User: userId,
+      Post: postId,
+    });
+    if (existSavePost) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Bài đăng đã được lưu!"));
+    }
+
+    const savePost = new _SavePost({
+      User: userId,
+      Post: postId,
+    });
+    await savePost.save();
+    res.json(Utils.createSuccessResponseModel(0, true));
+  } catch (error) {
+    console.log("PostController -> HandleSavePost: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const HandleUnSavePost = async (req, res) => {
+  const { postId, userId } = req.body;
+  try {
+    const existSavePost = await _SavePost.findOne({
+      User: userId,
+      Post: postId,
+    });
+    if (!existSavePost) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Bài đăng chưa được lưu!"));
+    }
+    await existSavePost.remove();
+    res.json(Utils.createSuccessResponseModel(0, true));
+  } catch (error) {
+    console.log("PostController -> HandleUnSavePost: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+//get list save post of user
+const HandleGetSavePost = async (req, res) => {
+  try {
+    const { pageIndex, pageSize } = req.query;
+    const savePosts = _SavePost
+      .find({ User: req.params.id })
+      .populate({
+        path: "Post",
+        populate: {
+          path: "Created",
+          select: "UserName Avatar FullName Email",
+        },
+      })
+      .sort({ CreatedAt: -1 });
+    const data = savePosts.skip((pageIndex - 1) * pageSize).limit(pageSize);
+
+    res.json(Utils.createSuccessResponseModel(await savePosts.length, data));
+  } catch (error) {
+    console.log("PostController -> HandleGetSavePost: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
 module.exports = {
   HandleGetPostsByCategories: HandleGetPostsByCategories,
   HandleGetPostsByUser: HandleGetPostsByUser,
@@ -237,4 +319,7 @@ module.exports = {
   HandleUpdatePost: HandleUpdatePost,
   CreateQuestion: createQuestion,
   SearchPost: searchPost,
+  HandleSavePost: HandleSavePost,
+  HandleUnSavePost: HandleUnSavePost,
+  HandleGetSavePosts: HandleGetSavePost,
 };

@@ -4,10 +4,9 @@ const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
 const helpers = require("./common/Helpers");
 const app = express();
-
+const http = require("http").createServer(app);
 //socket
 const io = require("./socket_module/SocketServer");
 
@@ -62,6 +61,6 @@ const adminRouter = require("./router/AdminRouter");
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 
-app.listen(process.env.PORT, () => {
+http.listen(process.env.PORT, () => {
   console.log("Server is running on: http://localhost:" + process.env.PORT);
 });

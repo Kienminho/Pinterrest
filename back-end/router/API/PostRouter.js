@@ -39,4 +39,25 @@ router.get(
   PostController.SearchPost
 );
 
+// Save post
+router.post(
+  "/save-post",
+  AuthenticateService.authenticateToken,
+  PostController.HandleSavePost
+);
+
+// Unsave post
+router.post(
+  "/unsave-post",
+  AuthenticateService.authenticateToken,
+  PostController.HandleUnSavePost
+);
+
+// Get saved posts
+router.get(
+  "/get-saved-posts/:id",
+  AuthenticateService.authenticateToken,
+  PostController.HandleGetSavePosts
+);
+
 module.exports = router;

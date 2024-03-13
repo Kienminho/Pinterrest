@@ -51,11 +51,7 @@ const getConversationByUser = async (req, res) => {
   try {
     const userId = req.user.id;
     const conversation = await _Conversation.find({
-      members: {
-        $elemMatch: {
-          userId: userId,
-        },
-      },
+      members: { $elemMatch: { userId: userId } },
     });
     return res
       .status(200)
