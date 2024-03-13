@@ -293,9 +293,13 @@ const HandleUnSavePost = async (req, res) => {
 const HandleGetSavePost = async (req, res) => {
   try {
     const { pageIndex, pageSize } = req.query;
+
+    const countQuery = _SavePost.countDocuments({ User: req.body.id });
+
     const savePostsQuery = _SavePost
       .find({ User: req.body.id })
       .populate({
+        select: "-Category",
         path: "Post",
         populate: {
           path: "Created",
@@ -304,12 +308,11 @@ const HandleGetSavePost = async (req, res) => {
       })
       .sort({ CreatedAt: -1 });
 
-    const totalSavePosts = await savePostsQuery.countDocuments();
+    const totalRecords = await countQuery;
     const data = await savePostsQuery
       .skip((pageIndex - 1) * pageSize)
       .limit(pageSize);
-
-    res.json(Utils.createSuccessResponseModel(totalSavePosts, data));
+    return res.json(Utils.createSuccessResponseModel(totalRecords, data));
   } catch (error) {
     console.log("PostController -> HandleGetSavePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
