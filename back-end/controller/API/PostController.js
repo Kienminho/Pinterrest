@@ -281,7 +281,7 @@ const HandleUnSavePost = async (req, res) => {
         .status(400)
         .json(Utils.createErrorResponseModel("Bài đăng chưa được lưu!"));
     }
-    await existSavePost.remove();
+    await existSavePost.deleteOne();
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("PostController -> HandleUnSavePost: " + error.message);
@@ -293,7 +293,7 @@ const HandleUnSavePost = async (req, res) => {
 const HandleGetSavePost = async (req, res) => {
   try {
     const { pageIndex, pageSize } = req.query;
-    const savePosts = _SavePost
+    const savePostsQuery = _SavePost
       .find({ User: req.body.id })
       .populate({
         path: "Post",
@@ -303,14 +303,19 @@ const HandleGetSavePost = async (req, res) => {
         },
       })
       .sort({ CreatedAt: -1 });
-    const data = savePosts.skip((pageIndex - 1) * pageSize).limit(pageSize);
 
-    res.json(Utils.createSuccessResponseModel(await savePosts.length, data));
+    const totalSavePosts = await savePostsQuery.countDocuments();
+    const data = await savePostsQuery
+      .skip((pageIndex - 1) * pageSize)
+      .limit(pageSize);
+
+    res.json(Utils.createSuccessResponseModel(totalSavePosts, data));
   } catch (error) {
     console.log("PostController -> HandleGetSavePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
+
 module.exports = {
   HandleGetPostsByCategories: HandleGetPostsByCategories,
   HandleGetPostsByUser: HandleGetPostsByUser,
