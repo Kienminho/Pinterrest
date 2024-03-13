@@ -18,7 +18,7 @@ export const LoadingContext = createContext()
 
 const Profile = () => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const { Avatar, FullName, UserName } = useSelector((state) => state.User)
+  const { _id, Avatar, FullName, UserName } = useSelector((state) => state.User)
   const [tempPic, setTempPic] = useState(null)
   const dispatch = useDispatch()
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
@@ -34,7 +34,8 @@ const Profile = () => {
   useEffect(() => {
     const getPostsFromServer = async () => {
       try {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-posts-by-user`, {
+        setLoading(true)
+        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-posts-by-user/${_id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
         const postData = resData.data.data
@@ -42,7 +43,7 @@ const Profile = () => {
 
         if (postData) {
           setCreatePosts(postData)
-          setLoading(true)
+          setLoading(false)
         }
       } catch (error) {
         console.log(error)

@@ -6,8 +6,7 @@ import { registerUser } from '../../store/apiRequest'
 import { useDispatch } from 'react-redux'
 import { HiInformationCircle } from 'react-icons/hi'
 import logo from '../../components/Nav/PLogo.svg'
-import toast from 'react-hot-toast'
-import { Spin } from 'antd'
+import { Alert, Spin } from 'antd'
 
 const Signup = () => {
   const navigate = useNavigate()
@@ -27,17 +26,6 @@ const Signup = () => {
     Email: '',
     Password: ''
   })
-
-  console.log(formData)
-
-  const formDataObject = {
-    Email: formData.Email,
-    Password: formData.Password
-  }
-
-  const formDataString = JSON.stringify(formDataObject)
-
-  console.log(formDataString)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -60,17 +48,11 @@ const Signup = () => {
     }
     try {
       setLoading(true)
-      const res = await registerUser(newUser, dispatch, navigate)
-      if (res.statusCode === 200) {
-        toast.success('Đăng ký thành công')
-        setLoading(false)
-        navigate('/login')
-      } else {
-        toast.error('Đăng ký không thành công')
-        setLoading(false)
-      }
+      await registerUser(newUser, dispatch, navigate)
     } catch (error) {
       console.log(error.message)
+      setError(error.message)
+      setLoading(false)
     }
   }
 
@@ -82,7 +64,7 @@ const Signup = () => {
         </div>
       )}
       <FormWrapper loading={loading}>
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center font-roboto'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />
           </div>
@@ -126,16 +108,16 @@ const Signup = () => {
             {/* Hiển thị thông báo lỗi nếu có */}
             {error ? (
               <div className='w-full mt-1'>
-                <p className='text-red-500 font-medium text-sm leading-6 tracking-wide'>{error}</p>
+                <Alert message={error} type='error' showIcon />
               </div>
             ) : (
-              <p class='flex items-center gap-1 mt-2 font-sans text-sm antialiased font-normal leading-normal text-gray-600'>
+              <p class='flex items-center gap-2 mt-2 text-sm font-roboto font-normal leading-normal text-gray-600'>
                 <HiInformationCircle size='1.5rem' />
                 Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số.
               </p>
             )}
 
-            <div className='flex justify-center'>
+            <div className='flex justify-center mt-3'>
               <button
                 className='text-white bg-purple_btn hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
                 onClick={() => {

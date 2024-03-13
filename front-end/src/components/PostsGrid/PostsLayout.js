@@ -3,11 +3,11 @@ import { NavLink } from 'react-router-dom'
 import { LoadingContext } from '../../page/Profile/Profile'
 import { Spin } from 'antd'
 
-const PostsLayout = ({ children, postsCount, fallback }) => {
+const PostsLayout = ({ children, postsCount, fallback, loadingOther }) => {
   const loading = useContext(LoadingContext)
   return (
     <>
-      {loading ? (
+      {!loading && !loadingOther ? (
         postsCount > 0 ? (
           <div className='xl:columns-5 lg:columns-4 md:columns-3 sm:columns-2 sm:mx-auto xl:w-[1280px] lg:w-[1024px] md:w-[768px] sm:w-[640px] columns-2 mx-3 mb-20 max-sm:gap-2'>
             {children}

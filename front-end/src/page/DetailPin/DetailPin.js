@@ -308,6 +308,10 @@ const DetailPin = () => {
 
   console.log('finish cmt: ', finishCmt)
 
+  const handleShowProfile = () => {
+    navigate(`/profiles/${postData?.Created?._id}`)
+  }
+
   return (
     <div className='detail-pin-container minus-nav-100vh font-roboto'>
       <div className='flex min-h-full justify-center relative '>
@@ -348,8 +352,11 @@ const DetailPin = () => {
               <span className='text-3xl font-medium max-sm:text-2xl text-dark_color'>{postData?.Title}</span>{' '}
               <span className='text-[18px] font-normal max-sm:text-base text-gray-700'>{postData?.Description}</span>
               {/* User info part */}
-              <div className='creator-profile flex w-full items-center mt-auto gap-3'>
-                <div className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0'>
+              <div className='creator-profile flex w-full items-center mt-auto gap-1'>
+                <div
+                  className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'
+                  onClick={handleShowProfile}
+                >
                   {user ? (
                     <ProfileImage src={postData?.Created?.Avatar} />
                   ) : (
@@ -360,7 +367,7 @@ const DetailPin = () => {
                     />
                   )}
                 </div>
-                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-dark_color'>
+                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-dark_color cursor-pointer'>
                   <div className='font-semibold'>{postData?.Created?.UserName}</div>
                   <div className=''>{followers.length} người theo dõi</div>
                 </div>
