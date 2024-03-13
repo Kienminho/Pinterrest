@@ -54,14 +54,14 @@ router.delete(
 
 //get following list of user
 router.get(
-  "/get-following",
+  "/get-following/id",
   AuthenticateService.authenticateToken,
   UserController.GetFollowing
 );
 
 //get follower list of user
 router.get(
-  "/get-follower",
+  "/get-follower/id",
   AuthenticateService.authenticateToken,
   UserController.GetFollower
 );

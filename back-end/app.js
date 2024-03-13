@@ -11,7 +11,6 @@ const http = require("http");
 const httpServer = http.createServer(app);
 const { Server } = require("socket.io");
 const PORT = process.env.PORT || 3000;
-// require("./socket_module/SocketServer");
 
 //middleware
 app.use(

@@ -401,7 +401,7 @@ const HandleUnFollow = async (req, res) => {
 
 const GetFollowing = async (req, res) => {
   try {
-    const { id } = req.user;
+    const id = req.params.id;
     //check user exist
     const userExist = await _User.findById(id);
     if (!userExist) {
@@ -422,7 +422,7 @@ const GetFollowing = async (req, res) => {
 
 const GetFollower = async (req, res) => {
   try {
-    const { id } = req.user;
+    const id = req.params.id;
     //check user exist
     const userExist = await _User.findById(id);
     if (!userExist) {
