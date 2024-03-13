@@ -205,7 +205,7 @@ const HandleLogout = async (req, res) => {
 /// </summary>
 const GetUserByEmail = async (req, res) => {
   try {
-    const userExist = await _User.findOne({ Email: req.params.email });
+    const userExist = await _User.findOne({ Email: req.body.Email });
     if (!userExist) {
       return res
         .status(400)

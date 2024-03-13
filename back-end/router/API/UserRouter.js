@@ -13,8 +13,8 @@ router.get(
 router.get("/google", UserController.AuthenticateGoogle);
 router.get("/google/callback", UserController.AuthenticateGoogleCallback);
 
-router.get(
-  "/user-by-email/:email",
+router.post(
+  "/user-by-email",
   AuthenticateService.authenticateToken,
   UserController.GetUserByEmail
 );
