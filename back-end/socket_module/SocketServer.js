@@ -5,9 +5,10 @@ const Server = require("socket.io").Server;
 //socket
 const io = new Server(httpServer, {
   path: "/socket/",
-  cors: {
-    origin: "*",
-  },
+  // cors: {
+  //   origin: "*",
+  // },
+  transports: ["websocket", "polling"],
 });
 
 let users = [];

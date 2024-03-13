@@ -1,3 +1,4 @@
+export const sanity_url = "https://cdn.sanity.io/";
 // imageViewer.js
 export function createImageViewer(element) {
   return new Viewer(element, {
@@ -23,6 +24,10 @@ export function createImageViewer(element) {
 //get token from local storage
 export function getToken() {
   let token = JSON.parse(localStorage.getItem("data"));
+  console.log(token);
+  if (!token) {
+    window.location.href = "/auth/login";
+  }
   return token.AccessToken;
 }
 

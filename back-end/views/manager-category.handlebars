@@ -1,0 +1,108 @@
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý Danh mục</h4>
+        <button style="margin-bottom:8px" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#create-employee-modal">Tạo danh mục</button>
+        <!-- Basic Bootstrap Table -->
+        <div class="card">
+            <div>
+                <h5 class="card-header">Danh mục</h5>
+                <div style="margin-right: 12px; margin-bottom:12px" class="row justify-content-end">
+                    <div class="col-auto">
+                        <div class="input-group input-group-merge">
+                            <input type="text" class="search form-control" placeholder="Search..."
+                                aria-label="Search..." aria-describedby="basic-addon-search31" />
+                            <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-nowrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên danh mục</th>
+                            <th>Mô tả</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody table-border-bottom-0"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="loader-container d-none d-flex justify-content-center align-items-center">
+            <div class="loader mt-5"></div>
+        </div>
+    </div>
+
+    <!-- / Content -->
+</div>
+
+<div class="content-backdrop fade"></div>
+
+<div class="modal fade" id="create-employee-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-product-modal-label">Tạo mới danh mục</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-category" enctype="application/json">
+                    <div class="mb-3">
+                        <label for="category-name">Tên </label>
+                        <input class="form-control" type="text" placeholder="Nhập tên danh mục" id="category-name"
+                            name="Name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description">Description</label>
+                        <input class="form-control" type="text" placeholder="Nhập mô tả" id="desc" name="Description">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+            <button type="button" class="btn-add-category btn btn-primary pe-auto"> Tạo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete-->
+<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hoạt động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn thực hiện hành động này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleted()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast message --->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="bg-success text-white toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<script type="module" src="../js/manager-category.js"></script>

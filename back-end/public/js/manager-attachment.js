@@ -1,5 +1,11 @@
-import { getToken, formatDate, createImageViewer, showToast } from "./base.js";
-const sanity_url = "https://cdn.sanity.io/";
+import {
+  sanity_url,
+  getToken,
+  formatDate,
+  createImageViewer,
+  showToast,
+} from "./base.js";
+//const sanity_url = "https://cdn.sanity.io/";
 const loaderContainer = $(".loader-container");
 const tbody = $(".tbody");
 const token = getToken();
@@ -56,7 +62,7 @@ const debounceGetAttachments = _.debounce(() => {
   ) {
     getAttachments();
   }
-}, 500); // Debounce for 500 milliseconds
+}, 500);
 
 window.addEventListener("scroll", debounceGetAttachments);
 

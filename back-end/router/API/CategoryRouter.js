@@ -10,5 +10,10 @@ router.get(
 );
 
 router.post("/create-category", CategoryController.HandleCreateCategory);
+router.delete(
+  "/delete-category/:id",
+  AuthenticateService.authenticateToken,
+  CategoryController.HandleDeleteCategory
+);
 
 module.exports = router;

@@ -222,6 +222,9 @@
     // Check if the access token is expired
     function isTokenExpired() {
         let token = JSON.parse(localStorage.getItem("data"));
+        if (!token) {
+            return true; // Token not found
+        }
         const accessToken = token.AccessToken;
         if (!accessToken) {
             return true; // Access token not found
