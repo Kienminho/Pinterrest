@@ -1,12 +1,16 @@
 require("dotenv").config();
+const _User = require("./model/User");
 const express = require("express");
+const app = express();
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helpers = require("./common/Helpers");
-const app = express();
-
+const http = require("http");
+const httpServer = http.createServer(app);
+const { Server } = require("socket.io");
+const PORT = process.env.PORT || 3000;
 // require("./socket_module/SocketServer");
 
 //middleware
@@ -61,12 +65,6 @@ app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 
 //socket
-
-const _User = require("./model/User");
-const httpServer = require("http").createServer(app);
-const Server = require("socket.io").Server;
-
-//socket
 const io = new Server(httpServer, {
   path: "/socket/",
   // cors: {
@@ -112,12 +110,10 @@ io.on("connection", (socket) => {
   });
 });
 
-app.listen(process.env.PORT, () => {
-  console.log("Server is running on: http://localhost:" + process.env.PORT);
-});
+// app.listen(process.env.PORT, () => {
+//   console.log("Server is running on: http://localhost:" + process.env.PORT);
+// });
 
-httpServer.listen(process.env.PORT_SOCKET, () => {
-  console.log(
-    "Socket is running on: http://localhost:" + process.env.PORT_SOCKET
-  );
+httpServer.listen(PORT, () => {
+  console.log("Server is running on: http://localhost:" + PORT);
 });
