@@ -1,4 +1,4 @@
-import { Button, Label, Sidebar, TextInput } from 'flowbite-react'
+import { Label, Sidebar } from 'flowbite-react'
 import { Input, Radio, Spin, DatePicker, Upload } from 'antd'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
@@ -10,14 +10,13 @@ import { updateAvatar, updateState } from '../../store/slices/UserSlice'
 import toast from 'react-hot-toast'
 import './Setting.css'
 import { MailOutlined, UserOutlined } from '@ant-design/icons'
-import { HiMail, HiTable, HiUser, HiViewBoards } from 'react-icons/hi'
+import { HiTable, HiUser, HiViewBoards } from 'react-icons/hi'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 
 import { BiBuoy } from 'react-icons/bi'
 import ImgCrop from 'antd-img-crop'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import Sider from 'antd/es/layout/Sider'
 dayjs.extend(customParseFormat)
 
 const Setting = () => {

@@ -1,0 +1,26 @@
+.category-selector .active .category-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 8px;
+  height: 3px;
+  background-color: black;
+  width: calc(100% - 16px);
+  border-radius: 2px;
+}
+.ant-modal-content {
+  padding: 30px 32px !important;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.ant-modal-title {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 2rem !important;
+  color: #2c343e !important;
+  text-align: center;
+}
+
+.ant-modal-footer {
+  margin-top: 20px !important;
+}

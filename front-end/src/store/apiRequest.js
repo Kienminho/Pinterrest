@@ -17,12 +17,28 @@ import { resetState } from './slices/UserSlice'
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart())
+
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/login`, user)
     dispatch(loginSuccess(res.data))
-    return res.data
+    toast.success('Đăng nhập thành công')
+    navigate('/')
   } catch (error) {
+    let errorMessage = 'Lỗi không xác định khi đăng nhập'
+    toast.error('Đăng nhập thất bại')
+
+    // Nếu có dữ liệu phản hồi từ server
+    if (error.response && error.response.data) {
+      const { statusCode, message } = error.response.data
+      console.error(`Mã lỗi ${statusCode}: ${message}`)
+      errorMessage = `${message}`
+    } else {
+      // Xử lý các trường hợp lỗi khác tùy theo cần thiết
+      console.error('Lỗi không xác định khi đăng nhập:', error.message)
+    }
+
     dispatch(loginFailed())
+    throw new Error(errorMessage)
   }
 }
 
@@ -35,14 +51,43 @@ export const loginGoogle = async () => {
   } catch (error) {}
 }
 
+// export const registerUser = async (user, dispatch) => {
+//   dispatch(registerStart())
+//   try {
+//     const resData = await axios.post(`${process.env.REACT_APP_API_URL}/user/register`, user)
+//     console.log(resData.data)
+//     // if (res.statusCode === 200) {
+//     //   dispatch(registerSuccess(res.data))
+//     // } else {
+//     //   dispatch(registerFailed())
+//     //   console.log('that bai roi')
+//     // }
+//     // return res
+//   } catch (error) {
+//     dispatch(registerFailed())
+//   }
+// }
+
 export const registerUser = async (user, dispatch, navigate) => {
   dispatch(registerStart())
+
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/register`, user)
     dispatch(registerSuccess(res.data))
-    return res.data
+    toast.success('Đăng ký thành công')
+    navigate('/login')
   } catch (error) {
-    dispatch(registerFailed())
+    let errorMessage = 'Lỗi không xác định khi đăng ký'
+    toast.error('Đăng ký không thành công')
+    if (error.response && error.response.data) {
+      const { statusCode, message } = error.response.data
+      console.error(`Mã lỗi ${statusCode}: ${message}`)
+      dispatch(registerFailed())
+      errorMessage = `${message}`
+    } else {
+      dispatch(registerFailed())
+    }
+    throw new Error(errorMessage)
   }
 }
 
