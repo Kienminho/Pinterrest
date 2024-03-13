@@ -54,8 +54,8 @@ router.post(
 );
 
 // Get saved posts
-router.get(
-  "/get-saved-posts/:id",
+router.post(
+  "/get-saved-posts",
   AuthenticateService.authenticateToken,
   PostController.HandleGetSavePosts
 );

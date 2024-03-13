@@ -294,7 +294,7 @@ const HandleGetSavePost = async (req, res) => {
   try {
     const { pageIndex, pageSize } = req.query;
     const savePosts = _SavePost
-      .find({ User: req.params.id })
+      .find({ User: req.body.id })
       .populate({
         path: "Post",
         populate: {
