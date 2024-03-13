@@ -4,7 +4,7 @@ const Server = require("socket.io").Server;
 
 //socket
 const io = new Server(httpServer, {
-  path: "/socket",
+  path: "/socket/",
   cors: {
     origin: "*",
   },
