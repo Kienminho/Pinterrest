@@ -60,14 +60,10 @@ const adminRouter = require("./router/AdminRouter");
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log("Server is running on: http://localhost:" + process.env.PORT);
-});
-
 //socket
 
 const _User = require("./model/User");
-const httpServer = require("http").createServer();
+const httpServer = require("http").createServer(app);
 const Server = require("socket.io").Server;
 
 //socket
@@ -116,4 +112,12 @@ io.on("connection", (socket) => {
   });
 });
 
-module.exports = io;
+app.listen(process.env.PORT, () => {
+  console.log("Server is running on: http://localhost:" + process.env.PORT);
+});
+
+httpServer.listen(process.env.PORT_SOCKET, () => {
+  console.log(
+    "Socket is running on: http://localhost:" + process.env.PORT_SOCKET
+  );
+});
