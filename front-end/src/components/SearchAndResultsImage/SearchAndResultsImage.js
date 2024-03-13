@@ -5,6 +5,7 @@ import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { TbPhotoSearch } from 'react-icons/tb'
 
 export const SearchAndResultsImage = () => {
   const dispatch = useDispatch()
@@ -112,8 +113,11 @@ export const SearchAndResultsImage = () => {
             <FaTimesCircle />
           </button>
         )}
-        <button className='ml-2 focus:outline-none hover:bg-zinc-200 rounded-full p-2' onClick={handleSearch}>
-          <FaSearch />
+        <button
+          onClick={handleSearch}
+          className='text-white bg-[#7779f6] hover:bg-[#6366f1] focus:ring-2 focus:outline-none focus:ring-indigo-300 font-medium rounded-2xl text-sm transition duration-300 ease-in-out px-4 py-1.5'
+        >
+          <TbPhotoSearch id='search-icon' size='1.4rem' color='#e9e9e9' />
         </button>
       </div>
       {showResults && (

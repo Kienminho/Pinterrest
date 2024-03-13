@@ -66,17 +66,17 @@ const Nav = () => {
       </Navbar.Brand>
       {user ? (
         <div className='flex md:order-2 gap-2'>
-          <Tooltip content='Notify'>
+          {/* <Tooltip content='Notify'>
             <NavLink to='/notify'>
               <button className='rounded-full btn-circle'>
                 <IoNotifications size='1.7rem' color='#666666' className='cursor-pointer' />
               </button>
             </NavLink>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip content='Message'>
             <NavLink to='/message'>
-              <button className='rounded-full btn-circle'>
-                <AiFillMessage size='1.7rem' color='#666666' className='cursor-pointer' />
+              <button className='rounded-full btn-circle mt-[3px]'>
+                <AiFillMessage size='1.8rem' color='#666666' className='cursor-pointer' />
               </button>
             </NavLink>
           </Tooltip>
@@ -87,7 +87,7 @@ const Nav = () => {
             label={
               <Avatar
                 alt='User settings'
-                className='ml-1 hover:bg-[#dfdede] hover:rounded-full p-1 -mt-1'
+                className='ml-2 rounded-full hover:bg-indigo-300 transition duration-300 hover:rounded-full p-1.5 -mt-1'
                 img={AvatarUser}
                 rounded
               />
@@ -160,7 +160,7 @@ const Nav = () => {
       </Navbar.Collapse>
       {/* Search bar */}
       {user && (
-        <div class='w-full md:w-[40%] lg:w-[50%] xl:w-[60%] 2xl:w-[70%]'>
+        <div class='w-full md:w-[40%] lg:w-[50%] xl:w-[60%] 2xl:w-[70%] md:mt-0 mt-2'>
           <SearchAndResultsImage />
         </div>
       )}

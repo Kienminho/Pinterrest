@@ -5,7 +5,6 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import logo from '../../components/Nav/PLogo.svg'
 import { loginGoogle, loginUser } from '../../store/apiRequest'
-import toast from 'react-hot-toast'
 import { Alert, Spin } from 'antd'
 
 const Login = () => {

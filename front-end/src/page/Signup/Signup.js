@@ -4,7 +4,8 @@ import InputField from '../../components/Input/InputField'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { registerUser } from '../../store/apiRequest'
 import { useDispatch } from 'react-redux'
-import { HiInformationCircle } from 'react-icons/hi'
+import { IoInformationCircle } from 'react-icons/io5'
+
 import logo from '../../components/Nav/PLogo.svg'
 import { Alert, Spin } from 'antd'
 
@@ -112,7 +113,7 @@ const Signup = () => {
               </div>
             ) : (
               <p class='flex items-center gap-2 mt-2 text-sm font-roboto font-normal leading-normal text-gray-600'>
-                <HiInformationCircle size='1.5rem' />
+                <IoInformationCircle size='1.5rem' />
                 Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số.
               </p>
             )}

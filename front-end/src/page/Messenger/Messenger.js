@@ -134,8 +134,8 @@ const Messenger = () => {
   console.log(processedConversations)
 
   return (
-    <div className='w-screen flex font-roboto items-center justify-center'>
-      <div className='w-[20%] h-screen px-8 py-5 overflow-scroll'>
+    <div className='w-screen md:flex font-roboto items-center lg:justify-center'>
+      <div className='md:w-[40%] xl:w-[25%] h-screen px-8 py-5 overflow-scroll'>
         <div className='text-dark_color text-2xl mb-4 font-bold'>Chat</div>
         <SearchAndResults onConversationCreated={handleConversationCreated} conversations={conversations} />
         <div className='mt-5'>
@@ -169,8 +169,8 @@ const Messenger = () => {
           </div>
         </div>
       </div>
-      <div className='w-[45%] h-screen flex flex-col items-center border-zinc-200 border-[1.5px]'>
-        {messages?.receiver?.fullName && (
+      <div className='md:w-[60%] xl:w-[45%] h-screen flex flex-col items-center border-zinc-200 border-[1.5px]'>
+        {messages?.receiver && (
           <div className='w-full border-b-[1.5px] border-zinc-100 h-[50px] flex items-center px-10 py-10'>
             <div className='receiver-image rounded-full w-12 h-12 aspect-square overflow-hidden shrink-0 cursor-pointer'>
               <ProfileImage src={messages?.receiver?.avatar} alt='receiver-avt' />
@@ -189,7 +189,7 @@ const Messenger = () => {
                 <span className=''>Đang tải tin nhắn, vui lòng đợi...</span>
                 <Spin size='large' />
               </div>
-            ) : messages?.messages?.length > 0 ? (
+            ) : messages?.messages?.length >= 0 ? (
               messages.messages.map(({ message, user }) => (
                 <div
                   key={message._id}
@@ -261,7 +261,7 @@ const Messenger = () => {
           </div>
         )}
       </div>
-      <div className='w-[20%] h-screen overflow-scroll'></div>
+      <div className='xl:w-[20%] w-0 md:h-screen overflow-scroll'></div>
     </div>
   )
 }
