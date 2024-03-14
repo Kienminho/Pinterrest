@@ -3,7 +3,7 @@ const _Category = require("../../model/Category");
 
 const HandleGetAllsCategories = async (req, res) => {
   try {
-    const { keyword, pageIndex, pageSize } = req.query;
+    const { keyword = "", pageIndex, pageSize } = req.query;
     const pipeline = [
       {
         $match: {
