@@ -450,11 +450,14 @@ const DetailPin = () => {
                 {!isCurrentUser && (
                   <div className='creator-follow ml-auto'>
                     {isFollowing ? (
-                      <button onClick={handleUnFollowUser} className='btn-linkhover py-3.5 px-5 rounded-full'>
+                      <button
+                        onClick={handleUnFollowUser}
+                        className='btn-linkhover py-3.5 px-5 rounded-full text-[#ffffff] bg-dark_color hover:bg-[#1e1c1c]'
+                      >
                         Đã theo dõi
                       </button>
                     ) : (
-                      <button onClick={handleFollowUser} className='btn-save py-3.5'>
+                      <button onClick={handleFollowUser} className='btn-linkhover py-3.5 px-5 rounded-full'>
                         <span className='text-base'>Theo dõi</span>
                       </button>
                     )}

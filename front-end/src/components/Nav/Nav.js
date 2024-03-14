@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { FaSignOutAlt } from 'react-icons/fa'
-import { IoNotifications } from 'react-icons/io5'
 import { AiFillMessage } from 'react-icons/ai'
 import 'tippy.js/dist/tippy.css'
 
@@ -28,19 +27,18 @@ const Nav = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const location = useLocation()
 
   let axiosJWT = createAxios(user, dispatch, logoutSuccess)
 
   const accessToken_daniel = user?.data?.AccessToken
 
   const handleButtonClick = (btnName) => {
-    const updatedActiveBtn = {}
-    Object.keys(activeBtn).forEach((key) => {
-      // Duyệt qua tất cả các key trong activeBtn
-      // Đặt key tương ứng thành true nếu nó là btnName, ngược lại là false
-      updatedActiveBtn[key] = key === btnName
-    })
-    setActiveBtn(updatedActiveBtn)
+    setActiveBtn((prevActiveBtn) => ({
+      ...prevActiveBtn,
+      home: btnName === 'home',
+      create: btnName === 'create'
+    }))
   }
 
   const handleLogout = () => {
@@ -48,7 +46,13 @@ const Nav = () => {
     console.log('done handle logout')
   }
 
-  useEffect(() => {}, [activeBtn])
+  useEffect(() => {
+    const { pathname } = location
+    setActiveBtn({
+      home: pathname === '/',
+      create: pathname === '/create'
+    })
+  }, [location])
 
   console.log(activeBtn)
   return (
@@ -68,13 +72,6 @@ const Nav = () => {
         </Navbar.Brand>
         {user ? (
           <div className='flex md:order-2 gap-2'>
-            {/* <Tooltip content='Notify'>
-            <NavLink to='/notify'>
-              <button className='rounded-full btn-circle'>
-                <IoNotifications size='1.7rem' color='#666666' className='cursor-pointer' />
-              </button>
-            </NavLink>
-          </Tooltip> */}
             <Tooltip content='Message'>
               <NavLink to='/message'>
                 <button className='rounded-full btn-circle mt-[3px]'>
