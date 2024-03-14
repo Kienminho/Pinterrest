@@ -6,8 +6,9 @@ import { loginSuccess } from '../../store/slices/AuthSlice'
 import { Button } from 'flowbite-react'
 import { MdPinInvoke } from 'react-icons/md'
 import toast from 'react-hot-toast'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { updateFirstLogin, updateState } from '../../store/slices/UserSlice'
+import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 
 const CategoryPicker = () => {
   const navigate = useNavigate()
@@ -58,9 +59,12 @@ const CategoryPicker = () => {
   useEffect(() => {
     try {
       const getCategories = async () => {
-        const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/category/get-all-categories`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
+        const resData = await axiosJWT.get(
+          `${process.env.REACT_APP_API_URL}/category/get-all-categories?pageIndex=1&pageSize=50`,
+          {
+            headers: { authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
         console.log(resData.data.data)
         setCategories(resData.data.data)
       }
@@ -70,10 +74,25 @@ const CategoryPicker = () => {
     }
   }, [])
 
+  const handleGoBack = () => {
+    navigate(-1)
+  }
+
+  // Lấy đường dẫn hiện tại
+  const location = useLocation()
+  const isReChooseCategoryPage = location.pathname === '/settings/category'
+
   return (
     <div className='w-3/5 mx-auto text-dark_color'>
       <h2 className='text-center mt-10 mb-2'>Cá nhân hoá bảng tin nhà của bạn</h2>
       <p className='text-xl mb-8 text-center'>Chọn những mục bạn quan tâm để Pinspired đề xuất bảng tin cho bạn.</p>
+      {isReChooseCategoryPage && (
+        <div className='absolute go-back top-28 left-8 max-sm:hidden'>
+          <button className='left-arrow rounded-full hover:bg-gray-200 p-2  transition' onClick={handleGoBack}>
+            <FaRegArrowAltCircleLeft size='2rem' color='#5850ec' />
+          </button>
+        </div>
+      )}
       <div className='flex flex-wrap gap-4'>
         {categories.map((category, i) => {
           return (

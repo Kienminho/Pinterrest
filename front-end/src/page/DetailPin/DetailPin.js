@@ -143,7 +143,7 @@ const DetailPin = () => {
         axiosJWT
       )
 
-      if (result) {
+      if (result.statusCode === 200) {
         toast.success('Trả lời nhận xét thành công!')
         setReplyContent('')
         setFinishRep(true)
