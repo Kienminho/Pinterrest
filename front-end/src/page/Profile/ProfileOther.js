@@ -219,7 +219,7 @@ const ProfileOther = () => {
             <div className='user-created-posts'>
               {selectedTab === 'saved' ? (
                 <SuspenseLoader>
-                  <UserSavedPosts posts={savedPosts} />
+                  <UserSavedPosts posts={savedPosts} loadingOther={loadingOther} />
                 </SuspenseLoader>
               ) : (
                 <SuspenseLoader>

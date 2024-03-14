@@ -17,10 +17,12 @@ import { BiBuoy } from 'react-icons/bi'
 import ImgCrop from 'antd-img-crop'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { NavLink, useNavigate } from 'react-router-dom'
 dayjs.extend(customParseFormat)
 
 const Setting = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState('')
   const [selectGender, setSelectGender] = useState('')
   const user = useSelector((state) => state.Auth.login?.currentUser)
@@ -209,7 +211,6 @@ const Setting = () => {
     setSelectGender(e.target.value)
   }
 
-  console.log(userData)
   return (
     <>
       {/* Phan binh thuong */}
@@ -217,12 +218,17 @@ const Setting = () => {
         <Sidebar className='ml-3 mt-[2%]' aria-label='Sidebar with content separator example'>
           <Sidebar.Items>
             <Sidebar.ItemGroup>
-              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiUser}>
-                Thông tin người dùng
-              </Sidebar.Item>
-              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiTable}>
-                Chính sách riêng tư
-              </Sidebar.Item>
+              <NavLink to='/settings'>
+                <Sidebar.Item className='font-medium text-dark_color' icon={HiUser}>
+                  Thông tin người dùng
+                </Sidebar.Item>
+              </NavLink>
+
+              <NavLink to='/settings/category'>
+                <Sidebar.Item className='font-medium text-dark_color' icon={HiTable}>
+                  Chọn chủ đề quan tâm
+                </Sidebar.Item>
+              </NavLink>
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
               <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiViewBoards}>

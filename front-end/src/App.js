@@ -21,6 +21,7 @@ import Terms from './page/Terms/Terms'
 import PrivacyPolicy from './page/PrivacyPolicy/PrivacyPolicy'
 import Explore from './page/Explore/Explore'
 import ProfileOther from './page/Profile/ProfileOther'
+import CategoryPicker from './components/Intro/CategoryPicker'
 
 // const DetailPin = lazy(() => import('./page/DetailPin/DetailPin'))
 // const Profile = lazy(() => import('./page/Profile/Profile'))
@@ -111,6 +112,14 @@ const App = () => {
           element={
             <PrivateRoute>
               <Setting />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/settings/category'
+          element={
+            <PrivateRoute>
+              <CategoryPicker />
             </PrivateRoute>
           }
         />
