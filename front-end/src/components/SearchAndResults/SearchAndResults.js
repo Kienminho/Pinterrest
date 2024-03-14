@@ -6,7 +6,8 @@ import { loginSuccess } from '../../store/slices/AuthSlice'
 import { createConversation } from '../../store/apiRequest'
 import toast from 'react-hot-toast'
 
-export const SearchAndResults = ({ onConversationCreated, conversations }) => {
+export const SearchAndResults = ({ onConversationCreated, conversations, fetchMessages }) => {
+  const userReal = useSelector((state) => state.User)
   const dispatch = useDispatch()
   const userInitial = useSelector((state) => state.Auth.login?.currentUser)
   let axiosJWT = createAxios(userInitial, dispatch, loginSuccess)
@@ -39,18 +40,44 @@ export const SearchAndResults = ({ onConversationCreated, conversations }) => {
     fetchDataUser(value)
   }
 
+  const processedExistingConversations = (existingConversation) => {
+    // Sử dụng hàm Array.map() để biến đổi mỗi phần tử trong mảng
+    return existingConversation.map(({ _id, members }) => {
+      // Kiểm tra userId của từng thành viên trong cuộc trò chuyện
+      const receiverIndex = members.findIndex((member) => member.userId !== userReal._id)
+      const receiver = receiverIndex !== -1 ? members[receiverIndex] : null
+
+      // Trả về một object mới chứa thông tin đã xử lý
+      return {
+        conversationId: _id,
+        receiver
+      }
+    })
+  }
+
   const handleCreateConversation = async (senderId, receiverId) => {
     try {
       // Kiểm tra xem đã có cuộc trò chuyện giữa hai người này hay chưa
-      const existingConversation = conversations.find(
-        (conv) =>
-          conv.members.some((member) => member.userId === senderId) &&
-          conv.members.some((member) => member.userId === receiverId)
-      )
+      const existingConversation = [
+        conversations.find(
+          (conv) =>
+            conv.members.some((member) => member.userId === senderId) &&
+            conv.members.some((member) => member.userId === receiverId)
+        )
+      ]
+
+      console.log(existingConversation)
+
+      // Xử lý members trước khi truyền vào hàm map
+      const ketqua = processedExistingConversations(existingConversation)
+      console.log(ketqua)
+      console.log(ketqua[0].conversationId)
+      console.log(ketqua[0].receiver)
 
       // Nếu đã có cuộc trò chuyện, mở cuộc trò chuyện đã tồn tại
-      if (existingConversation) {
-        toast.error('Cuộc trò chuyện đã tồn tại!')
+      if (existingConversation.length > 0) {
+        await fetchMessages(ketqua[0].conversationId, accessToken_daniel, axiosJWT, ketqua[0].receiver)
+        toast.success('Cuộc trò chuyện đã tồn tại!')
       } else {
         // Nếu chưa có, tạo cuộc trò chuyện mới
         const res = await createConversation(senderId, receiverId, accessToken_daniel, axiosJWT)

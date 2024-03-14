@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import { createMessage, getConversationByUser } from '../../store/apiRequest'
@@ -23,6 +23,8 @@ const Messenger = () => {
 
   const [socket, setSocket] = useState(null)
   const messageRef = useRef(null)
+
+  console.log(messages)
 
   useEffect(() => {
     //wss://api-pinterrest.up.railway.app
@@ -49,7 +51,9 @@ const Messenger = () => {
   }, [socket])
 
   useEffect(() => {
+    console.log('auto scroll')
     messageRef?.current?.scrollIntoView({ behavior: 'smooth' })
+    console.log('auto scroll done')
   }, [messages?.messages])
 
   // fetch conversation của thằng user hiện tại
@@ -134,20 +138,27 @@ const Messenger = () => {
   console.log(processedConversations)
 
   return (
-    <div className='w-screen md:flex font-roboto items-center lg:justify-center'>
-      <div className='md:w-[40%] xl:w-[25%] h-screen px-8 py-5 overflow-scroll'>
+    <div className='w-screen md:flex font-roboto items-center lg:justify-center '>
+      <div className='md:w-[40%] xl:w-[25%] h-screen px-8 py-5 overflow-scroll border-zinc-300 border-l-[1.5px] md:shadow-lg rounded-xl'>
         <div className='text-dark_color text-2xl mb-4 font-bold'>Chat</div>
-        <SearchAndResults onConversationCreated={handleConversationCreated} conversations={conversations} />
+        <SearchAndResults
+          onConversationCreated={handleConversationCreated}
+          conversations={conversations}
+          fetchMessages={fetchMessages}
+        />
         <div className='mt-5'>
           <div>
             {loadingList ? (
-              <div className='flex flex-col absolute top-[40%] px-24'>
+              <div className='flex flex-col absolute top-[45%] ml-[10%]'>
                 <Spin size='large' />
               </div>
             ) : processedConversations.length > 0 ? (
               processedConversations.map(({ conversationId, receiver }) => {
                 return (
-                  <div className='flex items-center py-4 hover:bg-zinc-100 cursor-pointer transition duration-300 ease-in-out hover:rounded-xl'>
+                  <div
+                    key={conversationId}
+                    className='flex items-center py-4 px-3 hover:bg-zinc-100 cursor-pointer transition duration-300 ease-in-out hover:rounded-xl'
+                  >
                     <div
                       className='cursor-pointer flex items-center'
                       onClick={() => fetchMessages(conversationId, accessToken_daniel, axiosJWT, receiver)}
@@ -169,7 +180,7 @@ const Messenger = () => {
           </div>
         </div>
       </div>
-      <div className='md:w-[60%] xl:w-[45%] h-screen flex flex-col items-center border-zinc-200 border-[1.5px]'>
+      <div className='rounded-xl rounded-s-none shadow-sm md:w-[60%] xl:w-[75%] h-screen flex flex-col items-center border-zinc-200 border-[1.5px]'>
         {messages?.receiver && (
           <div className='w-full border-b-[1.5px] border-zinc-100 h-[50px] flex items-center px-10 py-10'>
             <div className='receiver-image rounded-full w-12 h-12 aspect-square overflow-hidden shrink-0 cursor-pointer'>
@@ -185,8 +196,8 @@ const Messenger = () => {
           <div className='p-12'>
             {/* Kiểm tra xem dữ liệu đã được tải hoàn toàn chưa */}
             {loadingMsg ? (
-              <div className='flex flex-col gap-3 items-center justify-center absolute inset-0'>
-                <span className=''>Đang tải tin nhắn, vui lòng đợi...</span>
+              <div className='flex flex-col gap-3 items-center justify-center ml-[40%] xl:ml-[30%] absolute inset-0'>
+                <span className=''>Đang tải tin nhắn...</span>
                 <Spin size='large' />
               </div>
             ) : messages?.messages?.length >= 0 ? (
@@ -261,7 +272,7 @@ const Messenger = () => {
           </div>
         )}
       </div>
-      <div className='xl:w-[20%] w-0 md:h-screen overflow-scroll'></div>
+      {/* <div className='xl:w-[10%] w-0 md:h-screen overflow-scroll'></div> */}
     </div>
   )
 }
