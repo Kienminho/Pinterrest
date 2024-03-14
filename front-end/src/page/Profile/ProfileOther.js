@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import './ProfileOther.css'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
-import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import ModalListFollow from '../../components/ModalListFollow/ModalListFollow'
 import SuspenseLoader from '../../components/SuspenseLoader/SuspenseLoader'
@@ -14,9 +13,8 @@ import SuspenseLoader from '../../components/SuspenseLoader/SuspenseLoader'
 
 import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts'
 import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
-import { followUser, unfollowUser } from '../../store/apiRequest'
-import { setFollowingStatus } from '../../store/slices/FollowingSlice'
 import toast from 'react-hot-toast'
+import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 
 const ProfileOther = () => {
   const { id } = useParams()
@@ -33,21 +31,28 @@ const ProfileOther = () => {
   const [following, setFollowing] = useState([])
   const [loadingOther, setLoadingOther] = useState(false)
 
-  const isFollowing = useSelector((state) => state.Following.isFollowing)
+  const { followingList } = useSelector((state) => {
+    return state.Following
+  })
+  console.log(followingList)
+  const isFollowing = followingList.includes(id)
+  console.log(isFollowing)
 
   // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
-  const handleFollowToggle = async () => {
-    const targetFollow = following.find((f) => f.following.UserName === createdPosts[0]?.Created?.UserName)
+  const handleFollowUser = async () => {
     try {
-      if (isFollowing) {
-        // Nếu đang theo dõi, thực hiện hành động "Bỏ theo dõi"
-        await unfollowUser(targetFollow?._id, accessToken_daniel, axiosJWT)
-        dispatch(setFollowingStatus(false))
-        toast.success('Huỷ theo dõi thành công!')
-      } else {
-        // Nếu chưa theo dõi, thực hiện hành động "Theo dõi"
-        await followUser(_id, id, accessToken_daniel, axiosJWT)
-        dispatch(setFollowingStatus(true))
+      const res = await axiosJWT.post(
+        `${process.env.REACT_APP_API_URL}/user/follow`,
+        {
+          follower: _id,
+          following: id
+        },
+        {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        }
+      )
+      if (res.data.statusCode === 200) {
+        dispatch(followUser(id))
         toast.success('Theo dõi thành công!')
       }
     } catch (error) {
@@ -55,24 +60,46 @@ const ProfileOther = () => {
     }
   }
 
-  // Lấy danh sách follower và following của người dùng hiện tại
+  const handleUnFollowUser = async () => {
+    try {
+      const targetUnfollow = followers.find((item) => item.following === id)
+      const targetUnfollowId = targetUnfollow?._id
+      const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/user/un-follow/${targetUnfollowId}`, {
+        headers: { authorization: `Bearer ${accessToken_daniel}` }
+      })
+      if (res.data.statusCode === 200) {
+        dispatch(unfollowUser(id))
+        toast.success('Huỷ theo dõi thành công!')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Lấy danh sách follower và following của người dùng hiện tại (ngdung khac)
   useEffect(() => {
     const fetchDataFromServer = async () => {
       try {
         // Gọi API để lấy danh sách follower
-        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
+        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower/${id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
+
         const followersData = followersRes.data.data
+        console.log(followersData)
+
         if (followersData) {
           setFollowers(followersData)
         }
 
         // Gọi API để lấy danh sách following
-        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
+        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following/${id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
+
         const followingData = followingRes.data.data
+        console.log(followingData)
+
         if (followingData) {
           setFollowing(followingData)
         }
@@ -81,8 +108,9 @@ const ProfileOther = () => {
       }
     }
     fetchDataFromServer()
-  }, [])
+  }, [isFollowing])
 
+  // get post by user
   useEffect(() => {
     const getPostsFromServer = async () => {
       try {
@@ -104,42 +132,35 @@ const ProfileOther = () => {
     getPostsFromServer()
   }, [])
 
+  // Get saved posts
   useEffect(() => {
-    const fetchDataFromServer = async () => {
+    const getSavedPostsFromServer = async () => {
       try {
-        // Gọi API để lấy danh sách follower
-        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
+        // setLoading(true)
+        const resData = await axiosJWT.post(
+          `${process.env.REACT_APP_API_URL}/post/get-saved-posts?pageIndex=1&pageSize=50`,
+          { id: id },
+          {
+            headers: { authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
+        const postData = resData.data.data
+        console.log('Saved posts: ', postData)
 
-        const followersData = followersRes.data.data
-        console.log(followersData)
-
-        if (followersData) {
-          setFollowers(followersData)
-        }
-
-        // Gọi API để lấy danh sách following
-        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
-          headers: { authorization: `Bearer ${accessToken_daniel}` }
-        })
-
-        const followingData = followingRes.data.data
-        console.log(followingData)
-
-        if (followingData) {
-          setFollowing(followingData)
+        if (postData) {
+          setSavedPosts(postData)
+          // setLoading(false)
         }
       } catch (error) {
         console.log(error)
       }
     }
-    fetchDataFromServer()
+    getSavedPostsFromServer()
   }, [])
 
   return (
     <div className='user_profile minus-nav-100vh '>
-      <div className='profile-header flex flex-col items-center pt-10 '>
+      <div className='profile-header flex flex-col items-center pt-10'>
         {/* Avatar part */}
         <div className='relative profile-pic-main mb-4'>
           <div className='w-32 flex justify-center rounded-full aspect-square overflow-hidden'>
@@ -159,13 +180,19 @@ const ProfileOther = () => {
 
         {/* Follow modal part  */}
         <div className='profile-follow mt-3 flex gap-3 items-center font-medium'>
-          <ModalListFollow followerList={followers} followingList={following} />
+          <ModalListFollow followersList={followers} followingsList={following} />
         </div>
 
         <div className='creator-follow mx-auto mt-3'>
-          <button className='btn-upload rounded-full py-3' onClick={handleFollowToggle}>
-            <span className='text-base'>{isFollowing ? 'Bỏ theo dõi' : 'Theo dõi'}</span>
-          </button>
+          {isFollowing ? (
+            <button onClick={handleUnFollowUser} className='btn-linkhover py-3.5 px-5 rounded-full'>
+              Đã theo dõi
+            </button>
+          ) : (
+            <button onClick={handleFollowUser} className='btn-save py-3.5'>
+              <span className='text-base'>Theo dõi</span>
+            </button>
+          )}
         </div>
       </div>
       <div className='profile-pins mt-8 text-[#333333]'>

@@ -7,12 +7,11 @@ import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 import { MdSend } from 'react-icons/md'
 
 import SuspenseImg from '../../components/SuspenseImg/SuspenseImg'
-import { Accordion, Button, Textarea } from 'flowbite-react'
+import { Textarea } from 'flowbite-react'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
-import { createComment, followUser, replyComment, unfollowUser } from '../../store/apiRequest'
-import moment from 'moment'
+import { createComment, replyComment } from '../../store/apiRequest'
 import 'moment/locale/vi'
-import { setFollowingStatus } from '../../store/slices/FollowingSlice'
+import { followUser, resetFollowing, setFollowingStatus, unfollowUser } from '../../store/slices/FollowingSlice'
 import toast from 'react-hot-toast'
 import './DetailPin.css'
 import { Spin } from 'antd'
@@ -20,6 +19,7 @@ import ImageDownloader from '../../components/ImageDownloader/ImageDownloader'
 import { Comment } from '../../components/Comment/Comment'
 import { ReplyInput } from '../../components/ReplyInput/ReplyInput'
 import { ReplyComment } from '../../components/ReplyComment/ReplyComment'
+import { resetSavedPosts, savePost, unsavePost } from '../../store/slices/SavePostSlice'
 
 const DetailPin = () => {
   const [postData, setPostData] = useState({})
@@ -39,8 +39,21 @@ const DetailPin = () => {
   const [loadingCmt, setLoadingCmt] = useState(true)
   const [loadingPost, setLoadingPost] = useState(true)
 
+  const { savedPosts } = useSelector((state) => {
+    return state.SavePost
+  })
+  console.log(savedPosts)
+  const isPostSaved = savedPosts.includes(postData?._id)
+  console.log(isPostSaved)
+
+  const { followingList } = useSelector((state) => {
+    return state.Following
+  })
+  console.log(followingList)
+  const isFollowing = followingList.includes(postData?.Created?._id)
+  console.log(isFollowing)
+
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const isFollowing = useSelector((state) => state.Following.isFollowing)
   const { Avatar: UserAvatar, _id: UserId } = useSelector((state) => state.User)
   const isCurrentUser = user && UserId === postData?.Created?._id
   const { id } = useParams()
@@ -202,19 +215,20 @@ const DetailPin = () => {
     setReplyContent('')
   }
 
-  // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
-  const handleFollowToggle = async () => {
-    const targetFollow = following.find((f) => f.following.UserName === postData?.Created?.UserName)
+  const handleFollowUser = async () => {
     try {
-      if (isFollowing) {
-        // Nếu đang theo dõi, thực hiện hành động "Bỏ theo dõi"
-        await unfollowUser(targetFollow?._id, accessToken_daniel, axiosJWT)
-        dispatch(setFollowingStatus(false))
-        toast.success('Huỷ theo dõi thành công!')
-      } else {
-        // Nếu chưa theo dõi, thực hiện hành động "Theo dõi"
-        await followUser(UserId, postData?.Created?._id, accessToken_daniel, axiosJWT)
-        dispatch(setFollowingStatus(true))
+      const res = await axiosJWT.post(
+        `${process.env.REACT_APP_API_URL}/user/follow`,
+        {
+          follower: UserId,
+          following: postData?.Created?._id
+        },
+        {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        }
+      )
+      if (res.data.statusCode === 200) {
+        dispatch(followUser(postData?.Created?._id))
         toast.success('Theo dõi thành công!')
       }
     } catch (error) {
@@ -222,6 +236,23 @@ const DetailPin = () => {
     }
   }
 
+  const handleUnFollowUser = async () => {
+    try {
+      const targetUnfollow = following.find((item) => item.following._id === postData?.Created?._id)
+      const targetUnfollowId = targetUnfollow?._id
+      const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/user/un-follow/${targetUnfollowId}`, {
+        headers: { authorization: `Bearer ${accessToken_daniel}` }
+      })
+      if (res.data.statusCode === 200) {
+        dispatch(unfollowUser(postData?.Created?._id))
+        toast.success('Huỷ theo dõi thành công!')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
   const getTotalCommentsAndReplies = (comments) => {
     let total = 0
     comments.forEach((comment) => {
@@ -231,6 +262,44 @@ const DetailPin = () => {
       }
     })
     return total
+  }
+
+  const handleSavedPost = async () => {
+    try {
+      const res = await axiosJWT.post(
+        `${process.env.REACT_APP_API_URL}/post/save-post`,
+        { postId: postData?._id, userId: UserId },
+        {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        }
+      )
+      if (res.data.statusCode === 200) {
+        dispatch(savePost(postData?._id))
+        toast.success('Lưu bài viết thành công!')
+      }
+    } catch (error) {
+      console.log('Error saving post:', error)
+      toast.error('Lưu bài viết thất bại!')
+    }
+  }
+
+  const handleUnsavePost = async () => {
+    try {
+      const res = await axiosJWT.post(
+        `${process.env.REACT_APP_API_URL}/post/unsave-post`,
+        { postId: postData?._id, userId: UserId },
+        {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        }
+      )
+      if (res.data.statusCode === 200) {
+        dispatch(unsavePost(postData?._id))
+        toast.success('Hủy lưu bài viết thành công!')
+      }
+    } catch (error) {
+      console.log('Error saving post:', error)
+      toast.error('Hủy lưu bài viết thất bại!')
+    }
   }
 
   // Lấy thông tin chi tiết 1 post từ server
@@ -283,7 +352,7 @@ const DetailPin = () => {
     const fetchDataFromServer = async () => {
       try {
         // Gọi API để lấy danh sách follower
-        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
+        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower/${UserId}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
         const followersData = followersRes.data.data
@@ -292,7 +361,7 @@ const DetailPin = () => {
         }
 
         // Gọi API để lấy danh sách following
-        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
+        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following/${UserId}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
         const followingData = followingRes.data.data
@@ -307,6 +376,7 @@ const DetailPin = () => {
   }, [])
 
   console.log('finish cmt: ', finishCmt)
+  console.log('following detail pin: ', following)
 
   const handleShowProfile = () => {
     navigate(`/profiles/${postData?.Created?._id}`)
@@ -342,10 +412,15 @@ const DetailPin = () => {
           <div className='w-[550px] desc-container max-sm:px-2 max-sm:w-auto relative'>
             <div className='desc-container-header pt-9 px-9 pb-7 flex justify-between items-center max-sm:pt-5 max-sm:justify-start'>
               <ImageDownloader imageUrl={postData?.Attachment?.Thumbnail} />
-              {/* <Button pinId={id} savedBy={saves} /> */}
-              <button className='btn-save'>
-                <span className='text-base'>Lưu</span>
-              </button>
+              {isPostSaved ? (
+                <button onClick={handleUnsavePost} className='btn-linkhover py-3.5 px-5 rounded-full'>
+                  Đã lưu
+                </button>
+              ) : (
+                <button onClick={handleSavedPost} className='btn-save py-3.5'>
+                  <span className='text-base'>Lưu</span>
+                </button>
+              )}
             </div>
 
             <div className={`desc-body flex flex-col gap-7 px-9 max-sm:gap-3 overflow-y-auto max-h-[43rem] mb-5`}>
@@ -374,9 +449,15 @@ const DetailPin = () => {
                 {/* Nếu là người dùng hiện tại, ẩn nút "Theo dõi" */}
                 {!isCurrentUser && (
                   <div className='creator-follow ml-auto'>
-                    <button color='blue' className='btn-chosen-normal rounded-full py-3' onClick={handleFollowToggle}>
-                      <span className='text-base'>{isFollowing ? 'Bỏ theo dõi' : 'Theo dõi'}</span>
-                    </button>
+                    {isFollowing ? (
+                      <button onClick={handleUnFollowUser} className='btn-linkhover py-3.5 px-5 rounded-full'>
+                        Đã theo dõi
+                      </button>
+                    ) : (
+                      <button onClick={handleFollowUser} className='btn-save py-3.5'>
+                        <span className='text-base'>Theo dõi</span>
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

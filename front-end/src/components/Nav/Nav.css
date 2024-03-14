@@ -11,3 +11,20 @@ img {
   padding: 14px 16px;
   padding-inline-start: 40px;
 }
+
+.css-dev-only-do-not-override-1k979oh.ant-float-btn.ant-float-btn-default.ant-float-btn-circle {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ant-float-btn .ant-float-btn-body .ant-float-btn-content .ant-float-btn-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.ant-float-btn-icon svg {
+  width: 26px;
+  height: 24px;
+}

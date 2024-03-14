@@ -2,9 +2,11 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import AuthSlice from './slices/AuthSlice'
 import UserSlice from './slices/UserSlice'
 import FileSlice from './slices/FileSlice'
+import PostSlice from './slices/PostSlice'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import FollowingSlice from './slices/FollowingSlice'
+import SavePostSlice from './slices/SavePostSlice'
 
 const persistConfig = {
   key: 'root',
@@ -15,7 +17,8 @@ const rootReducer = combineReducers({
   Auth: AuthSlice,
   User: UserSlice,
   File: FileSlice,
-  Following: FollowingSlice
+  Following: FollowingSlice,
+  SavePost: SavePostSlice
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 

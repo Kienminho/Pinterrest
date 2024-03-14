@@ -31,6 +31,7 @@ const Profile = () => {
   const [following, setFollowing] = useState([])
   const [loading, setLoading] = useState(false)
 
+  // Get created posts
   useEffect(() => {
     const getPostsFromServer = async () => {
       try {
@@ -52,11 +53,38 @@ const Profile = () => {
     getPostsFromServer()
   }, [])
 
+  // Get saved posts
+  useEffect(() => {
+    const getSavedPostsFromServer = async () => {
+      try {
+        setLoading(true)
+        const resData = await axiosJWT.post(
+          `${process.env.REACT_APP_API_URL}/post/get-saved-posts?pageIndex=1&pageSize=50`,
+          { id: _id },
+          {
+            headers: { authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
+        const postData = resData.data.data
+        console.log('Saved posts: ', postData)
+
+        if (postData) {
+          setSavedPosts(postData)
+          setLoading(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSavedPostsFromServer()
+  }, [])
+
+  // Get followers and following
   useEffect(() => {
     const fetchDataFromServer = async () => {
       try {
         // Gọi API để lấy danh sách follower
-        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower`, {
+        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower/${_id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
 
@@ -68,7 +96,7 @@ const Profile = () => {
         }
 
         // Gọi API để lấy danh sách following
-        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
+        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following/${_id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
 
@@ -87,8 +115,8 @@ const Profile = () => {
 
   return (
     <LoadingContext.Provider value={loading}>
-      <div className='user_profile minus-nav-100vh '>
-        <div className='profile-header flex flex-col items-center pt-10 '>
+      <div className='user_profile minus-nav-100vh'>
+        <div className='profile-header flex flex-col items-center pt-10'>
           {/* Avatar part */}
           <div className='relative profile-pic-main mb-4'>
             <div className='w-32 flex justify-center rounded-full aspect-square overflow-hidden'>
@@ -117,7 +145,7 @@ const Profile = () => {
 
           {/* Follow modal part  */}
           <div className='profile-follow mt-3 flex gap-3 items-center font-medium'>
-            <ModalListFollow followerList={followers} followingList={following} />
+            <ModalListFollow followersList={followers} followingsList={following} />
           </div>
 
           {/* Activity part */}
