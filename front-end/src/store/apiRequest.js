@@ -362,9 +362,13 @@ export const getListFollowingOfUser = async (userId, accessToken, axiosJWT) => {
 
 export const getUserByEmail = async (email, accessToken, axiosJWT) => {
   try {
-    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/user-by-email/${email}`, {
-      headers: { authorization: `Bearer ${accessToken}` }
-    })
+    const res = await axiosJWT.post(
+      `${process.env.REACT_APP_API_URL}/user/user-by-email/`,
+      { Email: email },
+      {
+        headers: { authorization: `Bearer ${accessToken}` }
+      }
+    )
     return res.data
   } catch (error) {
     console.log(error)

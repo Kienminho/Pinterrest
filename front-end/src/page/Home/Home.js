@@ -42,7 +42,7 @@ const Home = () => {
       {FirstLogin ? (
         <CategoryPicker />
       ) : (
-        <div className='user-home-posts mt-5'>
+        <div className='user-home-posts'>
           <PostsLayoutHome loading={loading}>
             {posts &&
               posts.map((post, i) => {

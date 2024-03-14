@@ -1,6 +1,6 @@
 import React from 'react'
 import PostsLayout from '../PostsGrid/PostsLayout'
-import Post from '../Post/Post'
+import PostSaved from '../Post/PostSaved'
 
 const UserSavedPosts = ({ posts }) => {
   return (
@@ -8,7 +8,7 @@ const UserSavedPosts = ({ posts }) => {
       <PostsLayout postsCount={posts?.length} fallback={'Chưa có gì để hiển thị! Ghim bạn lưu sẽ xuất hiện ở đây.'}>
         {posts &&
           posts.map((post, i) => {
-            return <Post data={post} key={i} type={'user-post'} />
+            return <PostSaved data={post} key={i} type={'user-saved'} />
           })}
       </PostsLayout>
     </div>
