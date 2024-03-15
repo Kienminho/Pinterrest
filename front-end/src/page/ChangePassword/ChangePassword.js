@@ -67,7 +67,7 @@ const ChangePassword = () => {
         </div>
       )}
       <FormWrapper loading={loading}>
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center font-roboto'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />
           </div>

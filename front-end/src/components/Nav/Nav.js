@@ -53,8 +53,7 @@ const Nav = () => {
       create: pathname === '/create'
     })
   }, [location])
-
-  console.log(activeBtn)
+  
   return (
     <>
       <Navbar

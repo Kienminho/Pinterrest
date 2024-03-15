@@ -22,6 +22,7 @@ import PrivacyPolicy from './page/PrivacyPolicy/PrivacyPolicy'
 import Explore from './page/Explore/Explore'
 import ProfileOther from './page/Profile/ProfileOther'
 import CategoryPicker from './components/Intro/CategoryPicker'
+import AboutUs from './page/AboutUs/AboutUs'
 
 // const DetailPin = lazy(() => import('./page/DetailPin/DetailPin'))
 // const Profile = lazy(() => import('./page/Profile/Profile'))
@@ -128,6 +129,14 @@ const App = () => {
           element={
             <PrivateRoute>
               <Terms />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/about'
+          element={
+            <PrivateRoute>
+              <AboutUs />
             </PrivateRoute>
           }
         />

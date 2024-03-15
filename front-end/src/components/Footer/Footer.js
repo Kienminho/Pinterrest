@@ -1,6 +1,8 @@
+import { NavLink } from 'react-router-dom'
+
 export const FooterLayout = () => {
   return (
-    <footer class='bg-gray-900 font-roboto tracking-wide'>
+    <footer class='bg-gray-800 font-roboto tracking-wide'>
       <div class='max-w-screen-xl px-4 pt-16 pb-6 mx-auto sm:px-6 lg:px-8 lg:pt-24'>
         <div class='grid grid-cols-1 gap-8 lg:grid-cols-3'>
           <div>
@@ -56,64 +58,25 @@ export const FooterLayout = () => {
 
           <div class='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 md:grid-cols-3'>
             <div class='text-center sm:text-left'>
-              <p class='text-lg font-medium text-white'>Giới thiệu</p>
-
-              <nav class='mt-8'>
-                <ul class='space-y-4 text-base'>
-                  <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Company History
-                    </a>
-                  </li>
-
-                  <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Meet the Team
-                    </a>
-                  </li>
-
-                  <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Employee Handbook
-                    </a>
-                  </li>
-
-                  <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Careers
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-
-            <div class='text-center sm:text-left'>
               <p class='text-lg font-medium text-white'>Chính sách của chúng tôi</p>
 
               <nav class='mt-8'>
-                <ul class='space-y-4 text-base'>
+                <ul class='space-y-4 text-base text-white'>
                   <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Web Development
-                    </a>
+                    <NavLink to={'/about'}>
+                      <span class='text-white transition hover:text-white/75'>Pinspired là gì?</span>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={'/privacy-policy'}>
+                      <span class='text-white transition hover:text-white/75'>Chính sách quyền riêng tư</span>
+                    </NavLink>
                   </li>
 
                   <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Web Design
-                    </a>
-                  </li>
-
-                  <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Marketing
-                    </a>
-                  </li>
-
-                  <li>
-                    <a class='text-white transition hover:text-white/75' href='/'>
-                      Google Ads
-                    </a>
+                    <NavLink to={'/terms-of-service'}>
+                      <span class='text-white transition hover:text-white/75'>Điều khoản sử dụng</span>
+                    </NavLink>
                   </li>
                 </ul>
               </nav>

@@ -16,7 +16,6 @@ export const useFetchUserInfo = () => {
     const fetchData = async () => {
       try {
         const userData = await getUserByEmail(userEmail, accessToken_daniel, axiosJWT)
-        console.log('useFetchUserInfo', userData.data)
         if (userData.data) {
           // Lọc dữ liệu trước khi dispatch action
           const filteredData = {
@@ -30,7 +29,6 @@ export const useFetchUserInfo = () => {
             FirstLogin: userData.data.FirstLogin
           }
           dispatch(updateState(filteredData))
-          console.log('đã dispatch dữ liệu')
         }
       } catch (error) {
         console.log(error)
