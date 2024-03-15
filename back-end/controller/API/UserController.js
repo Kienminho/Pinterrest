@@ -7,62 +7,73 @@ const _User = require("../../model/User");
 const _Follow = require("../../model/Follow");
 
 const AuthenticateGoogleCallback = async (req, res) => {
-  const access_token = req.body.token;
+  try {
+    const access_token = req.body.token;
+    if (!access_token)
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Token không hợp lệ."));
+    const user = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    const { email, name, picture } = user.data;
+    let userExist = await _User.findOne({ Email: email, TypeLogin: "google" });
+    if (userExist) {
+      if (userExist.FirstLogin) userExist.FirstLogin = false;
+      const accessToken = AuthenticateService.generateAccessToken(userExist);
+      const refreshToken = AuthenticateService.generateRefreshToken(userExist);
+      userExist.RefreshToken = refreshToken;
+      if (userExist.Avatar === picture) userExist.Avatar = picture;
+      await userExist.save();
+      return res.json(
+        Utils.createSuccessResponseModel(1, {
+          UserName: userExist.UserName,
+          Email: userExist.Email,
+          Avatar: userExist.Avatar,
+          FirstLogin: userExist.FirstLogin,
+          AccessToken: accessToken,
+          RefreshToken: refreshToken,
+        })
+      );
+    } else {
+      userExist = {
+        Email: email,
+        FullName: name,
+        Password: "",
+        UserName: Utils.getUserNameByEmail(email),
+        Avatar: picture,
+        FirstLogin: true,
+        TypeLogin: "google",
+      };
 
-  const user = await axios.get(
-    "https://www.googleapis.com/oauth2/v3/userinfo",
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
+      const user = new _User(userExist);
+      await user.save();
+      const accessToken = AuthenticateService.generateAccessToken(user);
+      const refreshToken = AuthenticateService.generateRefreshToken(user);
+      user.RefreshToken = refreshToken;
+      await user.save();
+      return res.json(
+        Utils.createSuccessResponseModel(1, {
+          UserName: user.UserName,
+          Email: user.Email,
+          Avatar: user.Avatar,
+          FirstLogin: user.FirstLogin,
+          AccessToken: accessToken,
+          RefreshToken: refreshToken,
+        })
+      );
     }
-  );
-  const { email, name, picture } = user.data;
-  let userExist = await _User.findOne({ Email: email, TypeLogin: "google" });
-  if (userExist) {
-    if (userExist.FirstLogin) userExist.FirstLogin = false;
-    const accessToken = AuthenticateService.generateAccessToken(userExist);
-    const refreshToken = AuthenticateService.generateRefreshToken(userExist);
-    userExist.RefreshToken = refreshToken;
-    if (userExist.Avatar === picture) userExist.Avatar = picture;
-    await userExist.save();
-    return res.json(
-      Utils.createSuccessResponseModel(1, {
-        UserName: userExist.UserName,
-        Email: userExist.Email,
-        Avatar: userExist.Avatar,
-        FirstLogin: userExist.FirstLogin,
-        AccessToken: accessToken,
-        RefreshToken: refreshToken,
-      })
+  } catch (error) {
+    console.log("Payload: " + req.body);
+    console.log(
+      "UserController -> AuthenticateGoogleCallback: " + error.message
     );
-  } else {
-    userExist = {
-      Email: email,
-      FullName: name,
-      Password: "",
-      UserName: Utils.getUserNameByEmail(email),
-      Avatar: picture,
-      FirstLogin: true,
-      TypeLogin: "google",
-    };
-
-    const user = new _User(userExist);
-    await user.save();
-    const accessToken = AuthenticateService.generateAccessToken(user);
-    const refreshToken = AuthenticateService.generateRefreshToken(user);
-    user.RefreshToken = refreshToken;
-    await user.save();
-    return res.json(
-      Utils.createSuccessResponseModel(1, {
-        UserName: user.UserName,
-        Email: user.Email,
-        Avatar: user.Avatar,
-        FirstLogin: user.FirstLogin,
-        AccessToken: accessToken,
-        RefreshToken: refreshToken,
-      })
-    );
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
 
