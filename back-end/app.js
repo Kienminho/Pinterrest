@@ -13,7 +13,14 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 3000;
 
 //middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine(
