@@ -312,6 +312,7 @@ export const replyComment = async (postId, parrentCommentId, content, attachment
       }
     )
     console.log('day la mot reply moi', res.config.data)
+    return res.data
   } catch (error) {
     console.log(error)
   }

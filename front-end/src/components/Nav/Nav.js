@@ -87,7 +87,11 @@ const Nav = () => {
                 <Avatar
                   alt='User settings'
                   className='ml-2 rounded-full hover:bg-indigo-300 transition duration-300 hover:rounded-full p-1.5 -mt-1'
-                  img={AvatarUser}
+                  img={
+                    AvatarUser
+                      ? AvatarUser
+                      : 'https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg'
+                  }
                   rounded
                 />
               }
