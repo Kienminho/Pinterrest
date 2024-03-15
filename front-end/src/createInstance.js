@@ -1,12 +1,14 @@
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
+import { logoutSuccess } from './store/slices/AuthSlice'
+import { resetState } from './store/slices/UserSlice'
 
 const callRefreshToken = async (user) => {
-  const refreshToken = user?.data.RefreshToken
+  const refreshTokenFromRedux = user?.data.RefreshToken
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL}/user/refresh-token`,
-      { refreshToken },
+      { refreshToken: refreshTokenFromRedux },
       { headers: { 'Content-Type': 'application/json' } }
     )
     return res.data
@@ -21,16 +23,21 @@ export const createAxios = (user, dispatch, stateSucess) => {
   newInstance.interceptors.request.use(
     async (config) => {
       // check accessToken expired
-      let date = new Date()
       const decodedToken = jwtDecode(user?.data.AccessToken)
-      if (decodedToken.exp < date.getTime() / 1000) {
+      if (decodedToken.exp <= decodedToken.iat) {
         const data = await callRefreshToken(user)
-        const refreshUser = {
-          ...user.data,
-          AccessToken: data.data.AccessToken
+        if (data) {
+          const refreshUser = {
+            ...user.data,
+            AccessToken: data.data.AccessToken
+          }
+          dispatch(stateSucess(refreshUser))
+          config.headers['authorization'] = 'Bearer ' + data.data.AccessToken
+        } else {
+          dispatch(logoutSuccess())
+          dispatch(resetState)
+          // navigate('/login')
         }
-        dispatch(stateSucess(refreshUser))
-        config.headers['authorization'] = 'Bearer ' + data.data.AccessToken
       }
       return config
     },
