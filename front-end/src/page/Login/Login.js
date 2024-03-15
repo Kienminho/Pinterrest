@@ -11,7 +11,6 @@ import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
 
 const Login = () => {
-  const [googleToken, setGoogleToken] = useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const inputRef = useRef()
@@ -22,10 +21,12 @@ const Login = () => {
 
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => {
-      setGoogleToken(tokenResponse.access_token)
-      if (tokenResponse.access_token) {
-        handleLoginGoogle()
-      }
+      console.log('Google login successful:', tokenResponse)
+      handleLoginGoogle(tokenResponse.access_token)
+    },
+    onFailure: (error) => {
+      console.error('Google login failed:', error)
+      // Handle login failure (optional: display error message to user)
     }
   })
 
@@ -52,12 +53,13 @@ const Login = () => {
     }
   }
 
-  const handleLoginGoogle = async () => {
+  const handleLoginGoogle = async (accessToken) => {
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/get-info-google`, { token: googleToken })
-      console.log(res)
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/get-info-google`, { token: accessToken })
       return res
-    } catch (error) {}
+    } catch (error) {
+      console.error('API request failed:', error)
+    }
   }
 
   const handleChange = (e) => {
@@ -165,7 +167,7 @@ const Login = () => {
               /> */}
               <button
                 className='bg-[#e9e9e9] border border-blue-400 py-2.5 mt-2 flex justify-center items-center text-dark_color hover:bg-[#d6d6d6] focus:ring-4 focus:ring-blue-200 font-medium rounded-3xl text-base px-2 text-decoration-none w-80 text-center transition duration-300 ease-in-out'
-                onClick={() => login()}
+                onClick={login}
               >
                 <svg class='mr-3' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='25px'>
                   <path
