@@ -13,22 +13,28 @@ const HandleGetPostsByCategories = async (req, res) => {
     const currentUser = await _User.findById(req.user.id);
     let posts = []; //nếu category của user rỗng thì lấy tất cả bài viết
     if (currentUser.Category.length === 0) {
-      posts = await _Post.find({}).populate("Created");
+      posts = await _Post
+        .find({})
+        .select("-Category")
+        .populate({
+          path: "Created",
+          select: "UserName Avatar FullName Email",
+        })
+        .sort({ CreatedAt: -1 });
     } else {
       posts = await _Post
         .find({
           Category: { $in: currentUser.Category },
         })
         .populate({
+          select: "-Category",
           path: "Created",
-          select: "UserName Avatar",
+          select: "UserName Avatar FullName Email",
         })
-        .select("-Category");
+        .sort({ CreatedAt: -1 });
     }
     //phân trang
-    const data = posts
-      .slice((pageIndex - 1) * pageSize, pageSize)
-      .sort((a, b) => b.CreatedAt - a.CreatedAt);
+    const data = posts.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     res.json(Utils.createSuccessResponseModel(posts.length, data));
   } catch (error) {
     console.log(
