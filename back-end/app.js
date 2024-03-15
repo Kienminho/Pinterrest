@@ -13,11 +13,7 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 3000;
 
 //middleware
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.engine(

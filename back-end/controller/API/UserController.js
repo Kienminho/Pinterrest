@@ -467,7 +467,6 @@ const SearchUser = async (req, res) => {
 
 module.exports = {
   AuthenticateGoogleCallback: AuthenticateGoogleCallback,
-  AuthenticateGoogle: AuthenticateGoogle,
   HandleRegister: HandleRegister,
   HandleLogin: HandleLogin,
   HandleLogout: HandleLogout,
