@@ -6,8 +6,12 @@ import { useDispatch } from 'react-redux'
 import logo from '../../components/Nav/PLogo.svg'
 import { loginGoogle, loginUser } from '../../store/apiRequest'
 import { Alert, Spin } from 'antd'
+import { GoogleLogin } from '@react-oauth/google'
+import { useGoogleLogin } from '@react-oauth/google'
+import axios from 'axios'
 
 const Login = () => {
+  const [googleToken, setGoogleToken] = useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const inputRef = useRef()
@@ -15,6 +19,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [hideError, setHideError] = useState(false)
+
+  const login = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      setGoogleToken(tokenResponse.access_token)
+      if (tokenResponse.access_token) {
+        handleLoginGoogle()
+      }
+    }
+  })
 
   useEffect(() => {
     return inputRef?.current?.focus()
@@ -24,11 +37,6 @@ const Login = () => {
     Email: '',
     Password: ''
   })
-
-  const formDataObject = {
-    Email: formData.Email,
-    Password: formData.Password
-  }
 
   const handleLogin = async (e) => {
     const newUser = {
@@ -44,14 +52,13 @@ const Login = () => {
     }
   }
 
-  const handleLoginGoogle = () => {
-    const res = loginGoogle()
-    console.log(res)
+  const handleLoginGoogle = async () => {
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/get-info-google`, { token: googleToken })
+      console.log(res)
+      return res
+    } catch (error) {}
   }
-
-  const formDataString = JSON.stringify(formDataObject)
-
-  console.log(formDataString)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -148,9 +155,17 @@ const Login = () => {
               <hr class='border-gray-400' />
             </div>
             <div className='flex justify-center'>
+              {/* <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                  console.log(credentialResponse)
+                }}
+                onError={() => {
+                  console.log('Login Failed')
+                }}
+              /> */}
               <button
-                className='bg-white border py-2.5 mt-2 flex justify-center items-center text-dark_color hover:bg-[#f1f1f1] focus:ring-4 focus:ring-gray-200 font-medium rounded-3xl text-base px-2 text-decoration-none w-80 text-center transition duration-300 ease-in-out'
-                onClick={handleLoginGoogle}
+                className='bg-[#e9e9e9] border border-blue-400 py-2.5 mt-2 flex justify-center items-center text-dark_color hover:bg-[#d6d6d6] focus:ring-4 focus:ring-blue-200 font-medium rounded-3xl text-base px-2 text-decoration-none w-80 text-center transition duration-300 ease-in-out'
+                onClick={() => login()}
               >
                 <svg class='mr-3' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' width='25px'>
                   <path
@@ -170,7 +185,6 @@ const Login = () => {
                     d='M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z'
                   />
                 </svg>
-                {/* <a href={`${process.env.REACT_APP_API_URL}/user/google`}>Tiếp tục truy cập Google</a> */}
                 Tiếp tục truy cập Google
               </button>
             </div>

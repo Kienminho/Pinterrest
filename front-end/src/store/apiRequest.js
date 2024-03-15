@@ -42,32 +42,6 @@ export const loginUser = async (user, dispatch, navigate) => {
   }
 }
 
-export const loginGoogle = async () => {
-  try {
-    // window.location.href = `${process.env.REACT_APP_API_URL}/user/google`
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/google`)
-    console.log(res)
-    return res
-  } catch (error) {}
-}
-
-// export const registerUser = async (user, dispatch) => {
-//   dispatch(registerStart())
-//   try {
-//     const resData = await axios.post(`${process.env.REACT_APP_API_URL}/user/register`, user)
-//     console.log(resData.data)
-//     // if (res.statusCode === 200) {
-//     //   dispatch(registerSuccess(res.data))
-//     // } else {
-//     //   dispatch(registerFailed())
-//     //   console.log('that bai roi')
-//     // }
-//     // return res
-//   } catch (error) {
-//     dispatch(registerFailed())
-//   }
-// }
-
 export const registerUser = async (user, dispatch, navigate) => {
   dispatch(registerStart())
 
@@ -103,6 +77,8 @@ export const logoutUser = async (dispatch, navigate, accessToken, axiosJWT) => {
     navigate('/login')
   } catch (error) {
     dispatch(logoutFailed())
+    dispatch(resetState())
+    navigate('/login')
     toast.error('Đăng xuất không thành công')
   }
 }
