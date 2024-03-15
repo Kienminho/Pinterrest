@@ -6,32 +6,9 @@ const AuthenticateService = require("../../common/AuthenticateService");
 const _User = require("../../model/User");
 const _Follow = require("../../model/Follow");
 
-const REDIRECT_URI = `${process.env.BASE_URL}/api/user/google/callback`;
-
-const AuthenticateGoogle = async (req, res) => {
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
-  res.redirect(url);
-};
-
 const AuthenticateGoogleCallback = async (req, res) => {
-  const { code } = req.query;
-  const { data } = await axios.post(
-    "https://oauth2.googleapis.com/token",
-    {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      code,
-      grant_type: "authorization_code",
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const access_token = req.body.token;
 
-  const { access_token } = data;
   const user = await axios.get(
     "https://www.googleapis.com/oauth2/v3/userinfo",
     {

@@ -10,8 +10,7 @@ router.get(
   AuthenticateService.authenticateToken,
   UserController.HandleLogout
 );
-router.get("/google", UserController.AuthenticateGoogle);
-router.get("/google/callback", UserController.AuthenticateGoogleCallback);
+router.get("/get-info-google", UserController.AuthenticateGoogleCallback);
 
 router.post(
   "/user-by-email",
