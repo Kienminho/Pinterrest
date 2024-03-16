@@ -110,6 +110,11 @@ export const SearchAndResultsImage = () => {
           placeholder='Tìm kiếm bài viết...'
           value={input}
           onChange={(e) => handleChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch()
+            }
+          }}
         />
         {input && ( // Hiển thị nút xoá input chỉ khi input không trống
           <button className='focus:outline-none hover:bg-zinc-200 rounded-full p-2' onClick={handleClearInput}>
@@ -119,12 +124,6 @@ export const SearchAndResultsImage = () => {
         <button className='ml-2 focus:outline-none hover:bg-zinc-200 rounded-full p-2.5' onClick={handleSearch}>
           <FaSearch />
         </button>
-        {/* <button
-          onClick={handleSearch}
-          className='text-white  focus:ring-2 focus:outline-none focus:ring-indigo-300 font-medium rounded-2xl text-sm transition duration-300 ease-in-out px-4 py-1.5'
-        >
-          <TbPhotoSearch id='search-icon' size='1.4rem' color='' />
-        </button> */}
       </div>
       {showResults && (
         <div className='results-list w-full md:w-[38%] lg:w-[48%] xl:w-[58%] 2xl:w-[68%] bg-[#ffffff] flex flex-col shadow-xl max-h-[400px] overflow-y-auto mt-4 rounded-lg absolute top-[60px] z-50'>
