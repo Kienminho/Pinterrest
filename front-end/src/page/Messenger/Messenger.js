@@ -244,6 +244,11 @@ const Messenger = () => {
               placeholder='Nhập tin nhắn...'
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  sendMessage()
+                }
+              }}
               className='ps-5 rounded-xl bg-gray-50 outline-none block w-full border-0 py-3.5 text-dark_color shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-normal focus:ring-inset focus:ring-[#818cf8] focus:ring-2 hover:ring-inset hover:ring-1 hover:ring-[#818cf8] font-normal'
             />
             <div
