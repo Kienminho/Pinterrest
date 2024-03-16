@@ -87,10 +87,13 @@ function displayData(arr) {
                   <i class="bx bx-dots-vertical-rounded"></i>
                 </button>
                 <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0);"><i
-                              class="bx bx-edit-alt me-1"></i>Kích hoạt</a>
+                <a class="dropdown-item download-file" href="javascript:void(0);"><i
+                              class="bx bx-edit-alt me-1"></i>Tải ảnh</a>
+                              <a class="dropdown-item update-post" href="javascript:void(0);"
+                    ><i class="bx bx-trash me-1"></i> Cập nhật</a
+                  >
                   <a class="dropdown-item deleted-file" href="javascript:void(0);"
-                    ><i class="bx bx-trash me-1"></i> Delete</a
+                    ><i class="bx bx-trash me-1"></i> Xoá</a
                   >
                 </div>
               </div>
@@ -99,6 +102,98 @@ function displayData(arr) {
     tbody.append(tr);
   });
 }
+
+//update post, isComment is checkbox
+tbody.on("click", ".update-post", function () {
+  const tr = $(this).closest("tr");
+  const id = tr.find(".id").text();
+  const title = tr.find(".title").text();
+  const desc = tr.find(".desc").text();
+  const isComment = tr.find(".isComment").text().includes("Có") ? true : false;
+  $("#update-post-modal").modal("show");
+  $("#update-post-name").val(title);
+  $("#update-desc").val(desc);
+  $("#update-is-comment").prop("checked", isComment);
+  $("#id").val(id);
+});
+
+$(".btn-update-post").on("click", function () {
+  const title = $("#update-post-name").val();
+  const desc = $("#update-desc").val();
+  const isComment = $("#update-is-comment").is(":checked");
+  const id = $("#id").val();
+  const data = {
+    PostId: id,
+    Title: title,
+    Description: desc,
+    IsComment: isComment,
+  };
+  fetch(`/api/post/update-post`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.statusCode === 200) {
+        //hide modal and reset form
+        $("#update-post-modal").modal("hide");
+        $("#update-post-name").val("");
+        $("#update-desc").val("");
+        showToast("Cập nhật bài viết thành công!", true);
+        searchPosts();
+      } else {
+        showToast(res.error, false);
+      }
+    });
+});
+
+//download file from image link
+tbody.on("click", ".download-file", function () {
+  const tr = $(this).closest("tr");
+  const title = tr.find(".title").text();
+  const img = tr.find("img").attr("src");
+
+  //download image using fetch and set name for imag
+  fetch(img)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", title + ".jpg");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
+});
+
+$(document).on("click", ".deleted-file", function () {
+  let tr = $(this).closest("tr");
+  let id = tr.find(".id").text();
+  fetch(`/api/post/delete-post/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.statusCode === 200) {
+        showToast("Xoá thành công!", true);
+        tr.remove(); // Use 'tr' directly since it's already a jQuery object
+      } else {
+        showToast("Xoá thất bại!", false);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
 
 tbody.on("click", "img", function () {
   createImageViewer(this);

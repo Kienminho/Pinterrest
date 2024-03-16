@@ -22,7 +22,11 @@ const AuthenticateGoogleCallback = async (req, res) => {
       }
     );
     const { email, name, picture } = user.data;
-    let userExist = await _User.findOne({ Email: email, TypeLogin: "google" });
+    let userExist = await _User.findOne({
+      Email: email,
+      TypeLogin: "google",
+      IsDeleted: false,
+    });
     if (userExist) {
       if (userExist.FirstLogin) userExist.FirstLogin = false;
       const accessToken = AuthenticateService.generateAccessToken(userExist);
@@ -94,7 +98,10 @@ const HandleRegister = async (req, res) => {
     }
     const newUser = req.body;
     //check email exist
-    const userExist = await _User.findOne({ Email: newUser.Email });
+    const userExist = await _User.findOne({
+      Email: newUser.Email,
+      IsDeleted: false,
+    });
     if (userExist) {
       return res
         .status(400)
@@ -203,7 +210,10 @@ const HandleLogout = async (req, res) => {
 /// </summary>
 const GetUserByEmail = async (req, res) => {
   try {
-    const userExist = await _User.findOne({ Email: req.body.Email });
+    const userExist = await _User.findOne({
+      Email: req.body.Email,
+      IsDeleted: false,
+    });
     if (!userExist) {
       return res
         .status(400)
@@ -335,6 +345,31 @@ const UpdateAvatar = async (req, res) => {
   }
 };
 
+const DeleteAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id)
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Id không hợp lệ."));
+
+    const userExist = await _User.findById(id);
+    if (!userExist) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Người dùng không tồn tại."));
+    }
+    userExist.IsDeleted = true;
+    await userExist.save();
+    return res.json(
+      Utils.createSuccessResponseModel(0, "Xóa tài khoản thành công.")
+    );
+  } catch (error) {
+    console.log("UserController -> DeleteAccount: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
 const HandleFollow = async (req, res) => {
   try {
     const { follower, following } = req.body;
@@ -450,46 +485,11 @@ const SearchUser = async (req, res) => {
         // Match users with IDs not equal to the logged-in user's ID
         _id: { $ne: req.user.id },
       })
-      .select("UserName Avatar Email FullName");
+      .select(
+        "UserName Avatar Email FullName Gender Birthday Category CreatedAt"
+      );
 
-    const data = query.slice((pageIndex - 1) * pageSize, pageSize);
-    // const pipeline = [
-    //   {
-    //     $match: {
-    //       UserName: { $regex: keyword, $options: "i" },
-    //       IsDeleted: false,
-    //       Role: "user",
-    //       // Match users with IDs not equal to the logged-in user's ID
-    //       _id: { $ne: req.user.id },
-    //     },
-    //   },
-    //   {
-    //     $facet: {
-    //       totalRecord: [{ $count: "count" }],
-    //       userList: [
-    //         { $skip: (pageIndex - 1) * pageSize },
-    //         { $limit: parseInt(pageSize) },
-    //         {
-    //           $project: {
-    //             UserName: 1,
-    //             Avatar: 1,
-    //             Email: 1,
-    //             FullName: 1,
-    //             Gender: 1,
-    //             Birthday: 1,
-    //             Category: 1,
-    //             _id: 1,
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   },
-    // ];
-
-    // const result = await _User.aggregate(pipeline);
-
-    // const totalRecord = result[0]?.totalRecord[0]?.count || 0;
-    // const userList = result[0]?.userList || [];
+    const data = query.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
 
     return res.json(Utils.createSuccessResponseModel(query.length, data));
   } catch (error) {
@@ -509,6 +509,7 @@ module.exports = {
   ForgotPassword: ForgotPassword,
   UpdateInfo: UpdateInfo,
   UpdateAvatar: UpdateAvatar,
+  DeleteAccount: DeleteAccount,
   HandleFollow: HandleFollow,
   HandleUnFollow: HandleUnFollow,
   GetFollowing: GetFollowing,

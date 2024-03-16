@@ -39,6 +39,12 @@ router.put(
   UserController.UpdateAvatar
 );
 
+router.delete(
+  "/delete-account/:id",
+  AuthenticateService.authenticateToken,
+  UserController.DeleteAccount
+);
+
 router.post(
   "/follow",
   AuthenticateService.authenticateToken,

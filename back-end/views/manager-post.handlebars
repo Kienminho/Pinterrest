@@ -82,11 +82,50 @@
                     </div>
                 </form>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+                <button type="button" class="btn-add-post btn btn-primary pe-auto"> Tạo
+                </button>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
-            <button type="button" class="btn-add-post btn btn-primary pe-auto"> Tạo
-            </button>
+    </div>
+</div>
+
+<div class="modal fade" id="update-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-product-modal-label">Cập nhật bài đăng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-post" enctype="application/json">
+                    <div class="mb-3">
+                        <input class="d-none" type="text" id="id" name="Id">
+                        <label for="category-name">Tiêu đề</label>
+                        <input class="form-control" type="text" placeholder="Nhập tên danh mục" id="update-post-name"
+                            name="Title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description">Nội dung</label>
+                        <input class="form-control" type="text" placeholder="Nhập mô tả" id="update-desc"
+                            name="Description">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="update-is-comment" name="IsComment">
+                            <label class="form-check
+                                label" for="flexSwitchCheckDefault">Cho phép bình luận</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+                <button type="button" class="btn-update-post btn btn-primary pe-auto"> Tạo
+                </button>
+            </div>
         </div>
     </div>
 </div>

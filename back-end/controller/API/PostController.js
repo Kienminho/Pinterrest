@@ -15,7 +15,7 @@ const HandleGetPostsByCategories = async (req, res) => {
     let posts = []; //nếu category của user rỗng thì lấy tất cả bài viết
     if (currentUser.Category.length === 0) {
       posts = await _Post
-        .find({})
+        .find({ IsDeleted: false })
         .select("-Category")
         .populate({
           path: "Created",
@@ -26,6 +26,7 @@ const HandleGetPostsByCategories = async (req, res) => {
       posts = await _Post
         .find({
           Category: { $in: currentUser.Category },
+          IsDeleted: false,
         })
         .populate({
           select: "-Category",
@@ -47,10 +48,12 @@ const HandleGetPostsByCategories = async (req, res) => {
 
 const HandleGetPostsByUser = async (req, res) => {
   try {
-    const posts = await _Post.find({ Created: req.params.id }).populate({
-      path: "Created",
-      select: "UserName Avatar FullName Email",
-    });
+    const posts = await _Post
+      .find({ Created: req.params.id, IsDeleted: false })
+      .populate({
+        path: "Created",
+        select: "UserName Avatar FullName Email",
+      });
     res.json(Utils.createSuccessResponseModel(posts.length, posts));
   } catch (error) {
     console.log("PostController -> HandleGetPostsByUser: " + error.message);
@@ -151,7 +154,7 @@ const HandleUpdatePost = async (req, res) => {
   try {
     const { PostId, Title, Description, IsComment = true } = req.body;
     //validate
-    if (!Title || !Description) {
+    if (!Title || !PostId) {
       return res
         .status(400)
         .json(
@@ -174,6 +177,26 @@ const HandleUpdatePost = async (req, res) => {
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("PostController -> HandleCreatePost: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const HandleDeletePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const post = await _Post.findById(id);
+    if (!post)
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Bài đăng không tồn tại!"));
+    post.IsDeleted = true;
+    post.UpdateAt = Date.now();
+    post.Updated = req.user.id;
+    await post.save();
+    res.json(Utils.createSuccessResponseModel(0, true));
+  } catch (error) {
+    console.log("PostController -> HandleDeletePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -365,6 +388,7 @@ module.exports = {
   HandleCreatePost: HandleCreatePost,
   AdminCreatePost: AdminCreatePost,
   HandleUpdatePost: HandleUpdatePost,
+  HandleDeletePost: HandleDeletePost,
   CreateQuestion: createQuestion,
   SearchPost: searchPost,
   HandleSavePost: HandleSavePost,

@@ -39,6 +39,12 @@ router.put(
   PostController.HandleUpdatePost
 );
 
+router.delete(
+  "/delete-post/:id",
+  AuthenticateService.authenticateToken,
+  PostController.HandleDeletePost
+);
+
 router.get(
   "/search",
   AuthenticateService.authenticateToken,

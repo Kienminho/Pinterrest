@@ -103,8 +103,8 @@ function displayData(arr) {
             <i class="bx bx-dots-vertical-rounded"></i>
           </button>
           <div class="dropdown-menu">
-          <a class="dropdown-item" href="javascript:void(0);"><i
-                        class="bx bx-edit-alt me-1"></i>Kích hoạt</a>
+          <a class="dropdown-item download-file" href="javascript:void(0);"><i
+                        class="bx bx-edit-alt me-1"></i>Tải ảnh</a>
             <a class="dropdown-item deleted-file" href="javascript:void(0);"
               ><i class="bx bx-trash me-1"></i> Delete</a
             >
@@ -115,6 +115,26 @@ function displayData(arr) {
     tbody.append(tr);
   });
 }
+
+//download file from image link
+tbody.on("click", ".download-file", function () {
+  const tr = $(this).closest("tr");
+  const title = tr.find(".file-name").text();
+  const img = tr.find("img").attr("src");
+
+  //download image using fetch and set name for imag
+  fetch(img)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", title + ".jpg");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
+});
 
 // Use event delegation
 $(document).on("click", ".deleted-file", function () {
