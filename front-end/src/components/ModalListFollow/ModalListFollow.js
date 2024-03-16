@@ -11,8 +11,6 @@ import { NavLink } from 'react-router-dom'
 function ModalListFollow({ followersList, followingsList }) {
   const [openModalFollowers, setOpenModalFollowers] = useState(false)
   const [openModalFollowings, setOpenModalFollowings] = useState(false)
-  console.log('danh sach Follower: ', followersList)
-  console.log('danh sach Following: ', followingsList)
 
   const { _id: UserId } = useSelector((state) => state.User)
   const dispatch = useDispatch()
@@ -23,28 +21,6 @@ function ModalListFollow({ followersList, followingsList }) {
   const { followingList } = useSelector((state) => {
     return state.Following
   })
-  console.log(followingList)
-
-  // const handleFollowUser = async () => {
-  //   try {
-  //     const res = await axiosJWT.post(
-  //       `${process.env.REACT_APP_API_URL}/user/follow`,
-  //       {
-  //         follower: UserId,
-  //         following: postData?.Created?._id
-  //       },
-  //       {
-  //         headers: { authorization: `Bearer ${accessToken_daniel}` }
-  //       }
-  //     )
-  //     if (res.data.statusCode === 200) {
-  //       dispatch(followUser(postData?.Created?._id))
-  //       toast.success('Theo dõi thành công!')
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   const handleUnFollowUser = async (unFollowId, UnFollowUserId) => {
     try {

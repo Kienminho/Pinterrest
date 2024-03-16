@@ -73,7 +73,6 @@ const Create = () => {
         },
         IsComment: allowComment
       }
-      console.log(postBody)
       const res = await uploadFilesAndCreatePost([file], postBody, dispatch, navigate, accessToken_daniel, axiosJWT)
       if (res.statusCode === 200) {
         toast.success('Tạo bài đăng thành công')
@@ -101,7 +100,6 @@ const Create = () => {
         },
         IsComment: allowComment
       }
-      console.log(postBody)
       const res = await createPostAI(file, postBody, dispatch, navigate, accessToken_daniel, axiosJWT)
       if (res.statusCode === 200) {
         toast.success('Tạo bài đăng thành công')

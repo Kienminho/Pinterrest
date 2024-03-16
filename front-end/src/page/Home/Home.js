@@ -48,7 +48,6 @@ const Home = () => {
 
   const fetchData = () => {
     setPageNumber(pageNumber + 1)
-    console.log('page number: ', pageNumber)
     console.log(`${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=40`)
     const getPostsByCategories = async () => {
       try {

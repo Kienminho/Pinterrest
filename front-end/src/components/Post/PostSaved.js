@@ -9,7 +9,6 @@ const Post = ({ data, type }) => {
   const thumbnail = Attachment?.Thumbnail
   const avatar = Created?.Avatar
   const username = Created?.UserName || 'Stranger'
-  console.log('data: ', data)
 
   return (
     <div className='post-container rounded-xl overflow-hidden mb-4 relative max-sm:mb-2'>

@@ -22,7 +22,6 @@ const ImageUploaderAI = ({ imgSrc: propImgSrc, loadingAI, loadingPostAI }) => {
 
   const onDragOut = (event) => {
     event.preventDefault()
-    console.log('image has been dragged!')
   }
 
   // Function to render previous images

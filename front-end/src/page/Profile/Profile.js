@@ -40,8 +40,6 @@ const Profile = () => {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
         const postData = resData.data.data
-        console.log(postData)
-
         if (postData) {
           setCreatePosts(postData)
           setLoading(false)
@@ -69,8 +67,6 @@ const Profile = () => {
           }
         )
         const postData = resData.data.data
-        console.log('Saved posts: ', postData)
-
         if (postData) {
           setSavedPosts(postData)
           setLoading(false)
@@ -95,8 +91,6 @@ const Profile = () => {
         })
 
         const followersData = followersRes.data.data
-        console.log(followersData)
-
         if (followersData) {
           setFollowers(followersData)
         }
@@ -107,8 +101,6 @@ const Profile = () => {
         })
 
         const followingData = followingRes.data.data
-        console.log(followingData)
-
         if (followingData) {
           setFollowing(followingData)
         }

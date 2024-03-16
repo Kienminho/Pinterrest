@@ -8,7 +8,6 @@ const ImageUploader = ({ setFile, loading }) => {
   const [previousImages, setPreviousImages] = useState([])
   const [previousFiles, setPreviousFiles] = useState([])
 
-  console.log(previousImages)
   const inputRef = useRef(null)
   const previewImg = useRef(null)
 
@@ -30,21 +29,17 @@ const ImageUploader = ({ setFile, loading }) => {
       setFile(file)
       setSelectedFile(file)
       setPreviousImages([...previousImages, URL.createObjectURL(file)])
-      console.log('drop img done!', file)
     } else {
       setFile(null)
       setSelectedFile(null)
-      console.log('dropped file is not an image')
     }
   }
 
   const onDragOut = (event) => {
     event.preventDefault()
-    console.log('image has been dragged!')
   }
 
   const handlePreviousImageClick = (imageURL, event) => {
-    console.log(event)
     setPreviousImages(previousImages.filter((image) => image !== imageURL))
     setPreviousImages([imageURL, ...previousImages.filter((image) => image !== imageURL).slice(0, 2)])
     setPreviousFiles(previousFiles.filter((file) => file !== selectedFile))
@@ -59,9 +54,6 @@ const ImageUploader = ({ setFile, loading }) => {
     setPreviousImages([URL.createObjectURL(file), ...previousImages])
     setPreviousFiles([...previousFiles, file])
   }
-
-  console.log(selectedFile)
-  console.log(previousFiles)
 
   const renderPreviousImages = () => {
     return (

@@ -43,11 +43,8 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
   const processedExistingConversations = (existingConversation) => {
     // Sử dụng hàm Array.map() để biến đổi mỗi phần tử trong mảng
     return existingConversation.map(({ _id, members }) => {
-      // Kiểm tra userId của từng thành viên trong cuộc trò chuyện
-      const receiverIndex = members.findIndex((member) => member.userId !== userReal._id)
+      const receiverIndex = members.findIndex((member) => member._id !== userReal._id)
       const receiver = receiverIndex !== -1 ? members[receiverIndex] : null
-
-      // Trả về một object mới chứa thông tin đã xử lý
       return {
         conversationId: _id,
         receiver
@@ -61,27 +58,19 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
       const existingConversation = [
         conversations.find(
           (conv) =>
-            conv.members.some((member) => member.userId === senderId) &&
-            conv.members.some((member) => member.userId === receiverId)
+            conv.members.some((member) => member._id === senderId) &&
+            conv.members.some((member) => member._id === receiverId)
         )
       ]
 
-      console.log(existingConversation)
-
-      // Xử lý members trước khi truyền vào hàm map
-      const ketqua = processedExistingConversations(existingConversation)
-      console.log(ketqua)
-      console.log(ketqua[0].conversationId)
-      console.log(ketqua[0].receiver)
-
-      // Nếu đã có cuộc trò chuyện, mở cuộc trò chuyện đã tồn tại
-      if (existingConversation.length > 0) {
+      if (!existingConversation.includes(undefined)) {
+        const ketqua = processedExistingConversations(existingConversation)
         await fetchMessages(ketqua[0].conversationId, accessToken_daniel, axiosJWT, ketqua[0].receiver)
+        setShowResults(false)
         toast.success('Cuộc trò chuyện đã tồn tại!')
       } else {
         // Nếu chưa có, tạo cuộc trò chuyện mới
         const res = await createConversation(senderId, receiverId, accessToken_daniel, axiosJWT)
-        console.log(res)
         if (res.statusCode === 200) {
           toast.success('Tạo cuộc trò truyện thành công')
           setInput('')
@@ -113,6 +102,19 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
       document.removeEventListener('click', handleClickOutside)
     }
   }, [])
+
+  useEffect(() => {
+    // Kiểm tra xem danh sách cuộc trò chuyện có thay đổi không
+    // console.log('conversations: ', conversations.length)
+    // console.log('cloneConversations: ', cloneConversations)
+    if (conversations.length > 0) {
+      // Lấy thông tin của cuộc trò chuyện mới nhất
+      const latestConversation = conversations[conversations.length - 1]
+      const lastestVer2 = processedExistingConversations([latestConversation])
+      // Gọi hàm fetchMessages để lấy tin nhắn cho cuộc trò chuyện mới tạo
+      fetchMessages(lastestVer2[0].conversationId, accessToken_daniel, axiosJWT, lastestVer2[0].receiver)
+    }
+  }, [conversations])
 
   return (
     <div className='search-and-results-container' ref={searchRef}>
