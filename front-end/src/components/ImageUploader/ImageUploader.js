@@ -66,33 +66,35 @@ const ImageUploader = ({ setFile, loading }) => {
   const renderPreviousImages = () => {
     return (
       <>
-        <h5>Chọn lại ảnh trước đó, (lưu tối đa 3 ảnh)</h5>
-        <div className='flex gap-2 justify-around'>
-          {previousImages.map((imageURL, index) => (
-            <div className='rounded-3xl ring-2 hover:ring-indigo-400 hover:ring-4 '>
-              <img
+        <div className='flex flex-col font-roboto'>
+          <p className='text-lg text-dark_color font-medium'>Chọn lại ảnh trước đó, (lưu tối đa 3 ảnh)</p>
+          <div className='flex gap-2 justify-around my-5'>
+            {previousImages.map((imageURL, index) => (
+              <div className='rounded-3xl ring-2 hover:ring-indigo-400 hover:ring-4 '>
+                <img
+                  key={index}
+                  className='w-32 h-32 object-cover rounded-3xl cursor-pointer'
+                  src={imageURL}
+                  alt='preview-img-upload'
+                  onClick={(event) => handlePreviousImageClick(imageURL, event)} // Thêm event vào đây
+                />
+              </div>
+            ))}
+          </div>
+          <p className='text-lg text-dark_color font-medium mt-5'>Chọn xem preview ảnh</p>
+          <div className='flex gap-2 justify-around my-5'>
+            {previousImages.map((imageURL, index) => (
+              <Image
                 key={index}
-                className='w-32 h-32 object-cover rounded-3xl cursor-pointer'
+                width={120}
+                height={120}
+                className='rounded-3xl'
                 src={imageURL}
                 alt='preview-img-upload'
-                onClick={(event) => handlePreviousImageClick(imageURL, event)} // Thêm event vào đây
+                preview={true}
               />
-            </div>
-          ))}
-        </div>
-        <h5>Chọn xem preview ảnh trước đó</h5>
-        <div className='flex gap-2 justify-around'>
-          {previousImages.map((imageURL, index) => (
-            <Image
-              key={index}
-              width={120}
-              height={120}
-              className='rounded-3xl'
-              src={imageURL}
-              alt='preview-img-upload'
-              preview={true}
-            />
-          ))}
+            ))}
+          </div>
         </div>
       </>
     )
@@ -100,59 +102,61 @@ const ImageUploader = ({ setFile, loading }) => {
 
   return (
     <>
-      <div
-        className={`img-Uploader bg-[#e9e9e9] w-[26rem] max-sm:w-auto rounded-3xl border-dashed border-gray-300 hover:border-[#929292] border-2 cursor-pointer overflow-hidden relative ${
-          // check if not image, set default height
-          selectedFile && imageHeight ? `h-[${imageHeight}]` : 'h-[32rem] max-sm:h-[25rem]'
-        }`}
-        onClick={selectFile}
-        onDrop={onDropIn}
-        onDragOver={onDragOut}
-      >
-        <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
-          {loading && (
-            <div className='flex flex-col gap-3 items-center justify-center absolute inset-0 bg-white bg-opacity-70'>
-              <span className=''>Đang tạo bài viết, vui lòng đợi...</span>
-              <Spin size='large' />
+      <div className='flex flex-col md:flex-row xl:gap-32 lg:gap-12 gap-6'>
+        {/* Render previous images */}
+        {previousImages.length > 0 && renderPreviousImages()}
+        <div
+          className={`img-Uploader bg-[#e9e9e9] lg:w-[26rem] w-[20rem] max-sm:w-auto rounded-3xl border-dashed border-gray-300 hover:border-[#929292] border-2 cursor-pointer overflow-hidden relative ${
+            // check if not image, set default height
+            selectedFile && imageHeight ? `h-[${imageHeight}]` : 'h-[32rem] max-sm:h-[25rem]'
+          }`}
+          onClick={selectFile}
+          onDrop={onDropIn}
+          onDragOver={onDragOut}
+        >
+          <div className='flex flex-col justify-center items-center h-full pointer-events-none'>
+            {loading && (
+              <div className='flex flex-col gap-3 items-center justify-center absolute inset-0 bg-white bg-opacity-70'>
+                <span className=''>Đang tạo bài viết, vui lòng đợi...</span>
+                <Spin size='large' />
+              </div>
+            )}
+            {selectedFile && previousImages.length === 0 ? (
+              <img
+                ref={previewImg}
+                src={URL.createObjectURL(selectedFile)}
+                alt='preview-img-upload'
+                onLoad={getImageHeight}
+              />
+            ) : selectedFile && previousImages.length >= 1 ? (
+              <img ref={previewImg} src={previousImages[0]} alt='preview-img-upload' onLoad={getImageHeight} />
+            ) : (
+              <>
+                <UploadIcon size='2.5rem' className='rounded-full' />
+                <span className='text-center font-normal text-base pointer-events-none break-words max-w-[250px] mt-3'>
+                  Chọn một tệp hoặc kéo và thả tệp ở đây
+                </span>
+              </>
+            )}
+          </div>
+          {/* Muốn chọn ảnh khác */}
+          {selectedFile && (
+            <div className='flex items-center justify-center  flex-col w-full h-full z-20 bg-[#ffffff8f] absolute opacity-0 hover:opacity-100 top-0'>
+              <UploadIcon size='2rem' />
+              <h4 className='text-center pointer-events-none break-words max-w-[210px]'>Chọn file ảnh khác</h4>
             </div>
           )}
-          {selectedFile && previousImages.length === 0 ? (
-            <img
-              ref={previewImg}
-              src={URL.createObjectURL(selectedFile)}
-              alt='preview-img-upload'
-              onLoad={getImageHeight}
-            />
-          ) : selectedFile && previousImages.length >= 1 ? (
-            <img ref={previewImg} src={previousImages[0]} alt='preview-img-upload' onLoad={getImageHeight} />
-          ) : (
-            <>
-              <UploadIcon size='2.5rem' className='rounded-full' />
-              <span className='text-center font-normal text-base pointer-events-none break-words max-w-[250px] mt-3'>
-                Chọn một tệp hoặc kéo và thả tệp ở đây
-              </span>
-            </>
-          )}
+          <input
+            type='file'
+            accept='image/*'
+            name='upload_file'
+            onChange={handleFileInputChange}
+            hidden
+            multiple={false}
+            ref={inputRef}
+          />
         </div>
-        {/* Muốn chọn ảnh khác */}
-        {selectedFile && (
-          <div className='flex items-center justify-center  flex-col w-full h-full z-20 bg-[#ffffff8f] absolute opacity-0 hover:opacity-100 top-0'>
-            <UploadIcon size='2rem' />
-            <h4 className='text-center pointer-events-none break-words max-w-[210px]'>Chọn file ảnh khác</h4>
-          </div>
-        )}
-        <input
-          type='file'
-          accept='image/*'
-          name='upload_file'
-          onChange={handleFileInputChange}
-          hidden
-          multiple={false}
-          ref={inputRef}
-        />
       </div>
-      {/* Render previous images */}
-      {previousImages.length > 0 && renderPreviousImages()}
     </>
   )
 }

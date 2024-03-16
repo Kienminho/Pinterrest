@@ -2,7 +2,6 @@ import React from 'react'
 import PostsLayoutHome from '../../components/PostsGrid/PostsLayoutHome'
 import Post from '../../components/Post/Post'
 import { useLocation } from 'react-router-dom'
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 const Explore = () => {
   const location = useLocation()

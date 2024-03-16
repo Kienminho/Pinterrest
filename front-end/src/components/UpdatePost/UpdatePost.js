@@ -1,11 +1,11 @@
-import { Button, Label, TextInput, ToggleSwitch } from 'flowbite-react'
+import { ToggleSwitch } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { updatePost } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { FaRegEdit } from 'react-icons/fa'
-import { Image, Modal, Switch } from 'antd'
+import { Image, Modal } from 'antd'
 import InputField from '../Input/InputField'
 import './UpdatePost.css'
 

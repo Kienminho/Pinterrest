@@ -68,14 +68,8 @@ export const FooterLayout = () => {
                     </NavLink>
                   </li>
                   <li>
-                    <NavLink to={'/privacy-policy'}>
-                      <span class='text-white transition hover:text-white/75'>Chính sách quyền riêng tư</span>
-                    </NavLink>
-                  </li>
-
-                  <li>
                     <NavLink to={'/terms-of-service'}>
-                      <span class='text-white transition hover:text-white/75'>Điều khoản sử dụng</span>
+                      <span class='text-white transition hover:text-white/75'>Điều khoản dịch vụ</span>
                     </NavLink>
                   </li>
                 </ul>

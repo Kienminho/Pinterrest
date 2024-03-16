@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import CategoryPicker from '../../components/Intro/CategoryPicker'
 import { useFetchUserInfo } from '../../customHooks/useFetchUserInfo'
 import PostsLayoutHome from '../../components/PostsGrid/PostsLayoutHome'
-import { Pagination, Spin } from 'antd'
 import './Home.css'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -19,25 +18,6 @@ const Home = () => {
   const [totalPosts, setTotalPosts] = useState(0)
 
   let { FirstLogin } = useSelector((state) => state.User)
-
-  // Lấy dữ liệu từ API cho trang mới khi chuyển đổi trang
-  const getPostsByCategories = async (pageIndex) => {
-    try {
-      const resData = await axios.get(
-        `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageIndex}&pageSize=5`,
-        {
-          headers: { Authorization: `Bearer ${accessToken_daniel}` }
-        }
-      )
-      if (resData.data.data) {
-        setPosts(resData.data.data)
-        setTotalPosts(resData.data.totalRecord)
-        setLoading(true)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   // Lấy dữ liệu cho trang đầu tiên khi component được render
   useEffect(() => {
@@ -54,8 +34,11 @@ const Home = () => {
           setTotalPosts(resData.data.totalRecord)
           setLoading(true)
           setPageNumber(pageNumber + 1)
+        } else {
+          setLoading(false)
         }
       } catch (error) {
+        setLoading(false)
         console.log(error)
       }
     }
@@ -78,8 +61,11 @@ const Home = () => {
           setPosts([...posts, ...resData.data.data])
           setTotalPosts(resData.data.totalRecord)
           setLoading(true)
+        } else {
+          setLoading(false)
         }
       } catch (error) {
+        setLoading(false)
         console.log(error)
       }
     }
@@ -105,17 +91,17 @@ const Home = () => {
             dataLength={posts.length} //This is important field to render the next data
             next={fetchData}
             hasMore={true}
-            loader={
-              // <div className='flex flex-col gap-3 items-center bottom-0 left-0 right-0'>
-              //   <Spin size='large' />
-              // </div>
-              <h5 className='text-center'>Đang tải...</h5>
-            }
-            endMessage={
-              <p style={{ textAlign: 'center' }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
+            // loader={
+            //   <div className='flex flex-col gap-3 items-center bottom-0 left-0 right-0'>
+            //     <Spin size='large' />
+            //   </div>
+            //   /* <h5 className='text-center'>Đang tải...</h5> */
+            // }
+            // endMessage={
+            //   <p style={{ textAlign: 'center' }}>
+            //     <b>Yay! You have seen it all</b>
+            //   </p>
+            // }
           ></InfiniteScroll>
         </>
       )}

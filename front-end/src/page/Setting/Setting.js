@@ -17,17 +17,16 @@ import { BiBuoy } from 'react-icons/bi'
 import ImgCrop from 'antd-img-crop'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 dayjs.extend(customParseFormat)
 
 const Setting = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState('')
   const [selectGender, setSelectGender] = useState('')
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const accessToken_daniel = user?.data?.AccessToken
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [loadingAvt, setLoadingAvt] = useState(false)
   const [loadingUpdate, setLoadingUpdate] = useState(false)
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
@@ -91,6 +90,9 @@ const Setting = () => {
           dispatch(updateAvatar(newAvatarPath))
           setFileList([])
           setLoadingAvt(false)
+        } else {
+          toast.error('Thay đổi avatar thất bại!')
+          setLoadingAvt(false)
         }
       } else {
         toast.error('Thay đổi avatar thất bại!')
@@ -139,6 +141,9 @@ const Setting = () => {
         dispatch(updateState(updateBodyWithOutBirthday))
         toast.success('Cập nhật thông tin thành công')
         setLoadingUpdate(false)
+      } else {
+        toast.error('Đã xảy ra lỗi khi cập nhật thông tin')
+        setLoadingUpdate(false)
       }
     } catch (error) {
       toast.error('Đã xảy ra lỗi khi cập nhật thông tin')
@@ -170,6 +175,7 @@ const Setting = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const userCurrentEmail = user.data.Email
         const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
         console.log(userCurrent.data.Birthday)
@@ -189,6 +195,7 @@ const Setting = () => {
         // setSelectedDate(selectedDate)
         setLoading(false)
       } catch (error) {
+        setLoading(false)
         console.error('Lỗi khi lấy thông tin người dùng', error)
       }
     }

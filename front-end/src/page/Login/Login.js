@@ -4,11 +4,12 @@ import InputField from '../../components/Input/InputField'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import logo from '../../components/Nav/PLogo.svg'
-import { loginGoogle, loginUser } from '../../store/apiRequest'
+import { loginUser } from '../../store/apiRequest'
 import { Alert, Spin } from 'antd'
-import { GoogleLogin } from '@react-oauth/google'
 import { useGoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
+import { loginSuccess } from '../../store/slices/AuthSlice'
+import toast from 'react-hot-toast'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -56,7 +57,14 @@ const Login = () => {
   const handleLoginGoogle = async (accessToken) => {
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/get-info-google`, { token: accessToken })
-      return res
+      if (res.data.statusCode === 200) {
+        dispatch(loginSuccess(res.data))
+        toast.success('Đăng nhập thành công')
+        navigate('/')
+      } else {
+        toast.error('Đăng nhập thất bại')
+      }
+      return res.data
     } catch (error) {
       console.error('API request failed:', error)
     }
