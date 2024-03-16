@@ -82,6 +82,16 @@ const AuthenticateGoogleCallback = async (req, res) => {
 /// </summary>
 const HandleRegister = async (req, res) => {
   try {
+    const regex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
+    if (!regex.test(req.body.Email)) {
+      return res
+        .status(400)
+        .json(
+          Utils.createErrorResponseModel(
+            "Email không hợp lệ, vui lòng thử lại."
+          )
+        );
+    }
     const newUser = req.body;
     //check email exist
     const userExist = await _User.findOne({ Email: newUser.Email });
