@@ -442,44 +442,56 @@ const GetFollower = async (req, res) => {
 const SearchUser = async (req, res) => {
   try {
     const { keyword, pageIndex, pageSize } = req.query;
+    const query = await _User
+      .find({
+        UserName: { $regex: keyword, $options: "i" },
+        IsDeleted: false,
+        Role: "user",
+        // Match users with IDs not equal to the logged-in user's ID
+        _id: { $ne: req.user.id },
+      })
+      .select("UserName Avatar Email FullName");
 
-    const pipeline = [
-      {
-        $match: {
-          UserName: { $regex: keyword, $options: "i" },
-          IsDeleted: false,
-          Role: "user",
-        },
-      },
-      {
-        $facet: {
-          totalRecord: [{ $count: "count" }],
-          userList: [
-            { $skip: (pageIndex - 1) * pageSize },
-            { $limit: parseInt(pageSize) },
-            {
-              $project: {
-                UserName: 1,
-                Avatar: 1,
-                Email: 1,
-                FullName: 1,
-                Gender: 1,
-                Birthday: 1,
-                Category: 1,
-                _id: 1,
-              },
-            },
-          ],
-        },
-      },
-    ];
+    const data = query.slice((pageIndex - 1) * pageSize, pageSize);
+    // const pipeline = [
+    //   {
+    //     $match: {
+    //       UserName: { $regex: keyword, $options: "i" },
+    //       IsDeleted: false,
+    //       Role: "user",
+    //       // Match users with IDs not equal to the logged-in user's ID
+    //       _id: { $ne: req.user.id },
+    //     },
+    //   },
+    //   {
+    //     $facet: {
+    //       totalRecord: [{ $count: "count" }],
+    //       userList: [
+    //         { $skip: (pageIndex - 1) * pageSize },
+    //         { $limit: parseInt(pageSize) },
+    //         {
+    //           $project: {
+    //             UserName: 1,
+    //             Avatar: 1,
+    //             Email: 1,
+    //             FullName: 1,
+    //             Gender: 1,
+    //             Birthday: 1,
+    //             Category: 1,
+    //             _id: 1,
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   },
+    // ];
 
-    const result = await _User.aggregate(pipeline);
+    // const result = await _User.aggregate(pipeline);
 
-    const totalRecord = result[0]?.totalRecord[0]?.count || 0;
-    const userList = result[0]?.userList || [];
+    // const totalRecord = result[0]?.totalRecord[0]?.count || 0;
+    // const userList = result[0]?.userList || [];
 
-    return res.json(Utils.createSuccessResponseModel(totalRecord, userList));
+    return res.json(Utils.createSuccessResponseModel(query.length, data));
   } catch (error) {
     console.log("UserController -> SearchUser: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));

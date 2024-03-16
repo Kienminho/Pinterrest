@@ -16,21 +16,7 @@ const createConversation = async (req, res) => {
           )
         );
     }
-
-    const memberInfo = [
-      {
-        userId: senderId,
-        useName: userSender.UserName,
-        fullName: userSender.FullName,
-        avatar: userSender.Avatar,
-      },
-      {
-        userId: receiverId,
-        useName: userReceiver.UserName,
-        fullName: userReceiver.FullName,
-        avatar: userReceiver.Avatar,
-      },
-    ];
+    const memberInfo = [senderId, receiverId];
     console.log(memberInfo);
 
     const conversation = new _Conversation({
@@ -50,9 +36,13 @@ const createConversation = async (req, res) => {
 const getConversationByUser = async (req, res) => {
   try {
     const userId = req.user.id;
-    const conversation = await _Conversation.find({
-      members: { $elemMatch: { userId: userId } },
-    });
+
+    const conversation = await _Conversation
+      .find({
+        members: { $in: [userId] },
+      })
+      .populate("members", ["UserName", "FullName", "Avatar"]);
+
     return res
       .status(200)
       .json(
