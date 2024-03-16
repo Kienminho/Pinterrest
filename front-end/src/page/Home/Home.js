@@ -25,7 +25,7 @@ const Home = () => {
       try {
         setLoading(true)
         const resData = await axios.get(
-          `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=1&pageSize=10`,
+          `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=1&pageSize=40`,
           {
             headers: { Authorization: `Bearer ${accessToken_daniel}` }
           }
@@ -49,12 +49,11 @@ const Home = () => {
   const fetchData = () => {
     setPageNumber(pageNumber + 1)
     console.log('page number: ', pageNumber)
-    console.log(`${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=10`)
+    console.log(`${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=40`)
     const getPostsByCategories = async () => {
       try {
-        setLoading(true)
         const resData = await axios.get(
-          `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=10`,
+          `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=40`,
           {
             headers: { Authorization: `Bearer ${accessToken_daniel}` }
           }
@@ -62,12 +61,8 @@ const Home = () => {
         if (resData.data.statusCode === 200) {
           setPosts([...posts, ...resData.data.data])
           setTotalPosts(resData.data.totalRecord)
-          setLoading(false)
-        } else {
-          setLoading(false)
         }
       } catch (error) {
-        setLoading(false)
         console.log(error)
       }
     }
