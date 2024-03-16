@@ -27,6 +27,12 @@ router.post(
   PostController.HandleCreatePost
 );
 
+router.post(
+  "/admin-create-post",
+  AuthenticateService.authenticateToken,
+  PostController.AdminCreatePost
+);
+
 router.put(
   "/update-post",
   AuthenticateService.authenticateToken,

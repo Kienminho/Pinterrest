@@ -9,6 +9,7 @@ const loaderContainer = $(".loader-container");
 const tbody = $(".tbody");
 const token = getToken();
 
+let filePath;
 let pageIndex = 1; // Track the current page index
 let keyword = ""; // Track the current keyword
 let loading = false; // Track if data is currently being loaded
@@ -117,3 +118,80 @@ function searchPosts() {
 $(".search").on("input", () => {
   debouncedSearchAttachments();
 });
+
+const myDropzone = new Dropzone("#my-drop-zone", {
+  url: "/api/file/upload-images",
+  previewsContainer: null, // Disable default preview container
+  clickable: true, // Allow clicking to add files
+  maxFiles: 1, // Limit to one file
+  maxFilesize: 5, // Max file size in MB
+  previewsContainer: null,
+  acceptedFiles: "image/*", // Accept only images
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  init: function () {
+    this.on("addedfile", function (file) {
+      // Remove the previous file if there is one
+      if (this.files.length > 1) {
+        this.removeFile(this.files[0]);
+      }
+    });
+    this.on("success", function (file, res) {
+      console.log(res); // This should contain the path to the uploaded image
+      filePath = res.data;
+    });
+  },
+});
+
+$(".btn-add-post").on("click", function () {
+  if (validatePost()) {
+    const title = $("#post-name").val();
+    const desc = $("#desc").val();
+    const isComment = $("#is-comment").is(":checked");
+    const data = {
+      Title: title,
+      Description: desc,
+      IsComment: isComment,
+      File: filePath,
+    };
+
+    fetch("/api/post/admin-create-post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.statusCode === 200) {
+          //hide modal and reset form
+          $("#create-post-modal").modal("hide");
+          $("#post-name").val("");
+          $("#desc").val("");
+          filePath = {};
+          myDropzone.removeAllFiles();
+          showToast("Thêm bài viết thành công!", true);
+          searchPosts();
+        } else {
+          showToast(res.error, false);
+        }
+      });
+  }
+});
+
+//validate post-name, description and filePath
+function validatePost() {
+  const title = $("#post-name").val();
+  if (!title) {
+    showToast("Vui lòng nhập tên bài viết!", false);
+    return false;
+  }
+  if (!filePath) {
+    showToast("Vui lòng chọn ảnh bài viết!", false);
+    return false;
+  }
+  return true;
+}

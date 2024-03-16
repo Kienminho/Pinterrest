@@ -31,7 +31,7 @@ const CreateImageToText = async (req, res) => {
       "Content-Type": "application/json",
       Accept: "image/png",
       Authorization:
-        "Bearer sk-vNnRAOk6q1Om9NKCVWCYs1ZFLHc6ux0sKpJjHhj7Y5MVon0B",
+        "Bearer sk-cpGEGtz6Fkb0wSwnLXvnezsOuv6MvfAkF45lEzH8MpOxUE9M",
       Cookie:
         "__cf_bm=A2a9NF0mP90pmRH0_p3A.Hwue4AL3G31xu8VUCMGw7w-1708791502-1.0-ARFEAWCo3VtpWxENNac3ifuTdC9UiRyzBoyvLK0zQoSoZjWoyuyoQ73mJieWPMI8WCBuVeBJm47P4Ip4gG7DYMY=",
     },
@@ -79,7 +79,7 @@ const SummarizesContent = async (req, res) => {
 };
 
 async function createNonStreamingMultipartContent(
-  projectId = "PROJECT_ID",
+  projectId = "pinterest-417305",
   location = "us-central1",
   model = "gemini-1.0-pro-vision",
   image = "gs://generativeai-downloads/images/scones.jpg",
@@ -88,9 +88,9 @@ async function createNonStreamingMultipartContent(
 ) {
   const authOptions = {
     credentials: {
-      client_email: "translate@pinterest-417305.iam.gserviceaccount.com",
+      client_email: "test-66@pinterest-417305.iam.gserviceaccount.com",
       private_key:
-        "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCsWysoBpmJSfz2\nhMnjAJAyJ/oyo2+V6gDXFOKclfx1T+MDsn37ITlYK58MA35fiOjaCxuwBYOlec2Y\n3elrRKnUjKuiLxMc2IX5JE+Y7U0ydHRDffBnipvu8fazJn3SJvhp5xOtJ814CW2X\n+5RU57WXcjhfq9byfe7pvhHeWvmvks8h3ZnNLA38Vh6/nVkgfilIXUDyK3Ie4a6+\nzE7/idj+UinjFgvcM0Koi2UrdZ4IA1sqadT+cUs00R4MGdpm5dg3elkbX7hetbi2\ndEZ2XKNvI+LJK1Wjrom9hyvvFnkO6NKO1wXb45Hz0zUesYrHB406X9aNdOPgcZtU\ncGzfJJAtAgMBAAECggEAHDqdtw4G/+860RjO73DhrR1Sw2V0+rhF+p7Z6MHrWelu\nKeZbmjyG+wkV9m6XYvKhCfP6Im/Hb9xNugT/3Ij1SdyKUI4Q6CS8eKGjryKQBhIA\naCd3LvY1nkKfYG3kUKhU/79llR1+RR6XhmYhlXBn6Q3qQXJ7H4ypteXitlOZ2Sat\nFb5gR4g1GoIFVmKK+Ghp5yhpJWTruWifjMhE98TIs7YbAX+YqDWrf34TQ7szPPbQ\nYI7Kz/YpTJMOZij93tuOeRvNDpE8E495FHrdtYiYjkcqiHQFt2cfb//lMsC6RUeh\n4nRRklgOT25vI+Q8FlbbsCXvZHMcj3amSMLwX4OsvwKBgQDXQ21kKyUpN8+eecID\ndhXcKnYPqLfwqqOpMw7FAmydpvTLjU1wH9906ir8Bal0OHRe3z5xH2GJhtActJFK\noF90dBEnhodXNOgVtnR5PIAGgbLLSX0y047iNJrCvdPIzAgIMKO0vkrFuHF5QSMx\nFKeN19Qo6zFPYYKC2sMlc3G+ewKBgQDM+RJQ8XJ4DxzcqlS6zU94WtX8TydXqUzC\nA2xP/zoSJxnrhQMETkveYQbTHfSrQ4DRi78tuuv3uMSCxAlt7qVk/+Q5Ft0QBvEM\n4+3k1fSeo8a7qYP1H1tJaZ/kWW/ybKhHRXmrUtzGJ4+LLiG2AnzjFDtW08SmrPF2\ndzDwT3J/dwKBgQCIZYsM62GyilCdw9yxQMN9K9J+/ZL/hcAJ1/ZF0tFr23xE9hXZ\nM/jtJetyoUvL/nGOI7p3B0FQWQHJDoj5VkDlkx3Dg7SCB13/VArdPv6IIOpfcQNJ\nj097+YUOXCWzl8SHG/q+7cyHF+WexS09Ti8U62rdOpmWCN0feOop8sphvQKBgQCt\nYyw5SGU6Zh5WE8fk1PQarUxCSHrRTqddnyOqcA4heO4WKsgohkrrbEwnnjlv/oQj\nvgEUoAAn5yZkL4yCb9N9InFeUZbijdyuuMhuQQbSg1wDNxwm6EWCTlUxBu8JtRyM\nXZrUcB3NiX2FkJp3qpcWR/ECO9Un4TfIrH67aZlDdQKBgQDIKCe9FsjTe6FpKI/1\nSAW18qIHuQgSF/6TXjHikwG7CfTYyZJ0VA3MGCWowmAd164Yz4HpL24SbiHbiHQ8\nKHQKyIzyRWE/aMVfxhAZgYKQXWVYtzACxpdpFhGjGC4erOFYFz+1lcfe/5Qs1I3O\n9wo+0aHjITfjCX55c8d4Nzs7cg==\n-----END PRIVATE KEY-----\n",
+        "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC3buI7I/09L4pT\nxvKp9QkFlUY6snjj94cn/r6k86lyavJfpb9TVnIyzTxy7FMLHiL8cl3yzK7JEO9/\npfyNODP0B+mJBZR6dYQK8k3CVUaak55JpT4B31Gzjf+pOBUfPxTyKw5YCVZIFFq3\n2DsxLE41Gn/fniG+7P3MJxpxNlh01CJzMjYCtF/AItwcReKXe00cB7/bq5i3RS8i\nR7/0Z2l5dAvbMIIsnE+Gt//yCfeAisYwDd+OuGFmqYTXZ72JgsBB5m8IdvTpx9Mz\n3HSroH/tDtZWhKNkmaJQppmaX7HWgobAm875DFwcqN2AVnZLaKZc/F3cmMfQS+Bg\ncp//6u0fAgMBAAECggEAA8oaVo8JefYDw6cbBHbUi/uuLgoM14AAGBi6EIdPuCNM\nd++UWPp/gaj3kQcGNvcVUVjKTXjibX+LkXwFqfDMzF0Z4bCuhUWGbk5C9ZS0ajIX\nG/D6RUI7TY9nH83rf2NBIZ83fL5PCYGRV2knELHlH1GGVCgDDQ7+HHV8WHVlqDgt\nIkNgjt//O65d6KNgUUeueKg6wyU3fAAy4OoED2+KerpsI0hfwHa7N0yyk1MjG0w+\nBQDmcny4JfOzDJgeod+wPGznBrLLgHl6HiPbVY9sp/AOBf3QKXnc2u+aRMiAY+Sk\nYRQhMWsyEUwVMGt5VCxhcbB74G6HClmifAwzaHPoQQKBgQDeqhHkgsipL7sm/QXM\nKWVNwfF2S7oA68xQiV/W07mtZWoikZGRbAmtFBa7fQETEktqvb+JfJjSX4ToN+TX\nCaDem41peMAabNhpnu7BttrhGXe/zjmB/5onhgNeoVZ/GSZYX3Hn1Lrjwxs/33Zl\nMTZjrLwbhqYe9SX3pD3qif2LXwKBgQDS5TjRzUOsVrwUFCxC2p62xj4ayazCztdN\nOkB2lxBDX47rQMnWQScWdqek7FzlaENho8kPhrMTKjCn/Psr20gFvkJvd4HyqJ4R\n+edjdlb3OuwWnkIQMKLXf9gduWo9ppt0JbusMgdoo2sl/q+/LrXIml5nykpEZngs\nOO2Vg6u2QQKBgECPWyTAbuHvPvps/pNVpVPIWfSMvF+r/s+TJUCqnvmRoBZp0qUx\niBSw8G5oLjmTYl6Oqcx5Xe4RV/3kxus6lXQ18eiU5E5FJPJq7JsqI4iE092/M5ln\nvRCcoLl9WhD7/8w70FEBszZ6yZnZdwCcJkL8QIZSojPzrJCDBJjObb9NAoGABtJz\nbBX/wmtr2hps9ByuVatEBwnPFN4sCMuBmlR4qjVFIkcOQGgLI6bi9WrP9nvQ8i+i\nKWZqFIyg1k5QsbJ+OfFVpNVw1rCtrFcxLP5/AbBeQr0L1go8ukvgadW9ohDppnAy\nCff0VWYz6R68AKs6JisYMrNQg7Xs3UFaLiP8QgECgYATPbZb4LxamrCuARLCn6mC\ngHu9mnzpZDNpXuHYH9qPPD3B5BtaM3ERMVtBb5sbIzWpW/6Kbyv5HHBofXba9Ide\n7ZLrqdQj++RU9kSIK8sFsF1SrFQL+/85Rba8dhZyp4tldKy1vzOQiwQwc5cIapM1\nRb0gKMLQtE4g2bYhV9TE6w==\n-----END PRIVATE KEY-----\n",
     },
   };
   // Initialize Vertex with your Cloud project and location
@@ -114,7 +114,7 @@ async function createNonStreamingMultipartContent(
   };
 
   const textPart = {
-    text: `Tôi có các chủ đề sau, hãy chọn ra các chủ đề có nội dung liên quan với bức ảnh sau: ${text}. Trả lời theo định dạng sau đây. Ví dụ: 1. Tên chủ đề, 3. Tên chủ đề, 5. Tên chủ đề. Bạn cũng có thể đưa ra các chủ đề mới, nếu thấy nó phù hợp với nội dung của bức ảnh`,
+    text: `Tôi có các chủ đề sau, hãy chọn ra các chủ đề có nội dung liên quan với bức ảnh sau: ${text}. Trả lời theo định dạng sau đây. Ví dụ: 1. Tên chủ đề\n, 3. Tên chủ đề\n, 5. Tên chủ đề\n,..... Bạn cũng có thể đưa ra các chủ đề mới, nếu thấy nó phù hợp với nội dung của bức ảnh`,
   };
 
   const request = {

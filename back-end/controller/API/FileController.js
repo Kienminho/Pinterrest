@@ -32,6 +32,21 @@ const HandleUploadFile = async (req, res) => {
   }
 };
 
+const UploadImages = async (req, res) => {
+  try {
+    const data = {
+      path: req.file.path,
+      filename: req.file.filename,
+    };
+    return res.status(200).json(Utils.createSuccessResponseModel(0, data));
+  } catch (error) {
+    console.log("File Controller - Line 21: " + error.message);
+    return res
+      .status(500)
+      .json(Utils.createErrorResponseModel(500, error.message));
+  }
+};
+
 const createFileAttachment = async (data, fileSanity, type) => {
   let name = data.name;
   if (type === "AI") {
@@ -136,6 +151,7 @@ const RemoveAttachment = async (req, res) => {
 
 module.exports = {
   HandleUploadFile: HandleUploadFile,
+  UploadImages: UploadImages,
   GetAllAttachments: GetAllAttachments,
   GetAttachmentById: GetAttachmentById,
   createFileAttachment: createFileAttachment,

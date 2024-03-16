@@ -15,5 +15,6 @@ router.delete(
   AuthenticateService.authenticateToken,
   CategoryController.HandleDeleteCategory
 );
+router.put("/update-category", CategoryController.HandleUpdateCategory);
 
 module.exports = router;

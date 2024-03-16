@@ -5,7 +5,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Quản lý bài đăng</h4>
         <button style="margin-bottom:8px" type="button" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#create-employee-modal">Tạo bài đăng</button>
+            data-bs-target="#create-post-modal">Tạo bài đăng</button>
         <!-- Basic Bootstrap Table -->
         <div class="card">
             <div>
@@ -49,31 +49,43 @@
 
 <div class="content-backdrop fade"></div>
 
-<div class="modal fade" id="create-employee-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="create-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="add-product-modal-label">Tạo mới danh mục</h5>
+                <h5 class="modal-title" id="add-product-modal-label">Tạo bài đăng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="form-create-category" enctype="application/json">
+                <form id="form-create-post" enctype="application/json">
                     <div class="mb-3">
-                        <label for="category-name">Tên </label>
-                        <input class="form-control" type="text" placeholder="Nhập tên danh mục" id="category-name"
-                            name="Name">
+                        <label for="category-name">Tiêu đề</label>
+                        <input class="form-control" type="text" placeholder="Nhập tên danh mục" id="post-name"
+                            name="Title">
                     </div>
 
                     <div class="mb-3">
-                        <label for="description">Description</label>
+                        <label for="description">Nội dung</label>
                         <input class="form-control" type="text" placeholder="Nhập mô tả" id="desc" name="Description">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is-comment" name="IsComment">
+                            <label class="form-check
+                                label" for="flexSwitchCheckDefault">Cho phép bình luận</label>
+                        </div>
+                    </div>
+                    {{!-- //input image using file-upload-with-preview --}}
+                    <div class="mb-3">
+                        <div class="dropzone" id="my-drop-zone">
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
-            <button type="button" class="btn-add-category btn btn-primary pe-auto"> Tạo
+            <button type="button" class="btn-add-post btn btn-primary pe-auto"> Tạo
             </button>
         </div>
     </div>

@@ -73,9 +73,63 @@ $(document).on("click", ".deleted-file", function () {
     .then((res) => {
       if (res.statusCode === 200) {
         showToast("Xoá thành công!", true);
-        tr.remove(); // Use 'tr' directly since it's already a jQuery object
+        tr.remove();
       } else {
         showToast("Xoá thất bại!", false);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+//show modal update-category-modal when click on update button
+$(document).on("click", ".update-category", function () {
+  let tr = $(this).closest("tr");
+  let id = tr.find(".id").text();
+  let name = tr.find(".category-name").text();
+  let desc = tr.find(".desc").text();
+  if (desc === "_") desc = "";
+
+  // Set the values in the modal
+  $("#update-category-modal").modal("show");
+  $("#update-category-modal .id-category").val(id);
+  $("#update-category-modal #category-name-update").val(name);
+  $("#update-category-modal #desc-update").val(desc);
+});
+
+//update category
+$(".btn-update-category").on("click", function () {
+  let id = $("#update-category-modal .id-category").val();
+  let name = $("#update-category-modal #category-name-update").val();
+  let desc = $("#update-category-modal #desc-update").val();
+
+  if (validate(name)) {
+    showToast("Tên không được để trống!", false);
+    return;
+  }
+
+  fetch("/api/category/update-category", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({
+      id,
+      name,
+      desc,
+    }),
+  })
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.statusCode === 200) {
+        showToast("Cập nhật thành công!", true);
+        $("#update-category-modal").modal("hide");
+        searchAttachments();
+      } else {
+        $("#update-category-modal").modal("hide");
+        showToast(res.message, false);
       }
     })
     .catch((error) => {
@@ -97,6 +151,7 @@ function displayData(arr) {
           
           <td class="desc">${item.Description ?? "_"}</td>
           <td class="created-date">${formatDate(item.CreatedAt)}</td>
+          <td class="updated-date">${formatDate(item.UpdatedAt)}</td>
           <td>
           <div class="dropdown">
             <button
@@ -107,10 +162,10 @@ function displayData(arr) {
               <i class="bx bx-dots-vertical-rounded"></i>
             </button>
             <div class="dropdown-menu">
-            <a class="dropdown-item d-none" href="javascript:void(0);"><i
-                          class="bx bx-edit-alt me-1"></i>Kích hoạt</a>
+            <a class="dropdown-item update-category" href="javascript:void(0);"><i
+                          class="bx bx-edit-alt me-1"></i>Cập nhật</a>
               <a class="dropdown-item deleted-file" href="javascript:void(0);"
-                ><i class="bx bx-trash me-1"></i> Delete</a
+                ><i class="bx bx-trash me-1"></i> Xoá</a
               >
             </div>
           </div>

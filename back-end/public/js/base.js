@@ -24,7 +24,6 @@ export function createImageViewer(element) {
 //get token from local storage
 export function getToken() {
   let token = JSON.parse(localStorage.getItem("data"));
-  console.log(token);
   if (!token) {
     window.location.href = "/auth/login";
   }
@@ -32,6 +31,7 @@ export function getToken() {
 }
 
 export function formatDate(date) {
+  if (date === null || date === undefined) return "_";
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return new Date(date).toLocaleDateString("en-GB", options);
 }

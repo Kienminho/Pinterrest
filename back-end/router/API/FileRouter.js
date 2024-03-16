@@ -10,6 +10,12 @@ router.post(
   FileService.upload.single("file"),
   FileController.HandleUploadFile
 );
+router.post(
+  "/upload-images",
+  AuthenticateService.authenticateToken,
+  FileService.upload.single("file"),
+  FileController.UploadImages
+);
 
 router.get("/get-all-attachments", FileController.GetAllAttachments);
 router.get("/get-attachment-by-id/:id", FileController.GetAttachmentById);

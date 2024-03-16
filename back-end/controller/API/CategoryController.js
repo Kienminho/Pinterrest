@@ -80,6 +80,27 @@ const CreateCategory = async (listCategory) => {
   return newCategory;
 };
 
+const HandleUpdateCategory = async (req, res) => {
+  try {
+    const { id, name, desc } = req.body;
+    const category = await _Category.findOne({ _id: id });
+    if (!category) {
+      return res
+        .status(400)
+        .json(Utils.createErrorResponseModel("Category not found"));
+    }
+    category.Name = name;
+    category.Description = desc;
+    category.UpdatedAt = Date.now("en-US", { timezone: "Asia/Ho_Chi_Minh" });
+    await category.save();
+    res.json(Utils.createSuccessResponseModel(0, true));
+  } catch (error) {
+    console.log("Payload: " + JSON.stringify(req.body));
+    console.log("CategoryController -> HandleUpdateCategory: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
 const HandleDeleteCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -102,4 +123,5 @@ module.exports = {
   HandleCreateCategory: HandleCreateCategory,
   CreateCategory: CreateCategory,
   HandleDeleteCategory: HandleDeleteCategory,
+  HandleUpdateCategory: HandleUpdateCategory,
 };

@@ -6,6 +6,7 @@ const _Category = require("../../model/Category");
 const _SavePost = require("../../model/SavePost");
 const _AIController = require("./AIController");
 const _CategoryController = require("./CategoryController");
+const _FileController = require("./FileController");
 
 const HandleGetPostsByCategories = async (req, res) => {
   try {
@@ -73,9 +74,9 @@ const HandleGetDetailPost = async (req, res) => {
 
 const HandleCreatePost = async (req, res) => {
   try {
-    const { Title, Description, Attachment } = req.body;
+    const { Title, Description, IsComment = true, Attachment } = req.body;
     //validate
-    if (!Title || !Description || !Attachment) {
+    if (!Title || !Attachment) {
       return res
         .status(400)
         .json(
@@ -94,11 +95,13 @@ const HandleCreatePost = async (req, res) => {
       "image/jpeg",
       text
     );
+    console.log(data);
 
     //response from AI
     const resData = data
       .split("\n")
       .map((item) => item.substring(item.indexOf(".") + 2));
+    console.log(resData);
     //add category to post
     const listCategory = await AddCategoryToPost(resData);
 
@@ -110,6 +113,36 @@ const HandleCreatePost = async (req, res) => {
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("PostController -> HandleCreatePost: " + error.message);
+    return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+const AdminCreatePost = async (req, res) => {
+  try {
+    const { File } = req.body;
+    const fileSanity = await _FileService.uploadImageToSanity(File.path);
+    //upload file to cloud
+    const data = {
+      name: req.user.name,
+      filename: req.body.File.filename,
+    };
+    //create attachment
+    const attachment = await _FileController.createFileAttachment(
+      data,
+      fileSanity,
+      "UPLOAD"
+    );
+    const ThumbnailPath = fileSanity.url;
+    const Attachment = {
+      Id: attachment._id,
+      Thumbnail: ThumbnailPath,
+    };
+
+    req.body.Attachment = Attachment;
+
+    await HandleCreatePost(req, res);
+  } catch (error) {
+    console.log("PostController -> AdminCreatePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
   }
 };
@@ -330,6 +363,7 @@ module.exports = {
   HandleGetPostsByUser: HandleGetPostsByUser,
   HandleGetDetailPost: HandleGetDetailPost,
   HandleCreatePost: HandleCreatePost,
+  AdminCreatePost: AdminCreatePost,
   HandleUpdatePost: HandleUpdatePost,
   CreateQuestion: createQuestion,
   SearchPost: searchPost,

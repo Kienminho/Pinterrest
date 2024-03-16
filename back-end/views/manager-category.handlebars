@@ -28,6 +28,7 @@
                             <th>Tên danh mục</th>
                             <th>Mô tả</th>
                             <th>Ngày tạo</th>
+                            <th>Ngày cập nhật</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -70,6 +71,38 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
             <button type="button" class="btn-add-category btn btn-primary pe-auto"> Tạo
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="update-category-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-product-modal-label">Cập nhật danh mục </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-category" enctype="application/json">
+                    <div class="mb-3">
+                        <input class="form-control d-none id-category" name="id" type="text">
+                        <label for="category-name">Tên </label>
+                        <input class="form-control" type="text" placeholder="Nhập tên danh mục"
+                            id="category-name-update" name="Name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description">Mô tả</label>
+                        <input class="form-control" type="text" placeholder="Nhập mô tả" id="desc-update"
+                            name="Description">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Huỷ </button>
+            <button type="button" class="btn-update-category btn btn-primary pe-auto"> Cập nhật
             </button>
         </div>
     </div>
