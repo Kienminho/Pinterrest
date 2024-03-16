@@ -12,7 +12,6 @@ import { Tooltip } from 'flowbite-react'
 import { Avatar, Dropdown, Navbar } from 'flowbite-react'
 import { HiOutlineAdjustments, HiUserCircle } from 'react-icons/hi'
 import { MdPrivacyTip } from 'react-icons/md'
-import { BsInfoCircleFill } from 'react-icons/bs'
 
 import logo from './PLogo.svg'
 import './Nav.css'
@@ -113,9 +112,6 @@ const Nav = () => {
               </Dropdown.Item>
               <Dropdown.Item icon={MdPrivacyTip}>
                 <NavLink to='/terms-of-service'>Điều khoản dịch vụ</NavLink>
-              </Dropdown.Item>
-              <Dropdown.Item icon={BsInfoCircleFill}>
-                <NavLink to='/privacy-policy'>Quyền riêng tư của bạn</NavLink>
               </Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={handleLogout} icon={FaSignOutAlt}>

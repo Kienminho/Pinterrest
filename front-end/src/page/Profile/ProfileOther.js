@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import './ProfileOther.css'
@@ -8,9 +8,6 @@ import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import ModalListFollow from '../../components/ModalListFollow/ModalListFollow'
 import SuspenseLoader from '../../components/SuspenseLoader/SuspenseLoader'
 
-// const UserCreatedPosts = lazy(() => import('../../components/UserCreatedPosts/UserCreatedPosts'))
-// const UserSavedPosts = lazy(() => import('../../components/UserSavedPosts/UserSavedPosts'))
-
 import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts'
 import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
 import toast from 'react-hot-toast'
@@ -19,7 +16,7 @@ import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 const ProfileOther = () => {
   const { id } = useParams()
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const { _id, Avatar, FullName, UserName } = useSelector((state) => state.User)
+  const { _id } = useSelector((state) => state.User)
   const dispatch = useDispatch()
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
@@ -124,8 +121,11 @@ const ProfileOther = () => {
         if (postData) {
           setCreatedPosts(postData)
           setLoadingOther(false)
+        } else {
+          setLoadingOther(false)
         }
       } catch (error) {
+        setLoadingOther(false)
         console.log(error)
       }
     }

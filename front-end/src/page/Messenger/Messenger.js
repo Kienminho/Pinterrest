@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import { createMessage, getConversationByUser } from '../../store/apiRequest'
@@ -13,7 +13,6 @@ const Messenger = () => {
   const userInitial = useSelector((state) => state.Auth.login?.currentUser)
   let axiosJWT = createAxios(userInitial, dispatch)
   const accessToken_daniel = userInitial?.data?.AccessToken
-  const { Avatar, FullName, UserName } = useSelector((state) => state.User)
   const [loadingMsg, setLoadingMsg] = useState(false)
   const [loadingList, setLoadingList] = useState(false)
   const userReal = useSelector((state) => state.User)
@@ -62,9 +61,14 @@ const Messenger = () => {
       setLoadingList(true)
       const res = await getConversationByUser(accessToken_daniel, axiosJWT)
       const resData = res.data
-      console.log('all conv of user by Nhan: ', resData)
-      setConversations(resData)
-      setLoadingList(false)
+      if (resData) {
+        console.log('all conv of user by Nhan: ', resData)
+        setConversations(resData)
+        setLoadingList(false)
+      } else {
+        console.log('error: ', resData)
+        setLoadingList(false)
+      }
     }
     fetchConversations()
   }, [])
@@ -87,9 +91,13 @@ const Messenger = () => {
         headers: { authorization: `Bearer ${accessToken}` }
       })
       const resData = res.data.data
-      console.log(resData)
-      setMessages({ messages: resData, receiver, conversationId })
-      setLoadingMsg(false)
+      if (resData) {
+        console.log(resData)
+        setMessages({ messages: resData, receiver, conversationId })
+        setLoadingMsg(false)
+      } else {
+        setLoadingMsg(false)
+      }
     } catch (error) {
       setLoadingMsg(false)
       console.log(error)

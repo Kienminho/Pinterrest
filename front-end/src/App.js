@@ -18,7 +18,6 @@ import Setting from './page/Setting/Setting'
 import Messenger from './page/Messenger/Messenger'
 import AuthLayout from './components/AuthLayout/AuthLayout'
 import Terms from './page/Terms/Terms'
-import PrivacyPolicy from './page/PrivacyPolicy/PrivacyPolicy'
 import Explore from './page/Explore/Explore'
 import ProfileOther from './page/Profile/ProfileOther'
 import CategoryPicker from './components/Intro/CategoryPicker'
@@ -137,14 +136,6 @@ const App = () => {
           element={
             <PrivateRoute>
               <AboutUs />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path='/privacy-policy'
-          element={
-            <PrivateRoute>
-              <PrivacyPolicy />
             </PrivateRoute>
           }
         />

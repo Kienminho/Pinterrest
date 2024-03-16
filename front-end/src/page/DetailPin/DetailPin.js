@@ -11,7 +11,7 @@ import { Textarea } from 'flowbite-react'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import { createComment, replyComment } from '../../store/apiRequest'
 import 'moment/locale/vi'
-import { followUser, resetFollowing, setFollowingStatus, unfollowUser } from '../../store/slices/FollowingSlice'
+import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 import toast from 'react-hot-toast'
 import './DetailPin.css'
 import { Spin } from 'antd'
@@ -19,7 +19,7 @@ import ImageDownloader from '../../components/ImageDownloader/ImageDownloader'
 import { Comment } from '../../components/Comment/Comment'
 import { ReplyInput } from '../../components/ReplyInput/ReplyInput'
 import { ReplyComment } from '../../components/ReplyComment/ReplyComment'
-import { resetSavedPosts, savePost, unsavePost } from '../../store/slices/SavePostSlice'
+import { savePost, unsavePost } from '../../store/slices/SavePostSlice'
 
 const DetailPin = () => {
   const [postData, setPostData] = useState({})
@@ -315,6 +315,7 @@ const DetailPin = () => {
           setLoadingPost(false)
         }
       } catch (error) {
+        setLoadingPost(false)
         console.log(error)
       }
     }

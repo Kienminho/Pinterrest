@@ -5,7 +5,6 @@ import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
-import { TbPhotoSearch } from 'react-icons/tb'
 
 export const SearchAndResultsImage = () => {
   const dispatch = useDispatch()
