@@ -22,7 +22,8 @@ const UserSchema = new mongoose.Schema({
   ],
   Avatar: {
     type: String,
-    default: "/images/avatar.jpg",
+    default:
+      "https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg",
     unique: false,
     required: false,
   },

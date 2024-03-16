@@ -27,7 +27,7 @@ btnLogin.on("click", () => {
           if (res.data.Role === "admin") {
             //save token to local storage
             localStorage.setItem("data", JSON.stringify(res.data));
-            window.location.href = "/admin/dashboard";
+            window.location.href = "/admin/manager-user";
           } else {
             displayErrorMessage("Website không dành cho người dùng.");
           }
