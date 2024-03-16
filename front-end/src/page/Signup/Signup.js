@@ -50,6 +50,7 @@ const Signup = () => {
     try {
       setLoading(true)
       await registerUser(newUser, dispatch, navigate)
+      setLoading(false)
     } catch (error) {
       console.log(error.message)
       setError(error.message)

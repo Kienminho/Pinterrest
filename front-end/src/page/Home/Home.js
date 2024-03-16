@@ -23,16 +23,17 @@ const Home = () => {
   useEffect(() => {
     const getPostsByCategories = async () => {
       try {
+        setLoading(true)
         const resData = await axios.get(
           `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=1&pageSize=10`,
           {
             headers: { Authorization: `Bearer ${accessToken_daniel}` }
           }
         )
-        if (resData.data.data) {
+        if (resData.data.statusCode === 200) {
           setPosts(resData.data.data)
           setTotalPosts(resData.data.totalRecord)
-          setLoading(true)
+          setLoading(false)
           setPageNumber(pageNumber + 1)
         } else {
           setLoading(false)
@@ -51,16 +52,17 @@ const Home = () => {
     console.log(`${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=10`)
     const getPostsByCategories = async () => {
       try {
+        setLoading(true)
         const resData = await axios.get(
           `${process.env.REACT_APP_API_URL}/post/get-posts-by-categories?pageIndex=${pageNumber}&pageSize=10`,
           {
             headers: { Authorization: `Bearer ${accessToken_daniel}` }
           }
         )
-        if (resData.data.data) {
+        if (resData.data.statusCode === 200) {
           setPosts([...posts, ...resData.data.data])
           setTotalPosts(resData.data.totalRecord)
-          setLoading(true)
+          setLoading(false)
         } else {
           setLoading(false)
         }
