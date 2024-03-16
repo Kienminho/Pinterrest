@@ -61,8 +61,6 @@ const Setting = () => {
 
   const handleChangeAvatar = async (e) => {
     const File = fileList[0].originFileObj
-    console.log(File)
-
     try {
       setLoadingAvt(true)
       // Gọi hàm uploadFiles để tải file lên
@@ -133,8 +131,6 @@ const Setting = () => {
         Gender: selectGender
       }
 
-      console.log(updateBody)
-
       const res = await updateUserInfo(updateBody, accessToken_daniel, axiosJWT)
       if (res.statusCode === 200) {
         // Gửi action để cập nhật thông tin người dùng trong Redux Toolkit
@@ -155,7 +151,6 @@ const Setting = () => {
   const handleCancel = async () => {
     const userCurrentEmail = user.data.Email
     const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
-    console.log(userCurrent)
 
     const formattedDate = moment(userCurrent.data.Birthday).format('DD/MM/YYYY')
 
@@ -178,10 +173,8 @@ const Setting = () => {
         setLoading(true)
         const userCurrentEmail = user.data.Email
         const userCurrent = await getUserByEmail(userCurrentEmail, accessToken_daniel, axiosJWT)
-        console.log(userCurrent.data.Birthday)
 
         const formattedDate = moment(userCurrent.data.Birthday).format('DD/MM/YYYY')
-        console.log('format date: ', formattedDate)
         // Cập nhật state với dữ liệu từ API
         setUserData({
           FullName: userCurrent.data.FullName,
@@ -203,18 +196,14 @@ const Setting = () => {
   }, [user, fileList])
 
   const onChangeDate = (_, dateStr) => {
-    console.log('onChange:', _.$d)
-    console.log('onChange:', dateStr)
     setUserData((prevState) => ({
       ...prevState,
       Birthday: dateStr
     }))
     setSelectedDate(_.$d)
-    console.log(selectedDate)
   }
 
   const onChangeRadio = (e) => {
-    console.log('radio checked', e.target.value)
     setSelectGender(e.target.value)
   }
 

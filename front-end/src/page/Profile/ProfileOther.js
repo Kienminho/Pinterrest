@@ -31,9 +31,8 @@ const ProfileOther = () => {
   const { followingList } = useSelector((state) => {
     return state.Following
   })
-  console.log(followingList)
+
   const isFollowing = followingList.includes(id)
-  console.log(isFollowing)
 
   // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
   const handleFollowUser = async () => {
@@ -83,8 +82,6 @@ const ProfileOther = () => {
         })
 
         const followersData = followersRes.data.data
-        console.log(followersData)
-
         if (followersData) {
           setFollowers(followersData)
         }
@@ -95,8 +92,6 @@ const ProfileOther = () => {
         })
 
         const followingData = followingRes.data.data
-        console.log(followingData)
-
         if (followingData) {
           setFollowing(followingData)
         }
@@ -116,8 +111,6 @@ const ProfileOther = () => {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
         const postData = resData.data.data
-        console.log(postData)
-
         if (resData.data.statusCode === 200) {
           setCreatedPosts(postData)
           setLoadingOther(false)
@@ -145,8 +138,6 @@ const ProfileOther = () => {
           }
         )
         const postData = resData.data.data
-        console.log('Saved posts: ', postData)
-
         if (postData) {
           setSavedPosts(postData)
           // setLoading(false)

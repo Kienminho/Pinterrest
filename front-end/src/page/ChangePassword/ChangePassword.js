@@ -31,8 +31,6 @@ const ChangePassword = () => {
       Email: formData.Email,
       Password: formData.Password
     }
-    console.log(newUser.Email)
-    console.log(newUser.Password)
     try {
       setLoading(true)
       await changePassword(newUser.Email, newUser.Password, dispatch, navigate)

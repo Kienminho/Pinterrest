@@ -51,7 +51,6 @@ export const SearchAndResultsImage = () => {
       )
       const resData = res.data.data
       setResults(resData)
-      console.log(resData)
       setShowResults(true)
       return resData
     } catch (error) {
@@ -70,7 +69,6 @@ export const SearchAndResultsImage = () => {
       return
     }
     const res = await fetchFilteredPost(input)
-    console.log(res)
     navigate('/explore', { state: { searchResults: res, loading: loading } })
     setShowResults(false)
   }

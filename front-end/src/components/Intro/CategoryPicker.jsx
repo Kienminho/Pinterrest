@@ -19,7 +19,6 @@ const CategoryPicker = () => {
   let axiosJWT = createAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
-  console.log(selectedCategories)
   // Function để xử lý việc chọn một danh mục
   const handleCategorySelect = (categoryIndex) => {
     if (selectedCategories.includes(categoryIndex)) {
@@ -50,9 +49,8 @@ const CategoryPicker = () => {
         toast.success('Cập nhật chủ đề quan tâm thành công!')
         navigate('/')
       }
-      console.log('Cập nhật chủ đề quan tâm thành công!')
     } catch (error) {
-      console.error('Cập nhật chủ đề quan tâm thất bại:', error.message)
+      toast.error('Cập nhật chủ đề quan tâm thất bại')
     }
   }
 
