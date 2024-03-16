@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import ImageUploaderAI from '../../components/ImageUploaderAI/ImageUploaderAI'
-import { Form, Input, Spin, Switch } from 'antd'
 import './Create.css'
 import toast from 'react-hot-toast'
 
@@ -42,6 +41,7 @@ const Create = () => {
   const [loadingPostAI, setLoadingPostAI] = useState(false)
   const handleUploadType = (type) => {
     setUploadType(type)
+    setFile('')
   }
 
   // Xử lý khi người dùng thay đổi ToggleSwitch
@@ -84,6 +84,7 @@ const Create = () => {
         setLoading(false)
       }
     } catch (error) {
+      setLoading(false)
       console.error('Lỗi khi tạo bài đăng:', error.message)
     }
   }
@@ -112,6 +113,7 @@ const Create = () => {
       }
     } catch (error) {
       console.error('Lỗi khi tạo bài đăng:', error.message)
+      setLoadingPostAI(false)
     }
   }
 
@@ -154,7 +156,7 @@ const Create = () => {
       <div className='pin-creator max-sm:mx-0 max-sm:mt-0 max-sm:w-full max-sm:h-auto pb-10 max-sm:flex max-sm:flex-col max-sm:rounded-none bg-white'>
         <div className='flex items-center justify-between border-b border-gray-300 py-5 px-7'>
           <span className='font-medium text-xl text-dark_color'>Tạo ghim</span>
-          <div className='upload-option flex justify-center items-center gap-4'>
+          <div className='upload-option flex flex-col md:flex-row justify-center items-center gap-4'>
             <button
               onClick={() => handleUploadType('AI')}
               className='box-border relative z-30 inline-flex items-center justify-center w-auto px-8 py-2.5 overflow-hidden font-medium text-white transition-all duration-300 bg-purple_btn rounded-md cursor-pointer group focus:ring-2 focus:ring-indigo-400  ease focus:outline-none hover:bg-[#5850e9]'
@@ -200,7 +202,7 @@ const Create = () => {
         </div>
 
         {/* <FileUpload/> */}
-        <div className='pin-form m-12 max-sm:m-5 px-48 flex justify-center gap-12 max-sm:gap-5 max-sm:flex-col w-full'>
+        <div className='pin-form mt-12 max-sm:m-5 px-8 md:px-16 flex justify-center gap-12 max-sm:gap-5 max-sm:flex-col w-full'>
           <div className='upload-field flex flex-col gap-8'>
             {uploadType === 'AI' && (
               <ImageUploaderAI imgSrc={file} loadingAI={loadingAI} loadingPostAI={loadingPostAI} />
@@ -260,16 +262,9 @@ const Create = () => {
               />
             </div>
 
-            {/* <ToggleSwitch
-              color='indigo'
-              checked={allowComment}
-              label='Cho phép bình luận'
-              onChange={handleToggleSwitchChange}
-            /> */}
             <div className='flex gap-3 items-center'>
               <span className='font-medium'>Cho phép bình luận</span>
               <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />
-              {/* <Switch checked={allowComment} onChange={handleToggleSwitchChange} /> */}
             </div>
           </div>
         </div>

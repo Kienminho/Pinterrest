@@ -45,8 +45,11 @@ const Profile = () => {
         if (postData) {
           setCreatePosts(postData)
           setLoading(false)
+        } else {
+          setLoading(false)
         }
       } catch (error) {
+        setLoading(false)
         console.log(error)
       }
     }
@@ -71,8 +74,11 @@ const Profile = () => {
         if (postData) {
           setSavedPosts(postData)
           setLoading(false)
+        } else {
+          setLoading(false)
         }
       } catch (error) {
+        setLoading(false)
         console.log(error)
       }
     }

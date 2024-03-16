@@ -1,24 +1,15 @@
 import React from 'react'
 import './PostSaved.css'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import SuspenseImg from '../SuspenseImg/SuspenseImg'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
-import UpdatePost from '../UpdatePost/UpdatePost'
-import { useSelector } from 'react-redux'
 
 const Post = ({ data, type }) => {
-  const { _id, Attachment, Created, Description, Title, IsComment } = data.Post
+  const { _id, Attachment, Created } = data.Post
   const thumbnail = Attachment?.Thumbnail
-  const authorId = Created._id
   const avatar = Created?.Avatar
   const username = Created?.UserName || 'Stranger'
   console.log('data: ', data)
-
-  const { _id: UserId } = useSelector((state) => state.User)
-
-  // Lấy đường dẫn hiện tại
-  // const location = useLocation()
-  // const isProfilePage = location.pathname === '/profile' || location.pathname === '/profile/created'
 
   return (
     <div className='post-container rounded-xl overflow-hidden mb-4 relative max-sm:mb-2'>
@@ -44,18 +35,6 @@ const Post = ({ data, type }) => {
                 {username}
               </div>
             </div>
-{/* 
-            {isProfilePage && authorId === UserId && (
-              <div className='flex gap-2'>
-                <UpdatePost
-                  id={_id}
-                  ImageSrc={thumbnail}
-                  Description={Description}
-                  Title={Title}
-                  IsComment={IsComment}
-                />
-              </div>
-            )} */}
           </div>
         </div>
       </div>
