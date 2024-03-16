@@ -48,6 +48,7 @@ const Login = () => {
     try {
       setLoading(true)
       await loginUser(newUser, dispatch, navigate)
+      setLoading(false)
     } catch (error) {
       setError(error.message)
       setLoading(false)

@@ -17,19 +17,25 @@ export const SearchAndResultsImage = () => {
   const searchRef = useRef(null)
   const navigate = useNavigate()
   const inputRef = useRef(null)
+  const [loading, setLoading] = useState(false)
 
   const fetchFilteredPost = async (value) => {
     try {
+      setLoading(true)
       const res = await axiosJWT.get(
         `${process.env.REACT_APP_API_URL}/post/search?keyword=${value}&pageSize=50&pageIndex=1`,
         {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         }
       )
-      const resData = res.data.data
-      setResults(resData)
-      console.log(resData)
-      return resData
+      if (res.data.statusCode === 200) {
+        const resData = res.data.data
+        setResults(resData)
+        setLoading(false)
+        return resData
+      } else {
+        setLoading(false)
+      }
     } catch (error) {
       console.error('Lỗi khi tải dữ liệu:', error)
     }
@@ -65,7 +71,7 @@ export const SearchAndResultsImage = () => {
     }
     const res = await fetchFilteredPost(input)
     console.log(res)
-    navigate('/explore', { state: { searchResults: res } })
+    navigate('/explore', { state: { searchResults: res, loading: loading } })
     setShowResults(false)
   }
 

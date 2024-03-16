@@ -309,9 +309,11 @@ const DetailPin = () => {
         const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/post/get-detail-post/${id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
-        const postData = resData.data.data
-        if (postData) {
+        if (resData.data.statusCode === 200) {
+          const postData = resData.data.data
           setPostData(postData)
+          setLoadingPost(false)
+        } else {
           setLoadingPost(false)
         }
       } catch (error) {
@@ -329,13 +331,18 @@ const DetailPin = () => {
         const resData = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/comment/get-comments-by-post/${id}`, {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
-        const allComments = resData.data.data
-        console.log('', allComments)
-        setComments(allComments)
-        setLoadingCmt(false)
-        setFinishCmt(false)
-        setFinishRep(false)
+        if (resData.data.statusCode === 200) {
+          const allComments = resData.data.data
+          console.log('', allComments)
+          setComments(allComments)
+          setLoadingCmt(false)
+          setFinishCmt(false)
+          setFinishRep(false)
+        } else {
+          setLoadingCmt(false)
+        }
       } catch (error) {
+        setLoadingCmt(false)
         setFinishCmt(false)
         setFinishRep(false)
         console.log(error)
