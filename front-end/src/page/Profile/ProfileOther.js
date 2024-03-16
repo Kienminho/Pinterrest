@@ -118,7 +118,7 @@ const ProfileOther = () => {
         const postData = resData.data.data
         console.log(postData)
 
-        if (postData) {
+        if (resData.data.statusCode === 200) {
           setCreatedPosts(postData)
           setLoadingOther(false)
         } else {

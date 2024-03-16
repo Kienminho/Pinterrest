@@ -6,10 +6,11 @@ import { useLocation } from 'react-router-dom'
 const Explore = () => {
   const location = useLocation()
   const searchResults = location.state?.searchResults
+  const loading = location.state?.loading
   return (
     <div className='explore-page'>
       <div className='user-search-posts mt-5'>
-        <PostsLayoutHome loading={true}>
+        <PostsLayoutHome loading={loading}>
           {searchResults.map((post, i) => (
             <Post data={post} key={i} type={'search-post'} />
           ))}

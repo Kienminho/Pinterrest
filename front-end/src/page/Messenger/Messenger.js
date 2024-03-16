@@ -61,7 +61,7 @@ const Messenger = () => {
       setLoadingList(true)
       const res = await getConversationByUser(accessToken_daniel, axiosJWT)
       const resData = res.data
-      if (resData) {
+      if (res.statusCode === 200) {
         console.log('all conv of user by Nhan: ', resData)
         setConversations(resData)
         setLoadingList(false)
@@ -78,8 +78,12 @@ const Messenger = () => {
     const fetchConversations = async () => {
       const res = await getConversationByUser(accessToken_daniel, axiosJWT)
       const resData = res.data
-      console.log('all conv of user by Nhan: ', resData)
-      setConversations(resData)
+      if (res.statusCode === 200) {
+        console.log('all conv of user by Nhan: ', resData)
+        setConversations(resData)
+      } else {
+        console.log('error: ', resData)
+      }
     }
     fetchConversations()
   }
@@ -91,8 +95,7 @@ const Messenger = () => {
         headers: { authorization: `Bearer ${accessToken}` }
       })
       const resData = res.data.data
-      if (resData) {
-        console.log(resData)
+      if (res.data.statusCode === 200) {
         setMessages({ messages: resData, receiver, conversationId })
         setLoadingMsg(false)
       } else {
@@ -126,6 +129,9 @@ const Messenger = () => {
     if (resData.statusCode === 200) {
       toast.success('Tin nhắn gửi thành công')
       console.log('Message sent successfully')
+    } else {
+      toast.error('Gửi tin nhắn thất bại')
+      console.log('Message sent failed')
     }
   }
 

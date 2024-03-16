@@ -136,10 +136,13 @@ const Create = () => {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         }
       )
-      console.log(res.data.data)
-      const generatedImageLink = res.data.data
-      setFile(generatedImageLink)
-      setLoadingAI(false)
+      if (res.data.statusCode === 200) {
+        const generatedImageLink = res.data.data
+        setFile(generatedImageLink)
+        setLoadingAI(false)
+      } else {
+        setLoadingAI(false)
+      }
     } catch (error) {
       setLoadingAI(false)
       console.error('Failed to generate image:', error.message)
