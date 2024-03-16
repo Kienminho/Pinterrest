@@ -42,16 +42,14 @@ const DetailPin = () => {
   const { savedPosts } = useSelector((state) => {
     return state.SavePost
   })
-  console.log(savedPosts)
+
   const isPostSaved = savedPosts.includes(postData?._id)
-  console.log(isPostSaved)
 
   const { followingList } = useSelector((state) => {
     return state.Following
   })
-  console.log(followingList)
+
   const isFollowing = followingList.includes(postData?.Created?._id)
-  console.log(isFollowing)
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const { Avatar: UserAvatar, _id: UserId } = useSelector((state) => state.User)
@@ -89,8 +87,6 @@ const DetailPin = () => {
     setSelectedNestedReplyId(nestedReplyId)
     setReplyContent('')
   }
-
-  console.log('selected reply id', selectedReplyId)
 
   const handleCancelReply = () => {
     setIsReplying(false)
@@ -333,7 +329,6 @@ const DetailPin = () => {
         })
         if (resData.data.statusCode === 200) {
           const allComments = resData.data.data
-          console.log('', allComments)
           setComments(allComments)
           setLoadingCmt(false)
           setFinishCmt(false)
@@ -382,9 +377,6 @@ const DetailPin = () => {
     }
     fetchDataFromServer()
   }, [])
-
-  console.log('finish cmt: ', finishCmt)
-  console.log('following detail pin: ', following)
 
   const handleShowProfile = () => {
     navigate(`/profiles/${postData?.Created?._id}`)

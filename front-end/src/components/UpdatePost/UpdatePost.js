@@ -14,7 +14,6 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
   const [title, setTitle] = useState(Title)
   const [description, setDescription] = useState(Description)
   const [allowComment, setAllowComment] = useState(IsComment)
-  console.log(allowComment)
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const dispatch = useDispatch()
@@ -27,7 +26,6 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
 
   const handleSave = async () => {
     const newData = { id, Title: title.trim(), Description: description.trim(), IsComment: allowComment }
-    console.log(newData)
     try {
       await updatePost(newData, accessToken_daniel, axiosJWT)
       onCloseModal()

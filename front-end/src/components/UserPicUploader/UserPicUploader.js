@@ -4,6 +4,7 @@ import { MdOutlineEdit } from 'react-icons/md'
 import { uploadFiles } from '../../store/apiRequest'
 import { createAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
+import toast from 'react-hot-toast'
 
 const UserPicUploader = ({ setTempPic }) => {
   const user = useSelector((state) => state.Auth.login?.currentUser)
@@ -18,7 +19,6 @@ const UserPicUploader = ({ setTempPic }) => {
 
   const postUserPic = async (e) => {
     const File = e.target.files[0]
-    console.log(File)
 
     try {
       // Gọi hàm uploadFiles để tải file lên
@@ -41,10 +41,8 @@ const UserPicUploader = ({ setTempPic }) => {
             headers: { authorization: `Bearer ${accessToken_daniel}` }
           }
         )
-
-        console.log(updateResponse)
       } else {
-        console.log('Tải lên file thất bại')
+        toast.error('Tải lên file thất bại')
       }
     } catch (error) {
       console.log('Xảy ra lỗi khi thực hiện tải lên và cập nhật avatar:', error)

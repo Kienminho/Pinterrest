@@ -23,8 +23,6 @@ const Messenger = () => {
   const [socket, setSocket] = useState(null)
   const messageRef = useRef(null)
 
-  console.log(messages)
-
   useEffect(() => {
     //wss://api-pinterrest.up.railway.app
     setSocket(
@@ -37,11 +35,8 @@ const Messenger = () => {
 
   useEffect(() => {
     socket?.emit('join', userReal?._id)
-    socket?.on('getUsers', (users) => {
-      console.log('activeUsers :>> ', users)
-    })
+    socket?.on('getUsers', (users) => {})
     socket?.on('getMessage', (data) => {
-      console.log(data)
       setMessages((prev) => ({
         ...prev,
         messages: [...prev.messages, { message: data.data, user: { ...data.user, _id: data.user.id } }]
@@ -50,9 +45,7 @@ const Messenger = () => {
   }, [socket])
 
   useEffect(() => {
-    console.log('auto scroll')
-    messageRef?.current?.scrollIntoView({ behavior: 'smooth' })
-    console.log('auto scroll done')
+    messageRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [messages?.messages])
 
   // fetch conversation của thằng user hiện tại
@@ -62,7 +55,6 @@ const Messenger = () => {
       const res = await getConversationByUser(accessToken_daniel, axiosJWT)
       const resData = res.data
       if (res.statusCode === 200) {
-        console.log('all conv of user by Nhan: ', resData)
         setConversations(resData)
         setLoadingList(false)
       } else {
@@ -79,7 +71,6 @@ const Messenger = () => {
       const res = await getConversationByUser(accessToken_daniel, axiosJWT)
       const resData = res.data
       if (res.statusCode === 200) {
-        console.log('all conv of user by Nhan: ', resData)
         setConversations(resData)
       } else {
         console.log('error: ', resData)
@@ -107,13 +98,11 @@ const Messenger = () => {
     }
   }
 
-  console.log('check array message:', messages)
-
   const sendMessage = async () => {
     setMessage('')
     socket?.emit('sendMessage', {
       senderId: userReal?._id,
-      receiverId: messages?.receiver?.userId,
+      receiverId: messages?.receiver?._id,
       message,
       conversationId: messages?.conversationId
     })
@@ -121,35 +110,31 @@ const Messenger = () => {
     const resData = await createMessage(
       messages?.conversationId,
       userReal?._id,
-      messages?.receiver?.userId,
+      messages?.receiver?._id,
       message,
       accessToken_daniel,
       axiosJWT
     )
     if (resData.statusCode === 200) {
       toast.success('Tin nhắn gửi thành công')
-      console.log('Message sent successfully')
     } else {
       toast.error('Gửi tin nhắn thất bại')
-      console.log('Message sent failed')
     }
   }
 
   // Xử lý members trước khi truyền vào hàm map
   const processedConversations = conversations.map(({ _id, members }) => {
-    // Kiểm tra userId của từng thành viên trong cuộc trò chuyện
-    const receiverIndex = members.findIndex((member) => member.userId !== userReal._id)
+    const receiverIndex = members.findIndex((member) => member._id !== userReal._id)
     const receiver = receiverIndex !== -1 ? members[receiverIndex] : null
-
-    // Trả về một object mới chứa thông tin đã xử lý
     return {
       conversationId: _id,
       receiver
     }
   })
 
-  console.log(conversations)
-  console.log(processedConversations)
+  // console.log('check array message:', messages)
+  // console.log(conversations)
+  // console.log(processedConversations)
 
   return (
     <div className='w-screen md:flex font-roboto items-center lg:justify-center '>
@@ -178,11 +163,11 @@ const Messenger = () => {
                       onClick={() => fetchMessages(conversationId, accessToken_daniel, axiosJWT, receiver)}
                     >
                       <div className='receiver-image rounded-full w-12 h-12 aspect-square overflow-hidden shrink-0'>
-                        <ProfileImage src={receiver?.avatar} alt='receiver-avt' />
+                        <ProfileImage src={receiver?.Avatar} alt='receiver-avt' />
                       </div>
                       <div className='ml-4 font-medium'>
-                        <h3 className='text-base'>{receiver?.fullName}</h3>
-                        <p className='text-[15px] text-gray-600'>@{receiver?.useName}</p>
+                        <h3 className='text-base'>{receiver?.FullName}</h3>
+                        <p className='text-[15px] text-gray-600'>@{receiver?.UserName}</p>
                       </div>
                     </div>
                   </div>
@@ -198,11 +183,11 @@ const Messenger = () => {
         {messages?.receiver && (
           <div className='w-full border-b-[1.5px] border-zinc-100 h-[50px] flex items-center px-10 py-10'>
             <div className='receiver-image rounded-full w-12 h-12 aspect-square overflow-hidden shrink-0 cursor-pointer'>
-              <ProfileImage src={messages?.receiver?.avatar} alt='receiver-avt' />
+              <ProfileImage src={messages?.receiver?.Avatar} alt='receiver-avt' />
             </div>
             <div className='ml-6 mr-auto font-medium'>
-              <h3 className='text-lg'>{messages?.receiver?.fullName}</h3>
-              <p className='text-base text-gray-600'>@{messages?.receiver?.useName}</p>
+              <h3 className='text-lg'>{messages?.receiver?.FullName}</h3>
+              <p className='text-base text-gray-600'>@{messages?.receiver?.UserName}</p>
             </div>
           </div>
         )}
@@ -217,6 +202,7 @@ const Messenger = () => {
             ) : messages?.messages?.length >= 0 ? (
               messages.messages.map(({ message, user }) => (
                 <div
+                  ref={messageRef}
                   key={message._id}
                   className={`flex mb-6 ${user?._id === userReal?._id ? 'justify-end' : 'justify-start'}`}
                 >

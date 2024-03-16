@@ -166,14 +166,6 @@ const Login = () => {
               <hr class='border-gray-400' />
             </div>
             <div className='flex justify-center'>
-              {/* <GoogleLogin
-                onSuccess={(credentialResponse) => {
-                  console.log(credentialResponse)
-                }}
-                onError={() => {
-                  console.log('Login Failed')
-                }}
-              /> */}
               <button
                 className='bg-[#e9e9e9] border border-blue-400 py-2.5 mt-2 flex justify-center items-center text-dark_color hover:bg-[#d6d6d6] focus:ring-4 focus:ring-blue-200 font-medium rounded-3xl text-base px-2 text-decoration-none w-80 text-center transition duration-300 ease-in-out'
                 onClick={login}
