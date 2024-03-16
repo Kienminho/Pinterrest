@@ -60,7 +60,7 @@ const CategoryPicker = () => {
     try {
       const getCategories = async () => {
         const resData = await axiosJWT.get(
-          `${process.env.REACT_APP_API_URL}/category/get-all-categories?pageIndex=1&pageSize=50`,
+          `${process.env.REACT_APP_API_URL}/category/get-all-categories?pageIndex=1&pageSize=100`,
           {
             headers: { authorization: `Bearer ${accessToken_daniel}` }
           }

@@ -62,7 +62,7 @@ const Profile = () => {
       try {
         setLoading(true)
         const resData = await axiosJWT.post(
-          `${process.env.REACT_APP_API_URL}/post/get-saved-posts?pageIndex=1&pageSize=50`,
+          `${process.env.REACT_APP_API_URL}/post/get-saved-posts?pageIndex=1&pageSize=100`,
           { id: _id },
           {
             headers: { authorization: `Bearer ${accessToken_daniel}` }
