@@ -17,31 +17,39 @@ const callRefreshToken = async (user) => {
   }
 }
 
-export const createAxios = (user, dispatch, stateSucess) => {
+export const createAxios = (user, dispatch, stateSuccess) => {
   const newInstance = axios.create()
 
   newInstance.interceptors.request.use(
     async (config) => {
-      // check accessToken expired
-      const decodedToken = jwtDecode(user?.data.AccessToken)
-      if (decodedToken.exp <= decodedToken.iat) {
-        const data = await callRefreshToken(user)
-        if (data) {
-          const refreshUser = {
-            ...user.data,
-            AccessToken: data.data.AccessToken
+      const decodedToken = jwtDecode(user?.data?.AccessToken)
+      if (decodedToken.exp <= Math.floor(Date.now() / 1000)) {
+        try {
+          const data = await callRefreshToken(user)
+          if (data && data.data && data.data.AccessToken) {
+            const refreshUser = {
+              ...user.data,
+              AccessToken: data.data.AccessToken
+            }
+            dispatch(stateSuccess(refreshUser))
+            config.headers['Authorization'] = 'Bearer ' + data.data.AccessToken
+          } else {
+            // Handle token refresh failure
+            dispatch(logoutSuccess())
+            dispatch(resetState)
+            // Redirect to login or handle as needed
           }
-          dispatch(stateSucess(refreshUser))
-          config.headers['authorization'] = 'Bearer ' + data.data.AccessToken
-        } else {
+        } catch (error) {
+          console.error('Failed to refresh token:', error)
           dispatch(logoutSuccess())
           dispatch(resetState)
-          // navigate('/login')
+          // Redirect to login or handle as needed
         }
       }
       return config
     },
     (err) => Promise.reject(err)
   )
+
   return newInstance
 }

@@ -260,6 +260,9 @@ const GetAccessTokenByRefreshToken = async (req, res) => {
     }
     //create token
     const accessToken = AuthenticateService.generateAccessToken(user);
+    const refreshToken = AuthenticateService.generateRefreshToken(user);
+    user.RefreshToken = refreshToken;
+    await user.save();
     return res.json(
       Utils.createSuccessResponseModel(1, { AccessToken: accessToken })
     );
