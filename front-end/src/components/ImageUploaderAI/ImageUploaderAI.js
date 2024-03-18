@@ -43,7 +43,7 @@ const ImageUploaderAI = ({ imgSrc: propImgSrc, loadingAI, loadingPostAI }) => {
               </div>
             ))}
           </div>
-          <p className='text-lg text-dark_color font-medium mt-5'>Chọn xem preview ảnh</p>
+          {/* <p className='text-lg text-dark_color font-medium mt-5'>Chọn xem preview ảnh</p>
           <div className='flex gap-2 justify-around my-5'>
             {previousImages.map((imageURL, index) => (
               <Image
@@ -56,7 +56,7 @@ const ImageUploaderAI = ({ imgSrc: propImgSrc, loadingAI, loadingPostAI }) => {
                 preview={true}
               />
             ))}
-          </div>
+          </div> */}
         </div>
       </>
     )
@@ -72,9 +72,7 @@ const ImageUploaderAI = ({ imgSrc: propImgSrc, loadingAI, loadingPostAI }) => {
 
   return (
     <>
-      <div className='flex xl:gap-32 lg:gap-12 gap-8'>
-        {/* Render previous images */}
-        {previousImages.length > 0 && renderPreviousImages()}
+      <div className='flex flex-col gap-3'>
         <div
           className={`img-Uploader bg-[#e9e9e9] lg:w-[26rem] w-[20rem] max-sm:w-auto rounded-3xl border-dashed border-indigo-300 hover:border-indigo-400 border-2 cursor-pointer overflow-hidden relative ${
             // check if not image, set default height
@@ -110,6 +108,8 @@ const ImageUploaderAI = ({ imgSrc: propImgSrc, loadingAI, loadingPostAI }) => {
             )}
           </div>
         </div>
+        {/* Render previous images */}
+        {previousImages.length > 0 && renderPreviousImages()}
       </div>
     </>
   )

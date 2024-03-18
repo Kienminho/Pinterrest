@@ -28,7 +28,8 @@ const ImageUploader = ({ setFile, loading }) => {
     if (file.type.startsWith('image/')) {
       setFile(file)
       setSelectedFile(file)
-      setPreviousImages([...previousImages, URL.createObjectURL(file)])
+      setPreviousImages([URL.createObjectURL(file), ...previousImages])
+      setPreviousFiles([file, ...previousFiles])
     } else {
       setFile(null)
       setSelectedFile(null)
@@ -39,20 +40,20 @@ const ImageUploader = ({ setFile, loading }) => {
     event.preventDefault()
   }
 
-  const handlePreviousImageClick = (imageURL, event) => {
-    setPreviousImages(previousImages.filter((image) => image !== imageURL))
-    setPreviousImages([imageURL, ...previousImages.filter((image) => image !== imageURL).slice(0, 2)])
-    setPreviousFiles(previousFiles.filter((file) => file !== selectedFile))
-    setPreviousFiles([selectedFile, ...previousFiles.filter((file) => file !== selectedFile).slice(0, 2)])
-    setSelectedFile(previousFiles[2])
-  }
-
   const handleFileInputChange = (e) => {
     const file = e.target.files[0]
     setFile(file)
     setSelectedFile(file)
     setPreviousImages([URL.createObjectURL(file), ...previousImages])
-    setPreviousFiles([...previousFiles, file])
+    setPreviousFiles([file, ...previousFiles])
+  }
+
+  const handlePreviousImageClick = (prevFile, imageURL) => {
+    setPreviousImages(previousImages.filter((image) => image !== imageURL))
+    setPreviousImages([imageURL, ...previousImages.filter((image) => image !== imageURL).slice(0, 2)])
+    setPreviousFiles(previousFiles.filter((file) => file !== prevFile))
+    setPreviousFiles([prevFile, ...previousFiles.filter((file) => file !== prevFile).slice(0, 2)])
+    setFile(prevFile)
   }
 
   const renderPreviousImages = () => {
@@ -68,12 +69,12 @@ const ImageUploader = ({ setFile, loading }) => {
                   className='w-32 h-32 object-cover rounded-3xl cursor-pointer'
                   src={imageURL}
                   alt='preview-img-upload'
-                  onClick={(event) => handlePreviousImageClick(imageURL, event)} // Thêm event vào đây
+                  onClick={() => handlePreviousImageClick(previousFiles[index], imageURL)}
                 />
               </div>
             ))}
           </div>
-          <p className='text-lg text-dark_color font-medium mt-5'>Chọn xem preview ảnh</p>
+          {/* <p className='text-lg text-dark_color font-medium mt-5'>Chọn xem preview ảnh</p>
           <div className='flex gap-2 justify-around my-5'>
             {previousImages.map((imageURL, index) => (
               <Image
@@ -86,17 +87,19 @@ const ImageUploader = ({ setFile, loading }) => {
                 preview={true}
               />
             ))}
-          </div>
+          </div> */}
         </div>
       </>
     )
   }
 
+  // console.log('previousImages', previousImages)
+  // console.log('previousFiles', previousFiles[0])
+  // console.log('selectedFile', selectedFile)
+
   return (
     <>
-      <div className='flex flex-col md:flex-row xl:gap-32 lg:gap-12 gap-6'>
-        {/* Render previous images */}
-        {previousImages.length > 0 && renderPreviousImages()}
+      <div className='flex flex-col gap-3'>
         <div
           className={`img-Uploader bg-[#e9e9e9] lg:w-[26rem] w-[20rem] max-sm:w-auto rounded-3xl border-dashed border-gray-300 hover:border-[#929292] border-2 cursor-pointer overflow-hidden relative ${
             // check if not image, set default height
@@ -148,6 +151,8 @@ const ImageUploader = ({ setFile, loading }) => {
             ref={inputRef}
           />
         </div>
+        {/* Render previous images */}
+        {previousImages.length > 0 && renderPreviousImages()}
       </div>
     </>
   )

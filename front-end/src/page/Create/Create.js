@@ -117,7 +117,7 @@ const Create = () => {
 
   const handleResetPrompt = () => {
     setPrompt('')
-    setFile('')
+    setFile(null)
     inputRef.current.focus()
   }
 
@@ -203,7 +203,7 @@ const Create = () => {
         </div>
 
         {/* <FileUpload/> */}
-        <div className='pin-form mt-12 max-sm:m-5 px-8 md:px-16 flex justify-center gap-12 max-sm:gap-5 max-sm:flex-col w-full'>
+        <div className='pin-form mt-12 max-sm:m-5 px-8 md:px-16 flex justify-center gap-6 md:gap-12 max-sm:gap-5 max-sm:flex-col w-full'>
           <div className='upload-field flex flex-col gap-8'>
             {uploadType === 'AI' && (
               <ImageUploaderAI imgSrc={file} loadingAI={loadingAI} loadingPostAI={loadingPostAI} />
@@ -262,7 +262,6 @@ const Create = () => {
                 onChange={handleChange}
               />
             </div>
-
             <div className='flex gap-3 items-center'>
               <span className='font-medium'>Cho phép bình luận</span>
               <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />
