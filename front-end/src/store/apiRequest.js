@@ -20,12 +20,17 @@ export const loginUser = async (user, dispatch, navigate) => {
 
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/login`, user)
-    dispatch(loginSuccess(res.data))
-    toast.success('Đăng nhập thành công')
-    navigate('/')
+    if (res.data.statusCode === 200) {
+      dispatch(loginSuccess(res.data))
+      toast.success('Đăng nhập thành công')
+      navigate('/')
+    } else {
+      dispatch(loginFailed())
+      toast.error('Đăng nhập không thành công')
+    }
   } catch (error) {
     let errorMessage = 'Lỗi không xác định khi đăng nhập'
-    toast.error('Đăng nhập thất bại')
+    toast.error('Đăng nhập không thành công')
 
     // Nếu có dữ liệu phản hồi từ server
     if (error.response && error.response.data) {
@@ -47,9 +52,14 @@ export const registerUser = async (user, dispatch, navigate) => {
 
   try {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/register`, user)
-    dispatch(registerSuccess(res.data))
-    toast.success('Đăng ký thành công')
-    navigate('/login')
+    if (res.data.statusCode === 200) {
+      dispatch(registerSuccess(res.data))
+      toast.success('Đăng ký thành công')
+      navigate('/login')
+    } else {
+      dispatch(registerFailed())
+      toast.error('Đăng ký không thành công')
+    }
   } catch (error) {
     let errorMessage = 'Lỗi không xác định khi đăng ký'
     toast.error('Đăng ký không thành công')
@@ -68,13 +78,20 @@ export const registerUser = async (user, dispatch, navigate) => {
 export const logoutUser = async (dispatch, navigate, accessToken, axiosJWT) => {
   dispatch(logoutStart())
   try {
-    await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/logout`, {
       headers: { authorization: `Bearer ${accessToken}` }
     })
-    dispatch(logoutSuccess())
-    dispatch(resetState())
-    toast.success('Đăng xuất thành công')
-    navigate('/login')
+    if (res.data.statusCode === 200) {
+      dispatch(logoutSuccess())
+      dispatch(resetState())
+      toast.success('Đăng xuất thành công')
+      navigate('/login')
+    } else {
+      dispatch(logoutFailed())
+      dispatch(resetState())
+      navigate('/login')
+      toast.error('Lỗi khi đăng xuất')
+    }
   } catch (error) {
     dispatch(logoutFailed())
     dispatch(resetState())
@@ -89,9 +106,12 @@ export const changePassword = async (email, newPassword, dispatch, navigate) => 
       email,
       newPassword
     })
-    console.log(res.data)
-    toast.success('Đặt lại mật khẩu thành công')
-    navigate('/login')
+    if (res.data.statusCode === 200) {
+      toast.success('Đặt lại mật khẩu thành công')
+      navigate('/login')
+    } else {
+      toast.error('Đặt lại mật khẩu thất bại')
+    }
   } catch (error) {
     let errorMessage = 'Lỗi không xác định khi đặt lại mật khẩu'
     toast.error('Đặt lại mật khẩu thất bại')
@@ -113,15 +133,11 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
   dispatch(uploadFileStart())
   try {
     const formData = new FormData()
-    console.log(files)
     formData.append('file', files[0])
-    console.log(formData.get('file'))
 
     const uploadRes = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/file/upload`, formData, {
       headers: { authorization: `Bearer ${accessToken}` }
     })
-
-    console.log(uploadRes.data)
 
     const { data: uploadData } = uploadRes
 
@@ -130,9 +146,8 @@ export const uploadFilesAndCreatePost = async (files, postBody, dispatch, naviga
       console.log('Upload files thành công')
 
       // Thêm đường dẫn tải lên vào postBody
-      postBody.Attachment.Id = uploadData?.data._id // Thay đổi _id bằng trường Id của đối tượng File của bạn
-      postBody.Attachment.Thumbnail = uploadData?.data.ThumbnailPath || '' // Thay đổi thành trường bạn cần
-      console.log(postBody)
+      postBody.Attachment.Id = uploadData?.data._id
+      postBody.Attachment.Thumbnail = uploadData?.data.ThumbnailPath || ''
 
       // Gọi API tạo bài đăng
       const createPostRes = await axios.post(`${process.env.REACT_APP_API_URL}/post/create-post`, postBody, {
@@ -159,17 +174,12 @@ export const createPostAI = async (linkImageAI, postBody, dispatch, navigate, ac
     // Thêm đường dẫn tải lên vào postBody
     postBody.Attachment.Id = '65dbf999d3431c34958551b7'
     postBody.Attachment.Thumbnail = linkImageAI
-    console.log(postBody)
 
     // Gọi API tạo bài đăng
     const createPostRes = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/post/create-post`, postBody, {
       headers: { authorization: `Bearer ${accessToken}` }
     })
-
-    console.log('Create post response AI:', createPostRes.data)
-
     const { data: postData } = createPostRes
-    console.log(postData)
     return postData
   } catch (error) {
     console.error('Lỗi không xác định khi tạo bài đăng:', error.message)
@@ -193,9 +203,7 @@ export const updatePost = async (updatedData, accessToken, axiosJWT) => {
     console.log('Update post response:', updatePostRes.data)
     const { data: postData } = updatePostRes
 
-    // Xử lý phản hồi từ server nếu cần
     if (postData.statusCode === 200) {
-      console.log('Cập nhật bài đăng thành công')
       toast.success('Cập nhật bài đăng thành công')
       return postData.data // Trả về thông tin bài đăng đã được cập nhật
     } else {
@@ -220,16 +228,14 @@ export const uploadFiles = async (files, dispatch, accessToken, axiosJWT) => {
       headers: { authorization: `Bearer ${accessToken}` }
     })
 
-    console.log(uploadRes.data)
-
     const { data: uploadData } = uploadRes
 
     if (uploadData.statusCode === 200) {
       dispatch(uploadFileSuccess(uploadData))
-      console.log('Upload files thành công')
-
-      return uploadData.data // Trả về thông tin file tải lên nếu cần
+      toast.success('Upload files thành công')
+      return uploadData.data
     } else {
+      dispatch(uploadFileFailed())
       console.error('Lỗi khi upload files:', uploadData.message)
       toast.error('Upload files thất bại')
       throw new Error(uploadData.message)
@@ -266,7 +272,6 @@ export const createComment = async (postId, content, attachment, accessToken, ax
         headers: { authorization: `Bearer ${accessToken}` }
       }
     )
-    console.log('day la comment moi: ', res.config.data)
     return res.data
   } catch (error) {
     console.log(error)
@@ -287,7 +292,6 @@ export const replyComment = async (postId, parrentCommentId, content, attachment
         headers: { authorization: `Bearer ${accessToken}` }
       }
     )
-    console.log('day la mot reply moi', res.config.data)
     return res.data
   } catch (error) {
     console.log(error)
@@ -306,7 +310,6 @@ export const followUser = async (userId, targetUserId, accessToken, axiosJWT) =>
         headers: { authorization: `Bearer ${accessToken}` }
       }
     )
-    console.log('day la follow user: ', res)
     return res.data
   } catch (error) {
     console.log(error)
@@ -318,19 +321,6 @@ export const unfollowUser = async (followedId, accessToken, axiosJWT) => {
     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/user/un-follow/${followedId}`, {
       headers: { authorization: `Bearer ${accessToken}` }
     })
-    console.log('day la unfollow user: ')
-    return res.data
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-export const getListFollowingOfUser = async (userId, accessToken, axiosJWT) => {
-  try {
-    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following`, {
-      headers: { authorization: `Bearer ${accessToken}` }
-    })
-    console.log(res.data)
     return res.data
   } catch (error) {
     console.log(error)

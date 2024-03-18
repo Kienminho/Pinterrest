@@ -2,7 +2,7 @@ import { ToggleSwitch } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { updatePost } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { FaRegEdit } from 'react-icons/fa'
 import { Image, Modal } from 'antd'
@@ -17,7 +17,7 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const dispatch = useDispatch()
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
   const handleToggleSwitchChange = (newValue) => {
@@ -93,7 +93,6 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
               <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize w-[90px]'>
                 Bình luận
               </label>
-              {/* <Switch checked={allowComment} onChange={handleToggleSwitchChange} /> */}
               <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />
             </div>
           </div>

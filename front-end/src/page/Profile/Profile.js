@@ -2,7 +2,7 @@ import React, { useEffect, useState, createContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import './Profile.css'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
@@ -21,7 +21,7 @@ const Profile = () => {
   const { _id, Avatar, FullName, UserName } = useSelector((state) => state.User)
   const [tempPic, setTempPic] = useState(null)
   const dispatch = useDispatch()
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
   const [createPosts, setCreatePosts] = useState([])

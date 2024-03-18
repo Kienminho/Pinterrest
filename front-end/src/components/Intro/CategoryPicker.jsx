@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { Button } from 'flowbite-react'
 import { MdPinInvoke } from 'react-icons/md'
@@ -16,7 +16,7 @@ const CategoryPicker = () => {
   const [selectedCategories, setSelectedCategories] = useState([])
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const dispatch = useDispatch()
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
   // Function để xử lý việc chọn một danh mục
@@ -81,12 +81,12 @@ const CategoryPicker = () => {
   const isReChooseCategoryPage = location.pathname === '/settings/category'
 
   return (
-    <div className='w-3/5 mx-auto text-dark_color'>
+    <div className='w-4/5 md:w-3/5 mx-auto text-dark_color'>
       <h2 className='text-center mt-10 mb-2'>Cá nhân hoá bảng tin nhà của bạn</h2>
       <p className='text-xl mb-8 text-center'>Chọn những mục bạn quan tâm để Pinspired đề xuất bảng tin cho bạn.</p>
       {isReChooseCategoryPage && (
         <div className='absolute go-back top-28 left-8 max-sm:hidden'>
-          <button className='left-arrow rounded-full hover:bg-gray-200 p-2  transition' onClick={handleGoBack}>
+          <button className='left-arrow rounded-full hover:bg-gray-200 p-2 transition' onClick={handleGoBack}>
             <FaRegArrowAltCircleLeft size='2rem' color='#5850ec' />
           </button>
         </div>
@@ -108,10 +108,10 @@ const CategoryPicker = () => {
       </div>
       <div className='flex justify-center gap-4 mt-10'>
         {/* Button để cập nhật thông tin người dùng sau khi chọn danh mục */}
-        <button className='btn-linkhover rounded-lg w-1/5' onClick={updateUserCategory}>
+        <button className='btn-linkhover rounded-lg' onClick={updateUserCategory}>
           Bỏ qua
         </button>
-        <button className='btn-save rounded-lg w-1/5' onClick={updateUserCategory}>
+        <button className='btn-save rounded-lg' onClick={updateUserCategory}>
           Lưu thay đổi
         </button>
       </div>

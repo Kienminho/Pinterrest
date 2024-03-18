@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import { createMessage, getConversationByUser } from '../../store/apiRequest'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import toast from 'react-hot-toast'
 import { Spin } from 'antd'
@@ -11,7 +11,7 @@ import { SearchAndResults } from '../../components/SearchAndResults/SearchAndRes
 const Messenger = () => {
   const dispatch = useDispatch()
   const userInitial = useSelector((state) => state.Auth.login?.currentUser)
-  let axiosJWT = createAxios(userInitial, dispatch)
+  let axiosJWT = CreateAxios(userInitial, dispatch)
   const accessToken_daniel = userInitial?.data?.AccessToken
   const [loadingMsg, setLoadingMsg] = useState(false)
   const [loadingList, setLoadingList] = useState(false)

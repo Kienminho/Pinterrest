@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { createConversation } from '../../store/apiRequest'
 import toast from 'react-hot-toast'
@@ -10,7 +10,7 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
   const userReal = useSelector((state) => state.User)
   const dispatch = useDispatch()
   const userInitial = useSelector((state) => state.Auth.login?.currentUser)
-  let axiosJWT = createAxios(userInitial, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(userInitial, dispatch, loginSuccess)
   const accessToken_daniel = userInitial?.data?.AccessToken
   const user = useSelector((state) => state.User)
   const [input, setInput] = useState('')

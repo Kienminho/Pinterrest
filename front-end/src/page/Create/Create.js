@@ -7,7 +7,7 @@ import axios from 'axios'
 import { ToggleSwitch } from 'flowbite-react'
 import { createPostAI, uploadFilesAndCreatePost } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import ImageUploaderAI from '../../components/ImageUploaderAI/ImageUploaderAI'
 import './Create.css'
@@ -19,7 +19,7 @@ const Create = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
 
   const accessToken_daniel = user?.data?.AccessToken
   const container = useRef()
