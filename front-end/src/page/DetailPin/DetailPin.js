@@ -43,13 +43,13 @@ const DetailPin = () => {
     return state.SavePost
   })
 
-  const isPostSaved = savedPosts.includes(postData?._id)
+  const isPostSaved = savedPosts?.includes(postData?._id)
 
   const { followingList } = useSelector((state) => {
     return state.Following
   })
 
-  const isFollowing = followingList.includes(postData?.Created?._id)
+  const isFollowing = followingList?.includes(postData?.Created?._id)
 
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const { Avatar: UserAvatar, _id: UserId } = useSelector((state) => state.User)
@@ -452,7 +452,7 @@ const DetailPin = () => {
                     <ProfileImage src={postData?.Created?.Avatar} />
                   ) : (
                     <ProfileImage
-                      src='https://static-images.vnncdn.net/files/publish/2023/6/30/mason-mount-1-228.jpg'
+                      src='https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-avatar-placeholder-png-image_3416697.jpg'
                       alt='stranger'
                       className='w-full'
                     />
@@ -614,14 +614,19 @@ const DetailPin = () => {
                       <ProfileImage src={UserAvatar} alt='stranger' className='w-8 h-8' />
                     </div>
                     <div className='creator-name whitespace-nowrap text-ellipsis w-full'>
-                      <Textarea
+                      <input
                         id='comment'
                         placeholder='Thêm nhận xét...'
                         value={commentContent}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSendComment()
+                          }
+                        }}
                         onChange={(e) => setCommentContent(e.target.value)}
                         required
                         rows={1}
-                        className='text-[15px] px-4 py-3.5 rounded-full resize-none outline-none hover:bg-[#e1e1e1] text-gray-800 bg-gray_input focus:ring-gray-300 focus:border-white focus:bg-white border-none'
+                        className='w-full text-[15px] px-4 py-3.5 rounded-full resize-none outline-none hover:bg-[#e1e1e1] text-gray-800 bg-gray_input focus:ring-gray-300 focus:border-white border-none'
                       />
                     </div>
                     <button onClick={handleSendComment} className='btn-linkhover rounded-full px-5'>

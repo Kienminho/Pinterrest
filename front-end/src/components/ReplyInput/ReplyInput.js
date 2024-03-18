@@ -6,24 +6,28 @@ export const ReplyInput = ({ isReplying, onReplyCancel, onReplySend, placeholder
     <>
       {isReplying && (
         <div className='mt-2 flex flex-col justify-end w-4/5 ml-[20%]'>
-          <textarea
+          <input
             id='reply'
             placeholder={placeholder || 'Trả lời...'}
             value={replyContent}
             onChange={handleChange}
             required
             autoFocus
-            className='px-6 py-3.5 rounded-2xl outline-none text-gray-800 border border-gray-200 focus:ring-gray-300 focus:border-0 focus:bg-white text-[15px]'
-            rows={2}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onReplySend()
+              }
+            }}
+            className='px-6 py-3.5 rounded-2xl outline-gray-200 text-gray-800 text-[15px] bg-gray-50 border border-gray-300 block w-full p-2.5'
           />
 
-          <div className='flex gap-2 justify-end mt-2'>
-            <Button pill color='light' onClick={onReplyCancel}>
+          <div className='flex gap-2 justify-end mt-2.5'>
+            <button className='btn-linkhover rounded-full px-5 py-2.5 text-sm' onClick={onReplyCancel}>
               Huỷ
-            </Button>
-            <Button pill color='success' onClick={onReplySend}>
+            </button>
+            <button className='btn-save rounded-full px-5 py-2.5 text-sm' onClick={onReplySend}>
               Gửi
-            </Button>
+            </button>
           </div>
         </div>
       )}

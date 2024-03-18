@@ -17,6 +17,7 @@ export const SearchAndResultsImage = () => {
   const searchRef = useRef(null)
   const navigate = useNavigate()
   const inputRef = useRef(null)
+  const timerRef = useRef(null)
   const [loading, setLoading] = useState(false)
 
   const fetchFilteredPost = async (value) => {
@@ -58,9 +59,19 @@ export const SearchAndResultsImage = () => {
     }
   }
 
+  const delayedSearch = (value) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+    }
+    timerRef.current = setTimeout(() => {
+      fetchFilteredPostWithShow(value)
+    }, 400) // Đợi 0.5 giây trước khi gọi hàm tìm kiếm
+  }
+
   const handleChange = (value) => {
     setInput(value)
-    fetchFilteredPostWithShow(value)
+    // fetchFilteredPostWithShow(value)
+    delayedSearch(value) // Gọi delayedSearch thay vì fetchFilteredPostWithShow trực tiếp
   }
 
   const handleSearch = async () => {
@@ -116,7 +127,7 @@ export const SearchAndResultsImage = () => {
             }
           }}
         />
-        {input && ( // Hiển thị nút xoá input chỉ khi input không trống
+        {input && (
           <button className='focus:outline-none hover:bg-zinc-200 rounded-full p-2' onClick={handleClearInput}>
             <FaTimesCircle />
           </button>
