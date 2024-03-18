@@ -104,7 +104,7 @@ const Login = () => {
             <p className='text-center text-dark_color font-normal'>Tiếp tục khám phá những ý tưởng</p>
           </div>
 
-          <div className='w-[360px] mt-6 flex flex-col gap-3'>
+          <div className='md:w-[300px] lg:w-[360px] mt-6 flex flex-col gap-3'>
             <div className='relative'>
               <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
                 {/* <MdEmail size='1.5rem' color='salmon' /> */}

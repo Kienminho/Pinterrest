@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
 import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 import { NavLink } from 'react-router-dom'
@@ -15,7 +15,7 @@ function ModalListFollow({ followersList, followingsList }) {
   const { _id: UserId } = useSelector((state) => state.User)
   const dispatch = useDispatch()
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
   const { followingList } = useSelector((state) => {

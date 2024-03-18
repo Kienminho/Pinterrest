@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { getUserByEmail, updateUserInfo, uploadFiles } from '../../store/apiRequest'
 import { useDispatch, useSelector } from 'react-redux'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { updateAvatar, updateState } from '../../store/slices/UserSlice'
 import toast from 'react-hot-toast'
@@ -29,7 +29,7 @@ const Setting = () => {
   const [loading, setLoading] = useState(false)
   const [loadingAvt, setLoadingAvt] = useState(false)
   const [loadingUpdate, setLoadingUpdate] = useState(false)
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const isGenderSelected = (value) => selectGender === value
   const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY']
 
@@ -210,7 +210,7 @@ const Setting = () => {
   return (
     <>
       {/* Phan binh thuong */}
-      <div className='flex gap-10'>
+      <div className='flex flex-col md:flex-row gap-5 lg:gap-10 font-roboto'>
         <Sidebar className='ml-3 mt-[2%]' aria-label='Sidebar with content separator example'>
           <Sidebar.Items>
             <Sidebar.ItemGroup>
@@ -236,7 +236,7 @@ const Setting = () => {
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </Sidebar>
-        <div className='min-h-fit py-2 px-40 flex items-center justify-center rounded-xl '>
+        <div className='min-h-fit py-2 lg:px-40 flex items-center justify-center rounded-xl '>
           <div className='container max-w-screen-lg mx-auto relative'>
             {loading || loadingAvt || loadingUpdate ? (
               <div className='absolute left-0 right-0 z-50 bg-white bg-opacity-50 min-h-screen'>
@@ -248,7 +248,7 @@ const Setting = () => {
             <div className='rounded-xl p-4 px-4 md:p-10 '>
               <div className='grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1'>
                 <div className='text-gray-700 mb-6'>
-                  <h3 className='font-medium mb-3'>Chỉnh sửa hồ sơ</h3>
+                  <p className='text-xl md:text-3xl font-medium mb-3'>Chỉnh sửa hồ sơ</p>
                   <p className='text-base'>Thực hiện thay đổi thông tin cá nhân hoặc loại tài khoản của bạn..</p>
                 </div>
                 <div className='lg:col-span-2'>

@@ -6,7 +6,7 @@ import 'tippy.js/dist/tippy.css'
 
 import { logoutSuccess } from '../../store/slices/AuthSlice'
 import { logoutUser } from '../../store/apiRequest'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 
 import { Tooltip } from 'flowbite-react'
 import { Avatar, Dropdown, Navbar } from 'flowbite-react'
@@ -28,7 +28,7 @@ const Nav = () => {
   const dispatch = useDispatch()
   const location = useLocation()
 
-  let axiosJWT = createAxios(user, dispatch, logoutSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, logoutSuccess)
 
   const accessToken_daniel = user?.data?.AccessToken
 

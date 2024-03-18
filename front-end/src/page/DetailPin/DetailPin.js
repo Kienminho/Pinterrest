@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 import { MdSend } from 'react-icons/md'
@@ -57,7 +57,7 @@ const DetailPin = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  let axiosJWT = createAxios(user, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
   const handleGoBack = () => {
@@ -119,9 +119,13 @@ const DetailPin = () => {
         toast.success('Bình luận thành công')
         setCommentContent('')
         setFinishCmt(true)
+      } else {
+        toast.error('Bình luận không thành công')
+        setCommentContent('')
+        setFinishCmt(true)
       }
     } catch (error) {
-      setFinishCmt(false)
+      setFinishCmt(true)
       toast.error('Bình luận thất bại')
       console.log('Error creating comment:', error)
     }
@@ -143,9 +147,13 @@ const DetailPin = () => {
         toast.success('Trả lời nhận xét thành công!')
         setReplyContent('')
         setFinishRep(true)
+      } else {
+        toast.error('Trả lời nhận xét không thành công!')
+        setReplyContent('')
+        setFinishRep(true)
       }
     } catch (error) {
-      setFinishRep(false)
+      setFinishRep(true)
       console.log('Error replying comment:', error)
     }
 
@@ -168,9 +176,13 @@ const DetailPin = () => {
         toast.success('Trả lời nhận xét thành công!')
         setReplyContent('')
         setFinishRep(true)
+      } else {
+        toast.error('Trả lời nhận xét không thành công!')
+        setReplyContent('')
+        setFinishRep(true)
       }
     } catch (error) {
-      setFinishRep(false)
+      setFinishRep(true)
       console.log('Error replying comment:', error)
     }
 
@@ -196,9 +208,13 @@ const DetailPin = () => {
         toast.success('Trả lời nhận xét thành công!')
         setReplyContent('')
         setFinishRep(true)
+      } else {
+        toast.error('Trả lời nhận xét không thành công!')
+        setReplyContent('')
+        setFinishRep(true)
       }
     } catch (error) {
-      setFinishRep(false)
+      setFinishRep(true)
       console.log('Error replying comment:', error)
     }
 
@@ -393,7 +409,7 @@ const DetailPin = () => {
         </div>
         {/* pin section */}
         <div
-          className={`pin-section flex m-20 rounded-3xl overflow-hidden my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] ${
+          className={`pin-section flex md:m-10 lg:m-20 rounded-3xl overflow-hidden my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] ${
             comments.length > 0 ? 'min-h-[800px]' : 'min-h-[600px]'
           }`}
         >

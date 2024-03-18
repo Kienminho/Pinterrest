@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { FaSearch, FaTimesCircle } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { createAxios } from '../../createInstance'
+import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 export const SearchAndResultsImage = () => {
   const dispatch = useDispatch()
   const userInitial = useSelector((state) => state.Auth.login?.currentUser)
-  let axiosJWT = createAxios(userInitial, dispatch, loginSuccess)
+  let axiosJWT = CreateAxios(userInitial, dispatch, loginSuccess)
   const accessToken_daniel = userInitial?.data?.AccessToken
   const [input, setInput] = useState('')
   const [results, setResults] = useState([])
@@ -126,7 +126,7 @@ export const SearchAndResultsImage = () => {
         </button>
       </div>
       {showResults && (
-        <div className='results-list w-full md:w-[38%] lg:w-[48%] xl:w-[58%] 2xl:w-[68%] bg-[#ffffff] flex flex-col shadow-xl max-h-[400px] overflow-y-auto mt-4 rounded-lg absolute top-[60px] z-50'>
+        <div className='results-list w-full md:w-[38%] lg:w-[48%] xl:w-[58%] 2xl:w-[68%] bg-[#ffffff] flex flex-col shadow-xl max-h-[400px] overflow-y-auto mt-4 rounded-lg absolute top-[14%] md:top-[63px] z-50'>
           {results.map((result, id) => (
             <div
               key={id}
