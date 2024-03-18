@@ -11,6 +11,7 @@ import { NavLink } from 'react-router-dom'
 function ModalListFollow({ followersList, followingsList }) {
   const [openModalFollowers, setOpenModalFollowers] = useState(false)
   const [openModalFollowings, setOpenModalFollowings] = useState(false)
+  console.log(followingsList)
 
   const { _id: UserId } = useSelector((state) => state.User)
   const dispatch = useDispatch()
@@ -52,16 +53,18 @@ function ModalListFollow({ followersList, followingsList }) {
           <div className='space-y-6'>
             <div className='follower-list'>
               {followersList?.map((follower) => (
-                <NavLink to={`/profiles/${follower.follower._id}`}>
+                <NavLink to={`/${UserId === follower.follower._id ? 'profile' : 'profiles'}/${follower.follower._id}`}>
                   <div
                     key={follower._id}
-                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-blue-200 p-2 transition duration-300 ease-in-out rounded-xl cursor-pointer'
+                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-gray-200 py-2 px-6 transition duration-300 ease-in-out rounded-xl cursor-pointer'
                   >
                     <div className='creator-image rounded-full w-14 aspect-square overflow-hidden  shrink-0'>
                       <ProfileImage src={follower?.follower?.Avatar} alt={follower.follower.UserName} />
                     </div>
                     <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col cursor-pointer'>
-                      <div className='font-semibold'>{follower.follower.UserName}</div>
+                      <div className='font-semibold'>
+                        {follower?.follower?.FullName ? follower?.follower?.FullName : follower?.follower?.UserName}
+                      </div>
                     </div>
                   </div>
                 </NavLink>
@@ -77,36 +80,32 @@ function ModalListFollow({ followersList, followingsList }) {
           <div className='space-y-6'>
             <div className='follower-list'>
               {followingsList?.map((following) => (
-                <div key={following._id} className='creator-profile flex w-full items-center mt-auto gap-3 mb-4'>
-                  <div className='creator-image rounded-full w-14 aspect-square overflow-hidden  shrink-0'>
-                    <ProfileImage src={following?.following?.Avatar} alt={following.following.UserName} />
+                <NavLink
+                  to={`/${UserId === following.following._id ? 'profile' : 'profiles'}/${following.following._id}`}
+                >
+                  <div
+                    key={following._id}
+                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-gray-200 py-2 px-6 transition duration-300 ease-in-out rounded-xl cursor-pointer'
+                  >
+                    <div className='creator-image rounded-full w-14 aspect-square overflow-hidden  shrink-0'>
+                      <ProfileImage src={following?.following?.Avatar} alt={following.following.UserName} />
+                    </div>
+                    <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
+                      <div className='font-semibold'>{following.following.UserName}</div>
+                    </div>
+                    {UserId !== following.following._id && (
+                      <div className='creator-follow ml-auto'>
+                        <Button
+                          color='light'
+                          className='rounded-full'
+                          onClick={() => handleUnFollowUser(following._id, following.following._id)}
+                        >
+                          <span className='text-base'>Đang theo dõi</span>
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                  <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
-                    <div className='font-semibold'>{following.following.UserName}</div>
-                  </div>
-                  <div className='creator-follow ml-auto'>
-                    <Button
-                      color='light'
-                      className='rounded-full'
-                      onClick={() => handleUnFollowUser(following._id, following.following._id)}
-                    >
-                      <span className='text-base'>Đang theo dõi</span>
-                    </Button>
-                    {/* {isFollowing ? (
-                      <Button color='light' className='rounded-full' onClick={() => handleUnFollowUser(following._id)}>
-                        <span className='text-base'>Đang theo dõi</span>
-                      </Button>
-                    ) : (
-                      <Button
-                        color='light'
-                        className='rounded-full'
-                        onClick={() => handleFollowUser(following.follower, following.following._id)}
-                      >
-                        <span className='text-base'>Đang theo dõi</span>
-                      </Button>
-                    )} */}
-                  </div>
-                </div>
+                </NavLink>
               ))}
             </div>
           </div>

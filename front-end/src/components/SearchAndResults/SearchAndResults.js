@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { FaSearch } from 'react-icons/fa'
+import { FaSearch, FaTimesCircle } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
@@ -17,6 +17,8 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
   const [results, setResults] = useState([])
   const [showResults, setShowResults] = useState(false)
   const searchRef = useRef(null)
+  const inputRef = useRef(null)
+  const timerRef = useRef(null)
 
   const fetchDataUser = async (value) => {
     try {
@@ -35,9 +37,19 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
     }
   }
 
+  const delayedSearch = (value) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+    }
+    timerRef.current = setTimeout(() => {
+      fetchDataUser(value)
+    }, 400) // Đợi 0.5 giây trước khi gọi hàm tìm kiếm
+  }
+
   const handleChange = (value) => {
     setInput(value)
-    fetchDataUser(value)
+    // fetchDataUser(value)
+    delayedSearch(value)
   }
 
   const processedExistingConversations = (existingConversation) => {
@@ -96,6 +108,13 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
     }
   }
 
+  const handleClearInput = () => {
+    setInput('') // Xoá nội dung của input
+    setResults([]) // Xoá kết quả tìm kiếm
+    setShowResults(false) // Ẩn kết quả tìm kiếm
+    inputRef.current.focus()
+  }
+
   useEffect(() => {
     document.addEventListener('click', handleClickOutside)
     return () => {
@@ -126,6 +145,11 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
           value={input}
           onChange={(e) => handleChange(e.target.value)}
         />
+        {input && (
+          <button className='focus:outline-none hover:bg-zinc-200 rounded-full p-2' onClick={handleClearInput}>
+            <FaTimesCircle />
+          </button>
+        )}
       </div>
       {showResults && (
         <div className='results-list w-full bg-white flex flex-col shadow-[0px_0px_8px_#ddd] max-h-[300px] overflow-y-auto mt-4 rounded-lg'>

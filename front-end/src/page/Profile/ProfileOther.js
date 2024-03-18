@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import './ProfileOther.css'
 import { CreateAxios } from '../../createInstance'
@@ -12,12 +12,14 @@ import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts
 import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
 import toast from 'react-hot-toast'
 import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
+import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 
 const ProfileOther = () => {
   const { id } = useParams()
   const user = useSelector((state) => state.Auth.login?.currentUser)
   const { _id } = useSelector((state) => state.User)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
   const accessToken_daniel = user?.data?.AccessToken
 
@@ -70,6 +72,10 @@ const ProfileOther = () => {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const handleGoBack = () => {
+    navigate(-1)
   }
 
   // Lấy danh sách follower và following của người dùng hiện tại (ngdung khac)
@@ -151,6 +157,12 @@ const ProfileOther = () => {
 
   return (
     <div className='user_profile minus-nav-100vh '>
+      {/* back button */}
+      <div className='absolute go-back top-[12%] left-7 max-sm:hidden'>
+        <button className='left-arrow rounded-full hover:bg-gray-200 p-2  transition' onClick={handleGoBack}>
+          <FaRegArrowAltCircleLeft size='2rem' color='#5850ec' />
+        </button>
+      </div>
       <div className='profile-header flex flex-col items-center pt-10'>
         {/* Avatar part */}
         <div className='relative profile-pic-main mb-4'>
