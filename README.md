@@ -4,7 +4,7 @@
 
 ### Available Accounts:
 
-- User Email: kienlun1100@gmail.com. Password: Kien10082002
+- User Email: nhan@gmail.com. Password: Nn1111111
 - Admin Email: system@gmail.com. Password: system (For use with the admin website)
 - User Website: [https://pinterrest.vercel.app](https://pinterrest.vercel.app)
 - Admin Website: [https://api-pinterrest.up.railway.app](https://api-pinterrest.up.railway.app)
