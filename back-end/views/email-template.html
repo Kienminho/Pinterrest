@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinspired Notification</title>
+    <style>
+        /* Reset styles */
+        body,
+        p,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        ul,
+        ol,
+        li {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        /* Link */
+        .link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .footer {
+            padding: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signature {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            text-align: center;
+            color: #777777;
+            font-style: italic;
+            font-size: 14px;
+            /* Increase font size */
+            color: #555555;
+            /* Change text color */
+            margin-top: 30px;
+            /* Add more margin at the top */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pinspired Notification</h1>
+        </div>
+        @@content@@
+        <!-- <div class="content">
+            <p>Hello {{follower_name}},</p>
+            <p>{{user_name}} has posted a new post:</p>
+            <h2>{{post_title}}</h2>
+            <p>{{post_content}}</p>
+            <p>Check it out <a href="{{post_url}}" class="link">here</a>.</p>
+        </div> -->
+        @@footer@@
+        <!-- <div class="footer">
+            <p>Follow {{user_name}} to stay updated!</p>
+            <a href="{{user_profile_url}}" class="btn">Follow {{user_name}}</a>
+        </div> -->
+    </div>
+
+    <div class="signature">
+        <p>Đây là thông báo tự động từ Pinspired. Không phản hồi thông báo này</p>
+    </div>
+</body>
+
+</html>

@@ -1,4 +1,5 @@
 const Utils = require("../../common/Utils");
+const _EmailService = require("../../common/EmailService");
 const _User = require("../../model/User");
 const _Comment = require("../../model/Comment");
 const _Post = require("../../model/Post");
@@ -51,6 +52,7 @@ const HandleCreateComment = async (req, res) => {
     const author = {
       name: req.user.name,
       avatar: currentUser.Avatar,
+      email: currentUser.Email,
       id: req.user.id,
     };
 
@@ -98,6 +100,7 @@ const HandleCreateReply = async (req, res) => {
     const author = {
       name: req.user.name,
       avatar: currentUser.Avatar,
+      email: currentUser.Email,
       id: req.user.id,
     };
 
@@ -121,6 +124,13 @@ const HandleCreateReply = async (req, res) => {
     await comment.save();
     await existPost.save();
 
+    //send email notify to parent comment author
+    const template = await createTemplateCommentNotify(comment);
+
+    await _EmailService.sendNotification(
+      [parentComment.author.email],
+      template
+    );
     return res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("CommentController - HandleCreateComment: " + error.message);
@@ -128,12 +138,38 @@ const HandleCreateReply = async (req, res) => {
   }
 };
 
+//private function
 const getCommentReplies = async (comment) => {
   const replies = await _Comment.find({ parentComment: comment._id });
   for (let reply of replies) {
     reply.replies = await getCommentReplies(reply);
   }
   return replies;
+};
+
+const createTemplateCommentNotify = async (commentId) => {
+  const comment = await _Comment
+    .findOne({ _id: commentId })
+    .populate("parentComment");
+
+  //find post
+  const post = await _Post.findById(comment.postId);
+
+  let content = `<div class="content">
+                    <p>Xin chào ${comment.parentComment.author.name},</p>
+                    <p>Bình luận của bạn về bài đăng "${post.Title}" đã nhận được phản hồi</p>
+                    <p>${comment.content}</p>
+                    <p>Kiểm tra nó <a href="https://pinterrest.vercel.app/pin/${post._id}" class="link">Tại đây</a>.</p>
+                  </div>`;
+  let footer = `<div class="footer">
+                  <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</p>
+                </div>`;
+
+  //replace template to @@content and @@footer
+  let template = Utils.readAllFile("../back-end/views/email-template.html");
+  template = template.replace("@@content@@", content);
+  template = template.replace("@@footer@@", footer);
+  return template;
 };
 
 module.exports = {

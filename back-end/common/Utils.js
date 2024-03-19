@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const fs = require("fs");
 
 const message = {
   SUCCESS: "Successful",
@@ -90,6 +91,15 @@ const calcFileSize = (fileSize) => {
   return fileSize / 1024 / 1024;
 };
 
+const readAllFile = (path) => {
+  try {
+    return fs.readFileSync(path, "utf8");
+  } catch (err) {
+    console.error("Error reading file:", err);
+    return null;
+  }
+};
+
 module.exports = {
   messageCode: message,
   statusCode: code,
@@ -105,4 +115,5 @@ module.exports = {
   checkFormatPassword: checkFormatPassword,
   getFileExtension: getFileExtension,
   calcFileSize: calcFileSize,
+  readAllFile: readAllFile,
 };
