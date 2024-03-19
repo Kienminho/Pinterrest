@@ -51,7 +51,8 @@ const DetailPin = () => {
     return state.Following
   })
 
-  console.log(postData)
+  const idOther = postData?.Created?._id
+  console.log(idOther)
 
   const isFollowing = followingList?.includes(postData?.Created?._id)
 
@@ -403,24 +404,18 @@ const DetailPin = () => {
     const fetchDataFromServer = async () => {
       try {
         // Gọi API để lấy danh sách follower
-        const followersRes = await axiosJWT.get(
-          `${process.env.REACT_APP_API_URL}/user/get-follower/${postData?.Created?._id}`,
-          {
-            headers: { authorization: `Bearer ${accessToken_daniel}` }
-          }
-        )
+        const followersRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-follower/${idOther}`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
         const followersData = followersRes.data.data
         if (followersData) {
           setFollowersOther(followersData)
         }
 
         // Gọi API để lấy danh sách following
-        const followingRes = await axiosJWT.get(
-          `${process.env.REACT_APP_API_URL}/user/get-following/${postData?.Created?._id}`,
-          {
-            headers: { authorization: `Bearer ${accessToken_daniel}` }
-          }
-        )
+        const followingRes = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/get-following/${idOther}`, {
+          headers: { authorization: `Bearer ${accessToken_daniel}` }
+        })
         const followingData = followingRes.data.data
         if (followingData) {
           setFollowingOther(followingData)
@@ -430,7 +425,7 @@ const DetailPin = () => {
       }
     }
     fetchDataFromServer()
-  }, [])
+  }, [postData])
 
   const handleShowProfile = () => {
     navigate(`/profiles/${postData?.Created?._id}`)
@@ -501,7 +496,7 @@ const DetailPin = () => {
                 <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-dark_color cursor-pointer'>
                   <div className='font-semibold'>{postData?.Created?.UserName}</div>
                   <div className=''>
-                    {UserId === postData?.Created?._id ? followers.length : followersOther.length} người theo dõi
+                    {UserId === postData?.Created?._id ? followers?.length : followersOther?.length} người theo dõi
                   </div>
                 </div>
                 {/* Nếu là người dùng hiện tại, ẩn nút "Theo dõi" */}
