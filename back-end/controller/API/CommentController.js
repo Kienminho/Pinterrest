@@ -159,14 +159,20 @@ const createTemplateCommentNotify = async (commentId) => {
                     <p>Xin chào ${comment.parentComment.author.name},</p>
                     <p>Bình luận của bạn về bài đăng "${post.Title}" đã nhận được phản hồi</p>
                     <p>${comment.content}</p>
-                    <p>Kiểm tra nó <a href="https://pinterrest.vercel.app/pin/${post._id}" class="link">Tại đây</a>.</p>
+                    <p>Xem <a href="https://pinterrest.vercel.app/pin/${post._id}" class="link">Tại đây</a>.</p>
                   </div>`;
   let footer = `<div class="footer">
                   <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</p>
                 </div>`;
 
   //replace template to @@content and @@footer
-  let template = Utils.readAllFile("../back-end/views/email-template.html");
+  const templatePath = path.join(
+    __dirname,
+    "../..",
+    "views",
+    "email-template.html"
+  );
+  let template = Utils.readAllFile(templatePath);
   template = template.replace("@@content@@", content);
   template = template.replace("@@footer@@", footer);
   return template;
