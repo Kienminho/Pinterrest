@@ -1,3 +1,4 @@
+const path = require("path");
 const Utils = require("../../common/Utils");
 const _EmailService = require("../../common/EmailService");
 const _User = require("../../model/User");
