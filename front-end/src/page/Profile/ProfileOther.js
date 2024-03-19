@@ -34,7 +34,7 @@ const ProfileOther = () => {
     return state.Following
   })
 
-  const isFollowing = followingList.includes(id)
+  const isFollowing = followingList?.includes(id)
 
   // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
   const handleFollowUser = async () => {
