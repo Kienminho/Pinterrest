@@ -209,7 +209,7 @@ const Messenger = () => {
                   {/* Hiển thị avatar của sender bên trái */}
                   {user?._id !== userReal?._id && (
                     <div className='mr-2'>
-                      <img src={user?.Avatar} alt='Sender Avatar' className='w-8 h-8 rounded-full' />
+                      {/* <img src={user?.Avatar} alt='Sender Avatar' className='w-8 h-8 rounded-full' /> */}
                     </div>
                   )}
                   <div
