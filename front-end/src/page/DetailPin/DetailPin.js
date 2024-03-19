@@ -36,6 +36,8 @@ const DetailPin = () => {
   const [selectedNestedReplyId, setSelectedNestedReplyId] = useState(null)
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
+  const [followersOther, setFollowersOther] = useState([])
+  const [followingOther, setFollowingOther] = useState([])
   const [loadingCmt, setLoadingCmt] = useState(true)
   const [loadingPost, setLoadingPost] = useState(true)
 
@@ -48,6 +50,8 @@ const DetailPin = () => {
   const { followingList } = useSelector((state) => {
     return state.Following
   })
+
+  console.log(postData)
 
   const isFollowing = followingList?.includes(postData?.Created?._id)
 
@@ -394,10 +398,46 @@ const DetailPin = () => {
     fetchDataFromServer()
   }, [])
 
+  // Lấy danh sách follower và following của người dùng chủ bài đăng
+  useEffect(() => {
+    const fetchDataFromServer = async () => {
+      try {
+        // Gọi API để lấy danh sách follower
+        const followersRes = await axiosJWT.get(
+          `${process.env.REACT_APP_API_URL}/user/get-follower/${postData?.Created?._id}`,
+          {
+            headers: { authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
+        const followersData = followersRes.data.data
+        if (followersData) {
+          setFollowersOther(followersData)
+        }
+
+        // Gọi API để lấy danh sách following
+        const followingRes = await axiosJWT.get(
+          `${process.env.REACT_APP_API_URL}/user/get-following/${postData?.Created?._id}`,
+          {
+            headers: { authorization: `Bearer ${accessToken_daniel}` }
+          }
+        )
+        const followingData = followingRes.data.data
+        if (followingData) {
+          setFollowingOther(followingData)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchDataFromServer()
+  }, [])
+
   const handleShowProfile = () => {
     navigate(`/profiles/${postData?.Created?._id}`)
   }
 
+  console.log(followers)
+  console.log(followersOther)
   return (
     <div className='detail-pin-container minus-nav-100vh font-roboto'>
       <div className='flex min-h-full justify-center relative '>
@@ -460,7 +500,9 @@ const DetailPin = () => {
                 </div>
                 <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-dark_color cursor-pointer'>
                   <div className='font-semibold'>{postData?.Created?.UserName}</div>
-                  <div className=''>{followers.length} người theo dõi</div>
+                  <div className=''>
+                    {UserId === postData?.Created?._id ? followers.length : followersOther.length} người theo dõi
+                  </div>
                 </div>
                 {/* Nếu là người dùng hiện tại, ẩn nút "Theo dõi" */}
                 {!isCurrentUser && (
