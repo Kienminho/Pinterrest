@@ -131,7 +131,7 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
       const latestConversation = conversations[conversations.length - 1]
       const lastestVer2 = processedExistingConversations([latestConversation])
       // Gọi hàm fetchMessages để lấy tin nhắn cho cuộc trò chuyện mới tạo
-      fetchMessages(lastestVer2[0].conversationId, accessToken_daniel, axiosJWT, lastestVer2[0].receiver)
+      fetchMessages(lastestVer2[0]?.conversationId, accessToken_daniel, axiosJWT, lastestVer2[0]?.receiver)
     }
   }, [conversations])
 
