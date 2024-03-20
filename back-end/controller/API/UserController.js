@@ -469,7 +469,7 @@ const GetFollower = async (req, res) => {
     //get follower list
     const followerList = await _Follow
       .find({ following: id })
-      .populate("follower");
+      .populate("follower", "UserName Avatar Email FullName");
     return res.json(Utils.createSuccessResponseModel(1, followerList));
   } catch (error) {
     console.log("UserController -> GetFollower: " + error.message);

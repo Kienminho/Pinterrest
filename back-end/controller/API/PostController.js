@@ -1,9 +1,13 @@
+const path = require("path");
+
 const Utils = require("../../common/Utils");
 const _FileService = require("../../common/FileService");
+const _EmailService = require("../../common/EmailService");
 const _Post = require("../../model/Post");
 const _User = require("../../model/User");
 const _Category = require("../../model/Category");
 const _SavePost = require("../../model/SavePost");
+const _Follow = require("../../model/Follow");
 const _AIController = require("./AIController");
 const _CategoryController = require("./CategoryController");
 const _FileController = require("./FileController");
@@ -113,6 +117,10 @@ const HandleCreatePost = async (req, res) => {
     newPost.Category = listCategory;
     const post = new _Post(newPost);
     await post.save();
+
+    //send email to follower
+    const recipients = await createTemplate(req.user.id, req.user.name, post);
+    await _EmailService.sendNotification(recipients);
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("PostController -> HandleCreatePost: " + error.message);
@@ -378,6 +386,51 @@ const HandleGetSavePost = async (req, res) => {
   } catch (error) {
     console.log("PostController -> HandleGetSavePost: " + error.message);
     return res.status(500).json(Utils.createErrorResponseModel(error.message));
+  }
+};
+
+//primary function
+//create template send email to follower when user create post
+const createTemplate = async (id, userCreatedPost, post) => {
+  //get follower list and just get UserName and Email.
+  const followerList = await _Follow
+    .find({ following: id })
+    .populate("follower", "UserName Email");
+
+  //get list follower
+  followerList = followerList.map((item) => item.follower);
+
+  const templatePath = path.join(
+    __dirname,
+    "../..",
+    "views",
+    "email-template.html"
+  );
+
+  let recipients = [];
+  //create list template and email to send
+  for (const follower of followerList) {
+    let content = `<div class="content">
+                      <p>Xin chào <strong>${follower.UserName}</strong>,</p>
+                      <p><strong>${userCreatedPost}</strong> vừa có một bài đăng mới:</p>
+                      <h2>${post.Title}</h2>
+                      <img src="${post.Attachment.Thumbnail}" alt="${post.Description}">
+                      <p>Xem bài đăng <a href="https://pinterrest.vercel.app/pin/${post._id}" class="link">Tại đây</a>.</p>
+                    </div>`;
+
+    let footer = `<div class="footer">
+                    <p>Truy cập vào <strong>Pinspired</strong> để xem các bài đăng khác!</p>
+                    <a href="https://pinterrest.vercel.app" class="btn">Truy cập ngay</a>
+                  </div>`;
+
+    //replace template to @@content and @@footer
+    let template = Utils.readAllFile(templatePath);
+    template = template.replace("@@content@@", content);
+    template = template.replace("@@footer@@", footer);
+
+    recipients.push({ email: follower.Email, content: template });
+
+    return recipients;
   }
 };
 

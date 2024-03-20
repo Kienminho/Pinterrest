@@ -127,11 +127,11 @@ const HandleCreateReply = async (req, res) => {
 
     //send email notify to parent comment author
     const template = await createTemplateCommentNotify(comment);
-
-    await _EmailService.sendNotification(
-      [parentComment.author.email],
-      template
-    );
+    const recipients = {
+      email: parentComment.author.email,
+      content: template,
+    };
+    await _EmailService.sendNotification([recipients]);
     return res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("CommentController - HandleCreateComment: " + error.message);

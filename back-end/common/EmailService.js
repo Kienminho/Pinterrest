@@ -31,9 +31,9 @@ const sendMail = async (email, code, username) => {
   });
 };
 
-sendNotification = async (emails, content) => {
-  console.log(emails);
-  emails.forEach((email) => {
+const sendNotification = async (recipients) => {
+  for (let i = 0; i < recipients.length; i++) {
+    const { email, content } = recipients[i];
     const mailOptions = {
       from: "Hopkien1609@gmail.com", // Email người gửi
       to: email, // Email người nhận
@@ -42,16 +42,13 @@ sendNotification = async (emails, content) => {
     };
 
     // Gửi email
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-        return false;
-      } else {
-        console.log("Email sent: " + info.response);
-        return true;
-      }
-    });
-  });
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log("Email sent to " + email + ": " + info.response);
+    } catch (error) {
+      console.error("Error sending email to " + email + ":", error);
+    }
+  }
 };
 
 module.exports = {
