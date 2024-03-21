@@ -120,7 +120,9 @@ const HandleCreatePost = async (req, res) => {
 
     //send email to follower
     const recipients = await createTemplate(req.user.id, req.user.name, post);
-    await _EmailService.sendNotification(recipients);
+    if (recipients.length > 0) {
+      await _EmailService.sendNotification(recipients);
+    }
     res.json(Utils.createSuccessResponseModel(0, true));
   } catch (error) {
     console.log("PostController -> HandleCreatePost: " + error.message);
@@ -399,7 +401,6 @@ const createTemplate = async (id, userCreatedPost, post) => {
 
   //get list follower
   followerList = followerList.map((item) => item.follower);
-
   const templatePath = path.join(
     __dirname,
     "../..",
@@ -429,9 +430,8 @@ const createTemplate = async (id, userCreatedPost, post) => {
     template = template.replace("@@footer@@", footer);
 
     recipients.push({ email: follower.Email, content: template });
-
-    return recipients;
   }
+  return recipients;
 };
 
 module.exports = {
