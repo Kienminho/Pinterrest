@@ -19,8 +19,9 @@ export const ReplyComment = ({ comment, parentAuthor, handleClick }) => {
         <div className='creator-name reply__content flex flex-col text-white'>
           <div className='font-semibold'>{comment.author.name}</div>
           <div className='flex text-base gap-1'>
-            <span className='font-medium'>@{parentAuthor}</span>
-            <span>{comment.content}</span>
+            <span className='font-medium'>
+              @{parentAuthor} {comment.content}
+            </span>
           </div>
         </div>
       </div>
