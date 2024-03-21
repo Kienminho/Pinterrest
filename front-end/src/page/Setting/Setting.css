@@ -1,33 +1,48 @@
-.gap-10 > nav > div {
-  background-color: white !important;
+div > nav > div {
+  background-color: #1e293b !important;
+  border-radius: 10px !important;
 }
 
-.ant-btn.ant-btn-primary {
-  background-color: #6366f1;
-  border-color: #6366f1;
+/* li span {
+  color: #ffffff !important;
 }
 
-.ant-btn.css-dev-only-do-not-override-1k979oh.ant-btn-primary:hover {
-  background-color: #4f52eb;
-  border-color: #4f52eb;
-}
+ul > li:hover {
+  background-color: #145bb8 !important;
+} */
 
 .ant-input-affix-wrapper {
   padding: 10px 16px;
-}
-
-.ant-input-affix-wrapper:focus-within {
-  border: 1px solid #818cf8;
 }
 
 .ant-picker {
   padding: 10px 16px;
 }
 
-.ant-picker:hover {
-  border: 1px solid #818cf8;
+.ant-input-affix-wrapper.ant-input-affix-wrapper-lg.css-dev-only-do-not-override-1k979oh.ant-input-outlined {
+  padding: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 12px;
+  outline-style: none;
+  width: 100%;
+  background: #334155;
+  color: #ffffff;
+  border: none;
 }
 
-.ant-picker:focus-within {
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+.ant-picker.ant-picker-large.ant-picker-outlined.css-dev-only-do-not-override-1k979oh.block {
+  padding: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 12px;
+  outline-style: none;
+  width: 100%;
+  background: #334155;
+  color: #ffffff;
+  border: none;
+}
+
+input[type='file'] {
+  color: white;
 }

@@ -8,10 +8,6 @@ import UserPicUploader from '../../components/UserPicUploader/UserPicUploader'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import ModalListFollow from '../../components/ModalListFollow/ModalListFollow'
 import SuspenseLoader from '../../components/SuspenseLoader/SuspenseLoader'
-
-// const UserCreatedPosts = lazy(() => import('../../components/UserCreatedPosts/UserCreatedPosts'))
-// const UserSavedPosts = lazy(() => import('../../components/UserSavedPosts/UserSavedPosts'))
-
 import UserCreatedPosts from '../../components/UserCreatedPosts/UserCreatedPosts'
 import UserSavedPosts from '../../components/UserSavedPosts/UserSavedPosts'
 export const LoadingContext = createContext()
@@ -30,6 +26,16 @@ const Profile = () => {
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
   const [loading, setLoading] = useState(false)
+  // const [listSavedPosts, setListSavedPosts] = useState([])
+
+  const { followingList } = useSelector((state) => {
+    return state.Following
+  })
+
+  console.log('check followingList bên current: ', followingList)
+
+  // const isFollowing = followingList?.includes(id)
+  // console.log('check curUser follow othUser: ', isFollowing)
 
   // Get created posts
   useEffect(() => {
@@ -90,7 +96,7 @@ const Profile = () => {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
 
-        const followersData = followersRes.data.data
+        const followersData = followersRes?.data?.data
         if (followersData) {
           setFollowers(followersData)
         }
@@ -100,7 +106,7 @@ const Profile = () => {
           headers: { authorization: `Bearer ${accessToken_daniel}` }
         })
 
-        const followingData = followingRes.data.data
+        const followingData = followingRes?.data?.data
         if (followingData) {
           setFollowing(followingData)
         }
@@ -111,9 +117,12 @@ const Profile = () => {
     fetchDataFromServer()
   }, [])
 
+  console.log('check followers: ', followers)
+  console.log('check following: ', following)
+
   return (
     <LoadingContext.Provider value={loading}>
-      <div className='user_profile minus-nav-100vh'>
+      <div className='user_profile minus-nav-100vh bg-dark_blue text-white font-inter'>
         <div className='profile-header flex flex-col items-center pt-10'>
           {/* Avatar part */}
           <div className='relative profile-pic-main mb-4'>
@@ -125,40 +134,38 @@ const Profile = () => {
               )}
             </div>
             <div className='absolute bottom-0 right-2'>
-              <div class='w-8 aspect-square rounded-full z-20 bg-gray-100 hover:bg-gray-200 grid place-content-center'>
-                <UserPicUploader setTempPic={(file) => setTempPic(file)} />
-              </div>
+              <UserPicUploader setTempPic={(file) => setTempPic(file)} />
             </div>
           </div>
 
           {/* Fullname part */}
           <div className='profile-fullname'>
-            <h1 className='text-3xl font-semibold'>{FullName}</h1>
+            <h1 className='text-[28px] font-semibold'>{FullName}</h1>
           </div>
 
           {/* Username part */}
           <div className='profile-username mt-2'>
-            <h1 className='text-xl font-medium text-gray-800'>@{UserName}</h1>
+            <h1 className='text-lg font-medium text-blue-500'>@{UserName}</h1>
           </div>
 
           {/* Follow modal part  */}
-          <div className='profile-follow mt-3 flex gap-3 items-center font-medium'>
+          <div className='profile-follow my-5  flex gap-3 items-center font-medium'>
             <ModalListFollow followersList={followers} followingsList={following} />
           </div>
 
           {/* Activity part */}
-          <div className='profile-activity mt-2 flex gap-3 items-center'>
+          <div className='profile-activity flex gap-3 items-center'>
             <NavLink to='/settings'>
-              <button className='rounded-3xl text-dark_color font-medium px-[18px] py-3 hover:bg-zinc-300/90 bg-zinc-300/60'>
+              <button className='rounded-3xl text-white font-medium px-[18px] py-3 bg-hover_dark hover:bg-[#384454d3]'>
                 Chỉnh sửa hồ sơ
               </button>
             </NavLink>
           </div>
         </div>
-        <div className='profile-pins mt-8 text-[#333333]'>
+        <div className='profile-pins mt-8 text-white'>
           <div className='flex flex-col items-center'>
             {/* Category divided part */}
-            <div className='category-selector flex gap-5'>
+            <div className='category-selector flex gap-5 text-base'>
               <NavLink to={'saved'} className={`${selectedTab === 'saved' ? 'active' : ''}`}>
                 <p className='relative font-semibold p-2 category-link' onClick={() => setSelectedTab('saved')}>
                   Đã lưu

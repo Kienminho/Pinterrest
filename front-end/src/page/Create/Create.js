@@ -42,6 +42,7 @@ const Create = () => {
   const handleUploadType = (type) => {
     setUploadType(type)
     setFile('')
+    setFileInfo({ Title: '', Description: '' })
   }
 
   // Xử lý khi người dùng thay đổi ToggleSwitch
@@ -154,9 +155,9 @@ const Create = () => {
       onDrop={preventDefault}
       onDragOver={preventDefault}
     >
-      <div className='pin-creator max-sm:mx-0 max-sm:mt-0 max-sm:w-full max-sm:h-auto pb-10 max-sm:flex max-sm:flex-col max-sm:rounded-none bg-white'>
-        <div className='flex items-center justify-between border-b border-gray-300 py-5 px-7'>
-          <span className='font-medium text-xl text-dark_color'>Tạo ghim</span>
+      <div className='pin-creator max-sm:mx-0 max-sm:mt-0 max-sm:w-full max-sm:h-auto pb-10 max-sm:flex max-sm:flex-col max-sm:rounded-none font-inter'>
+        <div className='flex items-center justify-between border-b border-gray-700 py-5 px-7 text-white'>
+          <span className='font-medium text-xl'>Tạo ghim</span>
           <div className='upload-option flex flex-col md:flex-row justify-center items-center gap-4'>
             <button
               onClick={() => handleUploadType('AI')}
@@ -191,19 +192,27 @@ const Create = () => {
           </div>
           <div className='upload-button'>
             {uploadType === 'AI' ? (
-              <button className='btn-upload' disabled={underUpload} onClick={handlePostCreateAI}>
-                Đăng
+              <button
+                className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-3 px-6 text-base'
+                disabled={underUpload}
+                onClick={handlePostCreateAI}
+              >
+                Đăng bài
               </button>
             ) : (
-              <button className='btn-upload' disabled={underUpload} onClick={handlePostCreate}>
-                Đăng
+              <button
+                className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-3 px-6 text-base'
+                disabled={underUpload}
+                onClick={handlePostCreate}
+              >
+                Đăng bài
               </button>
             )}
           </div>
         </div>
 
         {/* <FileUpload/> */}
-        <div className='pin-form mt-12 max-sm:m-5 px-8 md:px-16 flex justify-center gap-6 md:gap-12 max-sm:gap-5 max-sm:flex-col w-full'>
+        <div className='pin-form mt-12 max-sm:m-5 px-8 md:px-16 flex justify-center gap-6 md:gap-12 max-sm:gap-5 max-sm:flex-col w-full bg-light_blue p-10 rounded-2xl max-w-[1500px] mx-auto'>
           <div className='upload-field flex flex-col gap-8'>
             {uploadType === 'AI' && (
               <ImageUploaderAI imgSrc={file} loadingAI={loadingAI} loadingPostAI={loadingPostAI} />
@@ -224,15 +233,16 @@ const Create = () => {
                   placeholder='Nhập mô tả ảnh.. ( nếu muốn tạo ảnh AI )'
                   label={'Prompt Tạo ảnh AI'}
                 />
+
                 <div className='flex justify-evenly gap-3'>
                   <button
-                    className='btn-chosen-normal bg-red-100 hover:bg-red-200 hover:text-red-600 text-red-500 focus:ring-2 focus:ring-red-400 mt-4 w-[70%]'
+                    className='btn-chosen-normal bg-red-100 hover:bg-red-200 hover:text-rose-600 text-rose-500 focus:ring-2 focus:ring-rose-400 mt-4 w-[70%]'
                     onClick={handleGenerateImage}
                   >
                     Tạo ảnh AI
                   </button>
                   <button
-                    className='btn-chosen-normal bg-gray-100 hover:bg-gray-200 hover:text-gray-600 text-gray-500 focus:ring-2 focus:ring-gray-400 mt-4 w-[30%]'
+                    className='btn-chosen-normal bg-gray-200 hover:bg-gray-300 hover:text-gray-600 text-gray-600 focus:ring-2 focus:ring-gray-400 mt-4 w-[30%]'
                     onClick={handleResetPrompt}
                   >
                     Tạo ảnh khác
@@ -251,18 +261,18 @@ const Create = () => {
               />
             </div>
             <div className='desc-input flex flex-col'>
-              <label className='text-[#111111] text-base font-medium mb-2 capitalize'>Mô tả </label>
+              <label className=' text-white text-base font-medium mb-2 capitalize'>Mô tả </label>
               <textarea
                 type='text'
                 name='Description'
                 id='pinDesc'
                 rows={4}
-                placeholder='Thêm mô tả chi tiết'
-                className='border-[#cdcdcd] placeholder:text-gray-400 px-4 py-2 ps-5 text-base text-gray-900 rounded-xl bg-gray-50 hover:ring-indigo-300 focus:ring-indigo-400 focus:border-indigo-400 focus:border-1 focus:ring-1 resize-none font-normal outline-none block w-full border-1'
+                placeholder='Thêm mô tả chi tiết...'
+                className='border-[#cdcdcd] py-3 ps-5 text-base border-none rounded-xl  font-normal  w-full bg-[#334155] resize-none outline-none p-3 px-4 text-[#ffffff] placeholder:text-[#ffffffb3]'
                 onChange={handleChange}
               />
             </div>
-            <div className='flex gap-3 items-center'>
+            <div className='flex gap-3 items-center text-white'>
               <span className='font-medium'>Cho phép bình luận</span>
               <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />
             </div>

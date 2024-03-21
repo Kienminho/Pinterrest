@@ -137,26 +137,26 @@ export const SearchAndResults = ({ onConversationCreated, conversations, fetchMe
 
   return (
     <div className='search-and-results-container' ref={searchRef}>
-      <div className='input-wrapper w-full h-12 drop-shadow bg-white flex items-center px-4 py-0 rounded-xl border-none'>
-        <FaSearch id='search-icon' color='grey' />
+      <div className='input-wrapper w-full h-12 drop-shadow bg-[#334155] flex items-center px-4 py-0 rounded-xl text-[#ffffff]'>
+        <FaSearch id='search-icon' color='white' size='1.3rem' />
         <input
-          className='bg-transparent h-full text-base w-full ml-4 border-none focus:outline-none'
+          className='bg-transparent h-full text-base w-full ml-4 border-none focus:outline-none placeholder:text-[#ffffff]'
           placeholder='Tìm kiếm người dùng...'
           value={input}
           onChange={(e) => handleChange(e.target.value)}
         />
         {input && (
-          <button className='focus:outline-none hover:bg-zinc-200 rounded-full p-2' onClick={handleClearInput}>
+          <button className='focus:outline-none hover:bg-[#626d7b] rounded-full p-2' onClick={handleClearInput}>
             <FaTimesCircle />
           </button>
         )}
       </div>
       {showResults && (
-        <div className='results-list w-full bg-white flex flex-col shadow-[0px_0px_8px_#ddd] max-h-[300px] overflow-y-auto mt-4 rounded-lg'>
+        <div className='results-list w-full bg-[#313e50] flex flex-col shadow-[0_3px_10px_rgb(0,0,0,0.2)] max-h-[300px] overflow-y-auto mt-2 rounded-lg text-white'>
           {results.map((result, id) => (
             <div
               key={id}
-              className='search-result px-5 py-2.5 hover:bg-[#efefef] flex items-center cursor-pointer gap-2'
+              className='search-result px-5 py-2.5 hover:bg-[#3f4c5d] flex items-center cursor-pointer gap-2'
               onClick={() => handleCreateConversation(user?._id, result._id)}
             >
               <img src={result.Avatar} className='h-6 w-6 sm:h-9 sm:w-9 rounded-full' alt='avatar' />

@@ -3,7 +3,7 @@ import FormWrapper from '../../components/FormLayout/FormWrapper'
 import InputField from '../../components/Input/InputField'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import logo from '../../components/Nav/PLogo.svg'
+import logo from '../../components/Nav/PLogo_circle.png'
 import { loginUser } from '../../store/apiRequest'
 import { Alert, Spin } from 'antd'
 import { useGoogleLogin } from '@react-oauth/google'
@@ -93,22 +93,19 @@ const Login = () => {
         </div>
       )}
       <FormWrapper loading={loading}>
-        <div className='flex flex-col items-center font-roboto'>
+        <div className='flex flex-col items-center font-inter text-white'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />
           </div>
           <div className='items-center block justify-center text-center px-4;'>
-            <h3 className='text-dark_color tracking-normal leading-tight'>Chào mừng bạn trở lại với Pinspired</h3>
+            <h3 className='text-white tracking-normal leading-tight'>Chào mừng bạn trở lại với Pinspired</h3>
           </div>
           <div className='block items-center justify-center mt-1'>
-            <p className='text-center text-dark_color font-normal'>Tiếp tục khám phá những ý tưởng</p>
+            <p className='text-center text-zinc-300 font-normal'>Tiếp tục khám phá những ý tưởng</p>
           </div>
 
           <div className='md:w-[300px] lg:w-[360px] mt-6 flex flex-col gap-3'>
             <div className='relative'>
-              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
-                {/* <MdEmail size='1.5rem' color='salmon' /> */}
-              </div>
               <InputField
                 ref={inputRef}
                 label={'Email'}
@@ -120,9 +117,6 @@ const Login = () => {
               />
             </div>
             <div className='relative'>
-              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
-                {/* <RiLockPasswordFill size='1.5rem' color='salmon' /> */}
-              </div>
               <InputField
                 label={'Mật khẩu'}
                 type='password'
@@ -151,7 +145,7 @@ const Login = () => {
 
             <div className='flex justify-center mt-3'>
               <button
-                className='text-white bg-purple_btn hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
+                className='text-white bg-pink-600 hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
                 onClick={() => {
                   handleLogin()
                   setHideError(true)
@@ -162,7 +156,7 @@ const Login = () => {
             </div>
             <div class='my-2 grid grid-cols-3 items-center text-gray-400'>
               <hr class='border-gray-400' />
-              <p class='text-center text-sm text-gray-600'>HOẶC</p>
+              <p class='text-center text-sm text-gray-300'>HOẶC</p>
               <hr class='border-gray-400' />
             </div>
             <div className='flex justify-center'>
@@ -193,18 +187,15 @@ const Login = () => {
             </div>
 
             <div className='mt-4 w-80 mx-auto text-center'>
-              <p className='font-normal text-zinc-600  dark:text-zinc-500'>
+              <p className='font-normal text-zinc-300'>
                 Bằng cách tiếp tục, bạn đồng ý với{' '}
-                <a
-                  href='youtube.com'
-                  className='font-normal dec text--600 dark:text-blue-500 no-underline hover:underline'
-                >
+                <NavLink to='/terms-of-service' className='font-normal text-blue-500 no-underline hover:underline'>
                   <span className='font-bold'>Điều khoản và Chính sách</span>
-                </a>{' '}
+                </NavLink>{' '}
                 của chúng tôi.
               </p>
               <div className='border-b border-gray-400 mt-2'></div>
-              <p className='font-normal text-zinc-600  dark:text-zinc-500 mt-2 '>
+              <p className='font-normal text-zinc-300 mt-2 '>
                 Bạn chưa có tài khoản?{' '}
                 <NavLink
                   to='/register'

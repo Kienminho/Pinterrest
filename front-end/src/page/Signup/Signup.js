@@ -6,7 +6,7 @@ import { registerUser } from '../../store/apiRequest'
 import { useDispatch } from 'react-redux'
 import { IoInformationCircle } from 'react-icons/io5'
 
-import logo from '../../components/Nav/PLogo.svg'
+import logo from '../../components/Nav/PLogo_circle.png'
 import { Alert, Spin } from 'antd'
 
 const Signup = () => {
@@ -66,22 +66,19 @@ const Signup = () => {
         </div>
       )}
       <FormWrapper loading={loading}>
-        <div className='flex flex-col items-center font-roboto'>
+        <div className='flex flex-col items-center font-inter text-white'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />
           </div>
           <div className='items-center block justify-center text-center px-4;'>
-            <h3 className='text-dark_color tracking-normal leading-tight'>Chào mừng bạn đã đến với Pinspired</h3>
+            <h3 className='tracking-normal leading-tight'>Chào mừng bạn đã đến với Pinspired</h3>
           </div>
           <div className='block items-center justify-center mt-1'>
-            <p className='text-center text-dark_color font-normal'>Tìm những ý tưởng mới để thử</p>
+            <p className='text-center text-zinc-300 font-normal'>Tìm những ý tưởng mới để thử</p>
           </div>
 
           <div className='w-[360px] mt-4 flex flex-col gap-3'>
             <div className='relative'>
-              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
-                {/* <MdEmail size='1.5rem' color='salmon' /> */}
-              </div>
               <InputField
                 ref={inputRef}
                 label={'Email'}
@@ -94,9 +91,6 @@ const Signup = () => {
             </div>
 
             <div className='relative'>
-              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
-                {/* <RiLockPasswordFill size='1.5rem' color='salmon' /> */}
-              </div>
               <InputField
                 label={'Mật khẩu'}
                 type='password'
@@ -113,7 +107,7 @@ const Signup = () => {
                 <Alert message={error} type='error' showIcon />
               </div>
             ) : (
-              <p class='flex items-center gap-2 mt-2 text-sm font-roboto font-normal leading-normal text-gray-600'>
+              <p class='flex items-center gap-2 mt-2 text-sm font-inter font-normal leading-normal text-zinc-300'>
                 <IoInformationCircle size='1.5rem' />
                 Mật khẩu phải có ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và 1 số.
               </p>
@@ -121,7 +115,7 @@ const Signup = () => {
 
             <div className='flex justify-center mt-3'>
               <button
-                className='text-white bg-purple_btn hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
+                className='text-white bg-pink-600 hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
                 onClick={() => {
                   handleRegister()
                   setHideError(true)
@@ -132,7 +126,7 @@ const Signup = () => {
             </div>
             <div class='my-2 grid grid-cols-3 items-center text-gray-400'>
               <hr class='border-gray-400' />
-              <p class='text-center text-sm text-gray-600'>HOẶC</p>
+              <p class='text-center text-sm text-zinc-300'>HOẶC</p>
               <hr class='border-gray-400' />
             </div>
             <div className='flex justify-center'>
@@ -160,18 +154,15 @@ const Signup = () => {
             </div>
 
             <div className='mt-4 w-80 mx-auto text-center'>
-              <p className='font-normal text-zinc-600  dark:text-zinc-500'>
+              <p className='font-normal text-zinc-300'>
                 Bằng cách tiếp tục, bạn đồng ý với{' '}
-                <a
-                  href='youtube.com'
-                  className='font-normal dec text--600 dark:text-blue-500 no-underline hover:underline'
-                >
+                <NavLink to='/terms-of-service' className='font-normal text-blue-500 no-underline hover:underline'>
                   <span className='font-bold'>Điều khoản và Chính sách</span>
-                </a>{' '}
+                </NavLink>{' '}
                 của chúng tôi.
               </p>
               <div className='border-b border-gray-400 mt-2'></div>
-              <p className='font-normal text-zinc-600  dark:text-zinc-500 mt-2 '>
+              <p className='font-normal text-zinc-300 mt-2 '>
                 Bạn đã là thành viên?{' '}
                 <NavLink
                   to='/login'

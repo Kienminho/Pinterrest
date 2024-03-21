@@ -123,22 +123,8 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path='/terms-of-service'
-          element={
-            <PrivateRoute>
-              <Terms />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path='/about'
-          element={
-            <PrivateRoute>
-              <AboutUs />
-            </PrivateRoute>
-          }
-        />
+        <Route path='/terms-of-service' element={<Terms />} />
+        <Route path='/about' element={<AboutUs />} />
         <Route
           path='/forgot-password'
           element={

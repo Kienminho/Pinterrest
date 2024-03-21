@@ -10,10 +10,12 @@ import { CreateAxios } from '../../createInstance'
 
 import { Tooltip } from 'flowbite-react'
 import { Avatar, Dropdown, Navbar } from 'flowbite-react'
-import { HiOutlineAdjustments, HiUserCircle } from 'react-icons/hi'
-import { MdPrivacyTip } from 'react-icons/md'
+import { HiUserCircle } from 'react-icons/hi'
+import { MdInfo } from 'react-icons/md'
+import { IoClipboard } from 'react-icons/io5'
+import { FaPeopleGroup } from 'react-icons/fa6'
 
-import logo from './PLogo.svg'
+import logo from './PLogo_circle.png'
 import './Nav.css'
 import { useEffect, useState } from 'react'
 import { SearchAndResultsImage } from '../SearchAndResultsImage/SearchAndResultsImage'
@@ -52,18 +54,18 @@ const Nav = () => {
       create: pathname === '/create'
     })
   }, [location])
-  
+
   return (
     <>
       <Navbar
         fluid
         rounded
-        className='font-roboto border-b-2 border-gray-50 shadow-md text-dark_color px-4 py-3 sm:px-6 sm:py-[14px]'
+        className='font-inter shadow-lg border-b-2 border-b-gray-700 px-4 py-3 sm:px-6 sm:py-[16px] bg-light_blue text-[#fff] rounded-none'
       >
         <Navbar.Brand>
           <NavLink to='/' className='flex'>
-            <img src={logo} className='h-6 sm:h-9 rounded-full' alt='Flowbite React Logo' />
-            <span className='self-center whitespace-nowrap text-xl font-semibold dark:text-white text-indigo-600 ml-1'>
+            <img src={logo} className='aspect-square h-7 w-7 sm:h-9 sm:w-9 rounded-full' alt='Pinspired Logo' />
+            <span className='self-center whitespace-nowrap text-[22px] font-semibold text-pink-600 ml-2'>
               Pinspired
             </span>
           </NavLink>
@@ -72,8 +74,8 @@ const Nav = () => {
           <div className='flex md:order-2 gap-2'>
             <Tooltip content='Message'>
               <NavLink to='/message'>
-                <button className='rounded-full btn-circle mt-[3px]'>
-                  <AiFillMessage size='1.8rem' color='#666666' className='cursor-pointer' />
+                <button className='rounded-full btn-circle hover:bg-hover_dark mt-[3px]'>
+                  <AiFillMessage size='1.7rem' color='#ffffff' className='cursor-pointer' />
                 </button>
               </NavLink>
             </Tooltip>
@@ -84,7 +86,7 @@ const Nav = () => {
               label={
                 <Avatar
                   alt='User settings'
-                  className='ml-2 rounded-full hover:bg-indigo-300 transition duration-300 hover:rounded-full p-1.5 -mt-1'
+                  className='ml-2 rounded-full hover:bg-pink-600 transition duration-300 hover:rounded-full p-0.5'
                   img={
                     AvatarUser
                       ? AvatarUser
@@ -97,25 +99,36 @@ const Nav = () => {
               <Dropdown.Header>
                 <div className='flex gap-3'>
                   <Avatar alt='User settings' img={AvatarUser} rounded />
-                  <div className='flex flex-col gap-0.5'>
+                  <div className='flex flex-col gap-0.5 text-white'>
                     <span className='truncate font-semibold'>{FullName}</span>
-                    <span className='truncate font-medium text-gray-700'>@{UserName}</span>
+                    <span className='truncate font-medium text-[#ffffffb3]'>@{UserName}</span>
                   </div>
                 </div>
               </Dropdown.Header>
 
               <Dropdown.Item icon={HiUserCircle}>
-                <NavLink to='/profile'>Hồ sơ của bạn</NavLink>
+                <NavLink to='/profile' className='truncate font-medium text-[#ffffff]'>
+                  Hồ sơ của bạn
+                </NavLink>
               </Dropdown.Item>
-              <Dropdown.Item icon={HiOutlineAdjustments}>
-                <NavLink to='/settings'>Thông tin tài khoản</NavLink>
+              <Dropdown.Item icon={MdInfo}>
+                <NavLink to='/settings' className='truncate font-medium text-[#ffffff]'>
+                  Thông tin tài khoản
+                </NavLink>
               </Dropdown.Item>
-              <Dropdown.Item icon={MdPrivacyTip}>
-                <NavLink to='/terms-of-service'>Điều khoản dịch vụ</NavLink>
+              <Dropdown.Item icon={IoClipboard}>
+                <NavLink to='/terms-of-service' className='truncate font-medium text-[#ffffff]'>
+                  Điều khoản dịch vụ
+                </NavLink>
+              </Dropdown.Item>
+              <Dropdown.Item icon={FaPeopleGroup}>
+                <NavLink to='/about' className='truncate font-medium text-[#ffffff]'>
+                  Giới thiệu Pinspired
+                </NavLink>
               </Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={handleLogout} icon={FaSignOutAlt}>
-                Đăng xuất
+                <span className='truncate font-medium text-[#ffffff]'>Đăng xuất</span>
               </Dropdown.Item>
             </Dropdown>
             <Navbar.Toggle />
@@ -123,12 +136,12 @@ const Nav = () => {
         ) : (
           <div className='flex md:order-2 gap-2 font-medium'>
             <NavLink to='/login'>
-              <div className='rounded-3xl text-dark_color px-[18px] py-3 transition duration-300 ease-in-out hover:bg-zinc-300/90 bg-zinc-300/60'>
+              <div className='rounded-full btn-pink bg-pink-100 hover:bg-pink-200 px-[20px] py-3 transition duration-300 ease-in-out text-pink-600 text-base'>
                 Đăng nhập
               </div>
             </NavLink>
             <NavLink to='/register'>
-              <div className='rounded-3xl bg-purple_btn hover:bg-indigo-600 px-[20px] py-3 transition duration-300 ease-in-out text-white'>
+              <div className='rounded-full bg-pink-600 hover:bg-pink-700 px-[20px] py-3 transition duration-300 ease-in-out text-white text-base'>
                 Đăng ký
               </div>
             </NavLink>
@@ -137,8 +150,8 @@ const Nav = () => {
         <Navbar.Collapse>
           <NavLink to='/'>
             <button
-              className={`btn-home px-4 py-3 ${
-                activeBtn['home'] ? 'bg-purple_btn hover:bg-purple_btn text-white' : ''
+              className={`btn-home hover:bg-[#384454] px-4 py-3 ${
+                activeBtn['home'] ? 'bg-pink-600 hover:bg-pink-700 text-white' : ''
               }`}
               onClick={() => handleButtonClick('home')}
             >
@@ -148,8 +161,8 @@ const Nav = () => {
           {user && (
             <NavLink to='/create'>
               <button
-                className={`btn-home px-5 py-3 md:-ml-6 ${
-                  activeBtn['create'] ? 'bg-purple_btn hover:bg-purple_btn text-white' : ''
+                className={`btn-home hover:bg-[#384454] px-5 py-3 md:-ml-6 ${
+                  activeBtn['create'] ? 'bg-pink-600 hover:bg-pink-700 text-white' : ''
                 }`}
                 onClick={() => handleButtonClick('create')}
               >
