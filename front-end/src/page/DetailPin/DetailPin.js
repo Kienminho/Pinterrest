@@ -480,11 +480,11 @@ const DetailPin = () => {
               )}
             </div>
 
-            <div className={`desc-body flex flex-col gap-7 px-9 max-sm:gap-3 overflow-scroll h-[70%] mb-5`}>
+            <div className={`desc-body flex flex-col gap-7 px-7 max-sm:gap-3 overflow-scroll h-[70%] mb-5`}>
               <span className='text-3xl font-medium max-sm:text-2xl text-white'>{postData?.Title}</span>{' '}
               <span className='text-[18px] font-normal max-sm:text-base text-zinc-300'>{postData?.Description}</span>
               {/* User info part */}
-              <div className='creator-profile flex w-full items-center mt-auto gap-1'>
+              <div className='creator-profile flex w-full items-center gap-1'>
                 <div
                   className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'
                   onClick={handleShowProfile}
