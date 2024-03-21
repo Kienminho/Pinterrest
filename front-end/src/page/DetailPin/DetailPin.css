@@ -7,21 +7,21 @@
 }
 
 .comment__content {
-  background-color: #f0f2f5;
+  background-color: #384454;
   width: fit-content;
   padding: 12px 14px 7px 14px;
   border-radius: 22px;
 }
 
 .reply__content {
-  background-color: #f0f2f5;
+  background-color: #384454;
   width: fit-content;
   padding: 12px 14px 7px 14px;
   border-radius: 22px;
 }
 
 .nested__content {
-  background-color: #264c85;
+  background-color: #384454;
   width: fit-content;
   padding: 12px 14px 7px 14px;
   border-radius: 22px;

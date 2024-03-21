@@ -113,11 +113,11 @@ export const SearchAndResultsImage = () => {
 
   return (
     <div className='search-and-results-container' ref={searchRef}>
-      <div className='input-wrapper w-full h-12 bg-[#e9e9e9] hover:bg-[#d8d8d8] transition duration-300 flex items-center px-4 py-0 rounded-full border-none'>
-        <FaSearch id='search-icon' color='grey' />
+      <div className='input-wrapper h-12 hover:bg-[#33415591] transition duration-300 flex items-center py-0 border-none bg-[#334155] w-full rounded-full p-3 px-4 text-[#ffffff] '>
+        <FaSearch id='search-icon' color='#fff' />
         <input
           ref={inputRef}
-          className='bg-transparent h-full text-base w-full ml-4 border-none focus:outline-none placeholder:text-[15px]'
+          className='bg-transparent h-full text-base w-full ml-4 border-none focus:outline-none placeholder:text-base placeholder:text-[#ffffff]'
           placeholder='Tìm kiếm bài viết...'
           value={input}
           onChange={(e) => handleChange(e.target.value)}
@@ -128,20 +128,20 @@ export const SearchAndResultsImage = () => {
           }}
         />
         {input && (
-          <button className='focus:outline-none hover:bg-zinc-200 rounded-full p-2' onClick={handleClearInput}>
+          <button className='focus:outline-none hover:bg-hover_dark rounded-full p-2' onClick={handleClearInput}>
             <FaTimesCircle />
           </button>
         )}
-        <button className='ml-2 focus:outline-none hover:bg-zinc-200 rounded-full p-2.5' onClick={handleSearch}>
+        <button className='ml-2 focus:outline-none hover:bg-hover_dark rounded-full p-2.5' onClick={handleSearch}>
           <FaSearch />
         </button>
       </div>
       {showResults && (
-        <div className='results-list w-full md:w-[38%] lg:w-[48%] xl:w-[58%] 2xl:w-[68%] bg-[#ffffff] flex flex-col shadow-xl max-h-[400px] overflow-y-auto mt-4 rounded-lg absolute top-[14%] md:top-[63px] z-50'>
+        <div className='results-list w-full md:w-[38%] lg:w-[48%] xl:w-[58%] 2xl:w-[68%] bg-[#313e50] text-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] flex flex-col max-h-[400px] overflow-y-auto mt-4 rounded-lg absolute top-[14%] md:top-[63px] z-50'>
           {results.map((result, id) => (
             <div
               key={id}
-              className='search-result py-3 px-3 hover:bg-[#efefef] flex items-center cursor-pointer gap-2'
+              className='search-result py-3 px-3  hover:bg-[#3f4c5d] flex items-center cursor-pointer gap-2'
               onClick={() => handleSelectPost(result._id)}
             >
               <img src={result.Attachment.Thumbnail} className='h-7 w-7 sm:h-9 sm:w-9 rounded-full' alt='avatar' />

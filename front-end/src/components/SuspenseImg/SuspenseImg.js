@@ -19,8 +19,8 @@ const SuspenseImg = ({ src, height, alt, className, fileName }) => {
   )
 }
 
-const ImgPlaceHolder = ({ height = 350 }) => {
-  return <div className={'w-full shimmer-bg'} style={{ height: height + 'px' }}></div>
+const ImgPlaceHolder = ({ height = 1000 }) => {
+  return <div className={'w-full bg-light_blue'} style={{ height: height + 'px' }}></div>
 }
 
 export default SuspenseImg

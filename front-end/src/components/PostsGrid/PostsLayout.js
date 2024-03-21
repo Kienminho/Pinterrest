@@ -21,7 +21,7 @@ const PostsLayout = ({ children, postsCount, fallback, loadingOther }) => {
           </div>
         )
       ) : (
-        <div className='flex flex-col items-center justify-center gap-3'>
+        <div className='flex flex-col items-center justify-center gap-3 text-[#ffffffb3]'>
           <span className=''>Đang tải dữ liệu, vui lòng đợi...</span>
           {/* <Spinner color='gray' aria-label='Spinner button' size='xl' /> */}
           <Spin size='large' />

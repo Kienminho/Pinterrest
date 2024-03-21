@@ -15,9 +15,9 @@ import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 
 const ProfileOther = () => {
-  const { id } = useParams()
+  const { id } = useParams() // user khác
   const user = useSelector((state) => state.Auth.login?.currentUser)
-  const { _id } = useSelector((state) => state.User)
+  const { _id } = useSelector((state) => state.User) // user hiện tại
   const dispatch = useDispatch()
   const navigate = useNavigate()
   let axiosJWT = CreateAxios(user, dispatch, loginSuccess)
@@ -34,7 +34,10 @@ const ProfileOther = () => {
     return state.Following
   })
 
+  console.log('check followingList bên other: ', followingList)
+
   const isFollowing = followingList?.includes(id)
+  console.log('check curUser follow othUser: ', isFollowing)
 
   // Khi người dùng nhấn vào nút "Theo dõi" hoặc "Bỏ theo dõi"
   const handleFollowUser = async () => {
@@ -156,11 +159,11 @@ const ProfileOther = () => {
   }, [])
 
   return (
-    <div className='user_profile minus-nav-100vh '>
+    <div className='user_profile minus-nav-100vh bg-dark_blue text-white'>
       {/* back button */}
       <div className='absolute go-back top-[12%] left-7 max-sm:hidden'>
-        <button className='left-arrow rounded-full hover:bg-gray-200 p-2  transition' onClick={handleGoBack}>
-          <FaRegArrowAltCircleLeft size='2rem' color='#5850ec' />
+        <button className='left-arrow rounded-full hover:bg-hover_dark p-2  transition' onClick={handleGoBack}>
+          <FaRegArrowAltCircleLeft size='2rem' />
         </button>
       </div>
       <div className='profile-header flex flex-col items-center pt-10'>
@@ -173,32 +176,38 @@ const ProfileOther = () => {
 
         {/* Fullname part */}
         <div className='profile-fullname'>
-          <h1 className='text-3xl font-semibold'>{createdPosts[0]?.Created.FullName}</h1>
+          <h1 className='text-[28px] font-semibold'>{createdPosts[0]?.Created.FullName}</h1>
         </div>
 
         {/* Username part */}
         <div className='profile-username mt-2'>
-          <h1 className='text-xl font-medium text-gray-800'>@{createdPosts[0]?.Created.UserName}</h1>
+          <h1 className='text-lg font-medium text-blue-500'>@{createdPosts[0]?.Created.UserName}</h1>
         </div>
 
         {/* Follow modal part  */}
-        <div className='profile-follow mt-3 flex gap-3 items-center font-medium'>
+        <div className='profile-follow mt-5 mb-3 flex gap-3 items-center font-medium'>
           <ModalListFollow followersList={followers} followingsList={following} />
         </div>
 
         <div className='creator-follow mx-auto mt-3'>
           {isFollowing ? (
-            <button onClick={handleUnFollowUser} className='btn-linkhover py-3.5 px-5 rounded-full'>
+            <button
+              onClick={handleUnFollowUser}
+              className='btn-pink bg-pink-100 text-pink-600 text-base border border-pink-200 rounded-full py-3 px-6'
+            >
               Đã theo dõi
             </button>
           ) : (
-            <button onClick={handleFollowUser} className='btn-save py-3.5'>
+            <button
+              onClick={handleFollowUser}
+              className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-3 px-6'
+            >
               <span className='text-base'>Theo dõi</span>
             </button>
           )}
         </div>
       </div>
-      <div className='profile-pins mt-8 text-[#333333]'>
+      <div className='profile-pins mt-8 text-white'>
         <div className='flex flex-col items-center'>
           {/* Category divided part */}
           <div className='category-selector flex gap-5'>

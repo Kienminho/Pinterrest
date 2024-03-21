@@ -62,7 +62,7 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
           <div className='part1 flex flex-col gap-10 col-span-2'>
             <div className='flex gap-20'>
               <div className='mb-2 block'>
-                <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize'>Tiêu đề</label>
+                <label className='flex flex-col text-white text-base font-medium gap-2 capitalize'>Tiêu đề</label>
               </div>
               <InputField
                 name={'Title'}
@@ -74,9 +74,7 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
             </div>
 
             <div className='flex gap-20'>
-              <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize w-[73px]'>
-                Mô tả
-              </label>
+              <label className='flex flex-col text-white text-base font-medium gap-2 capitalize w-[73px]'>Mô tả</label>
               <textarea
                 type='text'
                 name='Description'
@@ -84,13 +82,13 @@ export default function UpdatePost({ id, Title, Description, IsComment, ImageSrc
                 value={description}
                 rows={4}
                 placeholder='Thêm mô tả chi tiết'
-                className='border-[#cdcdcd] placeholder:text-gray-400 px-4 py-2 ps-5 text-base text-gray-900 rounded-xl bg-gray-50 hover:ring-indigo-300 focus:ring-indigo-400 focus:border-indigo-400 focus:border-1 focus:ring-1 resize-none font-normal outline-none block w-full border-1'
+                className='border-[#cdcdcd] py-3 ps-5 text-base border-none rounded-xl  font-normal  w-full bg-[#334155] resize-none outline-none p-3 px-4 text-[#ffffff] placeholder:text-[#ffffffb3]'
                 onChange={(event) => setDescription(event.target.value)}
               />
             </div>
 
             <div className='flex gap-11'>
-              <label className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize w-[90px]'>
+              <label className='flex flex-col text-white text-base font-medium gap-2 capitalize w-[90px]'>
                 Bình luận
               </label>
               <ToggleSwitch color='indigo' checked={allowComment} onChange={handleToggleSwitchChange} />

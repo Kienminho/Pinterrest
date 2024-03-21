@@ -1,4 +1,4 @@
-import { Button, Modal } from 'flowbite-react'
+import { Modal } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { ProfileImage } from '../ProfileImage/ProfileImage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,7 @@ import { CreateAxios } from '../../createInstance'
 import { loginSuccess } from '../../store/slices/AuthSlice'
 import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 import { NavLink } from 'react-router-dom'
+import './ModalListFollow.css'
 
 function ModalListFollow({ followersList, followingsList }) {
   const [openModalFollowers, setOpenModalFollowers] = useState(false)
@@ -40,11 +41,17 @@ function ModalListFollow({ followersList, followingsList }) {
   useEffect(() => {}, [followingList])
 
   return (
-    <>
-      <button className='font-normal' onClick={() => setOpenModalFollowers(true)}>
+    <div className='font-inter flex gap-4 font-medium'>
+      <button
+        className='bg-hover_dark hover:bg-slate-700 transition duration-300 ease-in-out px-3 py-3 rounded-2xl'
+        onClick={() => setOpenModalFollowers(true)}
+      >
         {followersList?.length} người theo dõi
       </button>
-      <button className='font-normal' onClick={() => setOpenModalFollowings(true)}>
+      <button
+        className='bg-hover_dark hover:bg-slate-700 transition duration-300 ease-in-out px-3 py-3 rounded-2xl'
+        onClick={() => setOpenModalFollowings(true)}
+      >
         {followingsList?.length} đang theo dõi
       </button>
       <Modal show={openModalFollowers} onClose={() => setOpenModalFollowers(false)}>
@@ -56,7 +63,7 @@ function ModalListFollow({ followersList, followingsList }) {
                 <NavLink to={`/${UserId === follower.follower._id ? 'profile' : 'profiles'}/${follower.follower._id}`}>
                   <div
                     key={follower._id}
-                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-gray-200 py-2 px-6 transition duration-300 ease-in-out rounded-xl cursor-pointer'
+                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-hover_dark py-2 px-6 transition duration-300 ease-in-out rounded-xl cursor-pointer'
                   >
                     <div className='creator-image rounded-full w-14 aspect-square overflow-hidden  shrink-0'>
                       <ProfileImage src={follower?.follower?.Avatar} alt={follower.follower.UserName} />
@@ -81,27 +88,26 @@ function ModalListFollow({ followersList, followingsList }) {
             <div className='follower-list'>
               {followingsList?.map((following) => (
                 <NavLink
-                  to={`/${UserId === following.following._id ? 'profile' : 'profiles'}/${following.following._id}`}
+                  to={`/${UserId === following?.following?._id ? 'profile' : 'profiles'}/${following?.following?._id}`}
                 >
                   <div
-                    key={following._id}
-                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-gray-200 py-2 px-6 transition duration-300 ease-in-out rounded-xl cursor-pointer'
+                    key={following?._id}
+                    className='creator-profile flex w-full items-center mt-auto gap-3 mb-4 hover:bg-hover_dark py-2 px-6 transition duration-300 ease-in-out rounded-xl cursor-pointer'
                   >
                     <div className='creator-image rounded-full w-14 aspect-square overflow-hidden  shrink-0'>
-                      <ProfileImage src={following?.following?.Avatar} alt={following.following.UserName} />
+                      <ProfileImage src={following?.following?.Avatar} alt={following?.following?.UserName} />
                     </div>
                     <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col'>
-                      <div className='font-semibold'>{following.following.UserName}</div>
+                      <div className='font-semibold'>{following?.following?.UserName}</div>
                     </div>
-                    {UserId !== following.following._id && (
+                    {UserId !== following?.following?._id && (
                       <div className='creator-follow ml-auto'>
-                        <Button
-                          color='light'
-                          className='rounded-full'
-                          onClick={() => handleUnFollowUser(following._id, following.following._id)}
+                        <button
+                          className='btn-category bg-pink-100 text-pink-600 hover:bg-pink-200'
+                          onClick={() => handleUnFollowUser(following?._id, following?.following?._id)}
                         >
                           <span className='text-base'>Đang theo dõi</span>
-                        </Button>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -111,7 +117,7 @@ function ModalListFollow({ followersList, followingsList }) {
           </div>
         </Modal.Body>
       </Modal>
-    </>
+    </div>
   )
 }
 

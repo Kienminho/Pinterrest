@@ -26,7 +26,7 @@ const ImageDownloader = ({ imageUrl }) => {
   return (
     <div>
       <Button
-        className=''
+        className='!bg-hover_dark'
         shape='round'
         icon={isDownloading ? '' : <MdOutlineFileDownload size='1.5rem' />}
         size={'large'}

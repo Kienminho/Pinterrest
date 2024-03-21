@@ -70,7 +70,7 @@ const Home = () => {
   console.log('so posts: ', posts)
 
   return (
-    <>
+    <div className='bg-dark_blue'>
       {FirstLogin ? (
         <CategoryPicker />
       ) : (
@@ -87,21 +87,10 @@ const Home = () => {
             dataLength={posts.length} //This is important field to render the next data
             next={fetchData}
             hasMore={true}
-            // loader={
-            //   <div className='flex flex-col gap-3 items-center bottom-0 left-0 right-0'>
-            //     <Spin size='large' />
-            //   </div>
-            //   /* <h5 className='text-center'>Đang tải...</h5> */
-            // }
-            // endMessage={
-            //   <p style={{ textAlign: 'center' }}>
-            //     <b>Yay! You have seen it all</b>
-            //   </p>
-            // }
           ></InfiniteScroll>
         </>
       )}
-    </>
+    </div>
   )
 }
 
