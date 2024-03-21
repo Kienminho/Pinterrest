@@ -7,7 +7,6 @@ import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
 import { MdSend } from 'react-icons/md'
 
 import SuspenseImg from '../../components/SuspenseImg/SuspenseImg'
-import { Textarea } from 'flowbite-react'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
 import { createComment, replyComment } from '../../store/apiRequest'
 import 'moment/locale/vi'
@@ -46,6 +45,7 @@ const DetailPin = () => {
   })
 
   const isPostSaved = savedPosts?.includes(postData?._id)
+  console.log('lưu post chưa ', isPostSaved)
 
   const { followingList } = useSelector((state) => {
     return state.Following
@@ -434,24 +434,24 @@ const DetailPin = () => {
   console.log(followers)
   console.log(followersOther)
   return (
-    <div className='detail-pin-container minus-nav-100vh font-roboto'>
+    <div className='detail-pin-container minus-nav-100vh font-inter'>
       <div className='flex min-h-full justify-center relative '>
         {/* back button */}
         <div className='absolute go-back top-7 left-7 max-sm:hidden'>
-          <button className='left-arrow rounded-full hover:bg-gray-200 p-2  transition' onClick={handleGoBack}>
-            <FaRegArrowAltCircleLeft size='2rem' color='#5850ec' />
+          <button className='left-arrow rounded-full hover:bg-hover_dark p-2  transition' onClick={handleGoBack}>
+            <FaRegArrowAltCircleLeft size='2rem' />
           </button>
         </div>
         {/* pin section */}
         <div
-          className={`pin-section flex md:m-10 lg:m-20 rounded-3xl overflow-hidden my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] ${
+          className={`pin-section flex md:m-10 lg:m-20 rounded-3xl overflow-hidden my-14 max-sm:rounded-none max-sm:my-0 max-sm:pb-24 max-sm:flex-col max-sm:px-2 max-sm:w-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-light_blue ${
             comments.length > 0 ? 'min-h-[800px]' : 'min-h-[600px]'
           }`}
         >
           {/* image left handside */}
-          <div className='visual-pin-container py-5 pl-5 w-[550px] max-sm:w-auto '>
+          <div className='visual-pin-container w-[550px] max-sm:w-auto '>
             <SuspenseImg
-              className='w-full rounded-3xl'
+              className='w-full rounded-l-3xl'
               src={postData?.Attachment?.Thumbnail}
               fileName={postData?.Attachment?.Thumbnail}
               alt='post_image'
@@ -464,21 +464,27 @@ const DetailPin = () => {
             <div className='desc-container-header pt-9 px-9 pb-7 flex justify-between items-center max-sm:pt-5 max-sm:justify-start'>
               <ImageDownloader imageUrl={postData?.Attachment?.Thumbnail} />
               {isPostSaved ? (
-                <button onClick={handleUnsavePost} className='btn-linkhover py-3.5 px-5 rounded-full'>
+                <button
+                  onClick={handleUnsavePost}
+                  className='btn-pink bg-pink-100 text-pink-600 border border-pink-200 rounded-full py-3 px-6'
+                >
                   Đã lưu
                 </button>
               ) : (
-                <button onClick={handleSavedPost} className='btn-save py-3.5'>
+                <button
+                  onClick={handleSavedPost}
+                  className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-3 px-6'
+                >
                   <span className='text-base'>Lưu</span>
                 </button>
               )}
             </div>
 
-            <div className={`desc-body flex flex-col gap-7 px-9 max-sm:gap-3 overflow-y-auto max-h-[43rem] mb-5`}>
-              <span className='text-3xl font-medium max-sm:text-2xl text-dark_color'>{postData?.Title}</span>{' '}
-              <span className='text-[18px] font-normal max-sm:text-base text-gray-700'>{postData?.Description}</span>
+            <div className={`desc-body flex flex-col gap-7 px-7 max-sm:gap-3 overflow-scroll h-[70%] mb-5`}>
+              <span className='text-3xl font-medium max-sm:text-2xl text-white'>{postData?.Title}</span>{' '}
+              <span className='text-[18px] font-normal max-sm:text-base text-zinc-300'>{postData?.Description}</span>
               {/* User info part */}
-              <div className='creator-profile flex w-full items-center mt-auto gap-1'>
+              <div className='creator-profile flex w-full items-center gap-1'>
                 <div
                   className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'
                   onClick={handleShowProfile}
@@ -493,9 +499,9 @@ const DetailPin = () => {
                     />
                   )}
                 </div>
-                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-dark_color cursor-pointer'>
+                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-white cursor-pointer gap-1'>
                   <div className='font-semibold'>{postData?.Created?.UserName}</div>
-                  <div className=''>
+                  <div className='text-zinc-300'>
                     {UserId === postData?.Created?._id ? followers?.length : followersOther?.length} người theo dõi
                   </div>
                 </div>
@@ -505,12 +511,15 @@ const DetailPin = () => {
                     {isFollowing ? (
                       <button
                         onClick={handleUnFollowUser}
-                        className='btn-linkhover py-3.5 px-5 rounded-full text-[#ffffff] bg-dark_color hover:bg-[#1e1c1c]'
+                        className='btn-pink bg-pink-100 text-pink-600 border border-pink-200 rounded-full py-3 px-6 text-[15px]'
                       >
                         Đã theo dõi
                       </button>
                     ) : (
-                      <button onClick={handleFollowUser} className='btn-linkhover py-3.5 px-5 rounded-full'>
+                      <button
+                        onClick={handleFollowUser}
+                        className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-3 px-6'
+                      >
                         <span className='text-base'>Theo dõi</span>
                       </button>
                     )}
@@ -521,16 +530,16 @@ const DetailPin = () => {
               <div>
                 <>
                   {postData.IsComment === false ? (
-                    <button disabled className='text-gray-500 -mt-10'>
+                    <button disabled className='text-zinc-300 -mt-10'>
                       Đã tắt nhận xét cho Ghim này
                     </button>
                   ) : // Điều kiện thứ hai
                   !loadingCmt && !loadingPost && postData.IsComment === true && comments.length === 0 ? (
-                    <button disabled className='text-gray-500 -mt-10'>
+                    <button disabled className='text-zinc-300 -mt-10'>
                       Chưa có nhận xét nào! Thêm nhận xét để bắt đầu.
                     </button>
                   ) : loadingCmt && loadingPost ? (
-                    <div className='flex items-center justify-center absolute inset-0 bg-white'>
+                    <div className='flex items-center justify-center absolute inset-0 bg-light_blue'>
                       <Spin size='large' />
                     </div>
                   ) : (
@@ -634,13 +643,13 @@ const DetailPin = () => {
               {/* Comment box section */}
               {postData.IsComment ? (
                 <div
-                  className={`comment-box flex flex-col gap-4 px-6 pt-4 pb-5 max-sm:gap-2 rounded overflow-scroll bg-white relative border-t-2 border-gray-100 ${
+                  className={`comment-box flex flex-col gap-4 px-6 pt-4 pb-5 max-sm:gap-2 rounded overflow-y-auto bg-light_blue relative border-t-2 border-gray-700 ${
                     parseInt(postData?.Attachment?.Thumbnail.split('-')[1].split('x')[1].split('.')[0]) > 600
                       ? 'absolute'
                       : ''
                   }`}
                 >
-                  <h6 className='text-dark_color font-medium ml-1'>
+                  <h6 className='text-[#ffffffb3] font-medium ml-1'>
                     {getTotalCommentsAndReplies(comments) === 0
                       ? 'Bạn nghĩ gì?'
                       : `${getTotalCommentsAndReplies(comments)} Nhận xét`}
@@ -663,10 +672,13 @@ const DetailPin = () => {
                         onChange={(e) => setCommentContent(e.target.value)}
                         required
                         rows={1}
-                        className='w-full text-[15px] px-4 py-3.5 rounded-full resize-none outline-none hover:bg-[#e1e1e1] text-gray-800 bg-gray_input focus:ring-gray-300 focus:border-white border-none'
+                        className='text-base py-3 hover:bg-[#334155b7] focus:ring-gray-300 focus:border-white border-none bg-[#334155] w-full resize-none outline-none rounded-full p-3 px-4 text-[#ffffff] placeholder:text-[#ffffff] transition duration-300 ease-in-out'
                       />
                     </div>
-                    <button onClick={handleSendComment} className='btn-linkhover rounded-full px-5'>
+                    <button
+                      onClick={handleSendComment}
+                      className='btn-linkhover bg-hover_dark hover:bg-[#334155b7] rounded-full px-5'
+                    >
                       <MdSend className='h-6 w-6' />
                     </button>
                   </div>

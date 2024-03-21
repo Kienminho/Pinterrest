@@ -2,12 +2,12 @@ import { NavLink } from 'react-router-dom'
 
 export const FooterLayout = () => {
   return (
-    <footer class='bg-gray-800 font-roboto tracking-wide'>
+    <footer class='bg-gray-800 font-inter tracking-wide'>
       <div class='max-w-screen-xl px-4 pt-16 pb-6 mx-auto sm:px-6 lg:px-8 lg:pt-24'>
         <div class='grid grid-cols-1 gap-8 lg:grid-cols-3'>
           <div>
             <div class='flex justify-center text-blue-300 sm:justify-start'>
-              <img src='./PLogo.svg' className='h-6 sm:h-9 rounded-full' alt='Flowbite React Logo' />
+              <img src='./PLogo_circle.png' className='h-6 sm:h-9 rounded-full' alt='Flowbite React Logo' />
               <h2 class='self-center whitespace-nowrap font-semibold dark:text-white text-indigo-500 ml-1'>
                 Pinspired
               </h2>

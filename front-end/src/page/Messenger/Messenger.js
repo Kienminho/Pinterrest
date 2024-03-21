@@ -35,13 +35,19 @@ const Messenger = () => {
 
   useEffect(() => {
     socket?.emit('join', userReal?._id)
-    socket?.on('getUsers', (users) => {})
+    socket?.on('getUsers', (users) => {
+      console.log('active users: ', users)
+    })
     socket?.on('getMessage', (data) => {
       setMessages((prev) => ({
         ...prev,
         messages: [...prev.messages, { message: data.data, user: { ...data.user, _id: data.user.id } }]
       }))
     })
+    socket?.on('disconnect', () => {
+      console.log('Disconnected from server')
+    })
+    return () => socket?.disconnect() // Cleanup on unmount
   }, [socket])
 
   useEffect(() => {
@@ -137,9 +143,9 @@ const Messenger = () => {
   // console.log(processedConversations)
 
   return (
-    <div className='w-screen md:flex font-roboto items-center lg:justify-center '>
-      <div className='md:w-[40%] xl:w-[25%] h-screen px-8 py-5 overflow-scroll border-zinc-300 border-l-[1.5px] md:shadow-lg rounded-xl'>
-        <div className='text-dark_color text-2xl mb-4 font-bold'>Chat</div>
+    <div className='w-screen md:flex font-inter items-center md:justify-center bg-dark_blue'>
+      <div className='md:w-[30%] lg:w-[27%] xl:w-[23%] px-8 py-5 overflow-scroll bg-light_blue shadow-md rounded-l-2xl my-10 h-[50rem]'>
+        <div className='text-white text-2xl mb-4 font-bold'>Chats</div>
         <SearchAndResults
           onConversationCreated={handleConversationCreated}
           conversations={conversations}
@@ -156,18 +162,18 @@ const Messenger = () => {
                 return (
                   <div
                     key={conversationId}
-                    className='flex items-center py-4 px-3 hover:bg-zinc-100 cursor-pointer transition duration-300 ease-in-out hover:rounded-xl'
+                    className='flex items-center p-2 hover:bg-[#384454] cursor-pointer hover:rounded-xl text-[#ffffff]'
                   >
                     <div
                       className='cursor-pointer flex items-center'
                       onClick={() => fetchMessages(conversationId, accessToken_daniel, axiosJWT, receiver)}
                     >
-                      <div className='receiver-image rounded-full w-12 h-12 aspect-square overflow-hidden shrink-0'>
+                      <div className='receiver-image rounded-full w-16 h-16 aspect-square overflow-hidden shrink-0'>
                         <ProfileImage src={receiver?.Avatar} alt='receiver-avt' />
                       </div>
-                      <div className='ml-4 font-medium'>
-                        <h3 className='text-base'>{receiver?.FullName}</h3>
-                        <p className='text-[15px] text-gray-600'>@{receiver?.UserName}</p>
+                      <div className='ml-4 font-medium flex flex-col gap-2'>
+                        <p className='text-base'>{receiver?.FullName}</p>
+                        {/* <p className='text-[15px]'>@{receiver?.UserName}</p> */}
                       </div>
                     </div>
                   </div>
@@ -179,23 +185,25 @@ const Messenger = () => {
           </div>
         </div>
       </div>
-      <div className='rounded-xl rounded-s-none shadow-sm md:w-[60%] xl:w-[75%] h-screen flex flex-col items-center border-zinc-200 border-[1.5px]'>
+      <div className='md:w-[60%] lg:w-[57%] xl:w-[53%] flex flex-col items-center border-gray-700 border-l-2 bg-light_blue shadow-md rounded-r-2xl h-[50rem] my-10'>
         {messages?.receiver && (
-          <div className='w-full border-b-[1.5px] border-zinc-100 h-[50px] flex items-center px-10 py-10'>
+          <div className='w-full border-b-[1.5px] border-gray-700 h-[50px] flex items-center px-6 py-10'>
             <div className='receiver-image rounded-full w-12 h-12 aspect-square overflow-hidden shrink-0 cursor-pointer'>
               <ProfileImage src={messages?.receiver?.Avatar} alt='receiver-avt' />
             </div>
-            <div className='ml-6 mr-auto font-medium'>
-              <h3 className='text-lg'>{messages?.receiver?.FullName}</h3>
-              <p className='text-base text-gray-600'>@{messages?.receiver?.UserName}</p>
+            <div className='ml-6 mr-auto font-medium text-[#ffffff] flex flex-col gap-0.5'>
+              <p className='text-lg font-semibold'>
+                {messages?.receiver?.FullName ? messages?.receiver?.FullName : messages?.receiver?.UserName}
+              </p>
+              <p className='text-sm text-[#22c55e]'>Online</p>
             </div>
           </div>
         )}
-        <div className='h-[70%] w-full overflow-scroll shadow-sm'>
+        <div className='h-[80%] w-full overflow-scroll shadow-sm'>
           <div className='p-12'>
             {/* Kiểm tra xem dữ liệu đã được tải hoàn toàn chưa */}
             {loadingMsg ? (
-              <div className='flex flex-col gap-3 items-center justify-center ml-[40%] xl:ml-[30%] absolute inset-0'>
+              <div className='flex flex-col gap-3 items-center justify-center ml-[40%] xl:ml-[30%] absolute inset-0 text-[#ffffffb3]'>
                 <span className=''>Đang tải tin nhắn...</span>
                 <Spin size='large' />
               </div>
@@ -209,14 +217,14 @@ const Messenger = () => {
                   {/* Hiển thị avatar của sender bên trái */}
                   {user?._id !== userReal?._id && (
                     <div className='mr-2'>
-                      {/* <img src={user?.Avatar} alt='Sender Avatar' className='w-8 h-8 rounded-full' /> */}
+                      <img src={user?.Avatar} alt='Sender Avatar' className='w-8 h-8 rounded-full' />
                     </div>
                   )}
                   <div
-                    className={`w-fit rounded-b-xl p-3 ${
+                    className={`font-medium ${
                       user?._id === userReal?._id
-                        ? 'bg-[#8879fa] text-[#ffffff] rounded-tl-xl ml-auto'
-                        : 'bg-[#e7e7e7] text-black rounded-tr-xl'
+                        ? 'max-w-sm rounded-[20px] bg-gradient-to-tr from-sky-500 to-blue-500 px-4 py-2 text-white shadow'
+                        : 'px-4 py-2 rounded-[20px] max-w-sm bg-[#334150] text-white shadow'
                     }`}
                   >
                     {message.message}
@@ -231,7 +239,7 @@ const Messenger = () => {
               ))
             ) : (
               // Nếu không có tin nhắn, hiển thị thông báo
-              <div className='text-center text-base font-medium mt-24'>
+              <div className='text-center text-base font-medium mt-24 text-white'>
                 Không có tin nhắn hoặc không có cuộc trò chuyện nào được chọn
               </div>
             )}
@@ -239,9 +247,10 @@ const Messenger = () => {
         </div>
 
         {messages?.receiver && (
-          <div className='px-14 py-7 w-full flex items-center'>
+          <div className='relative flex w-full px-10 gap-2'>
             <input
               placeholder='Nhập tin nhắn...'
+              rows='1'
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={(e) => {
@@ -249,10 +258,11 @@ const Messenger = () => {
                   sendMessage()
                 }
               }}
-              className='ps-5 rounded-xl bg-gray-50 outline-none block w-full border-0 py-3.5 text-dark_color shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-normal focus:ring-inset focus:ring-[#818cf8] focus:ring-2 hover:ring-inset hover:ring-1 hover:ring-[#818cf8] font-normal'
-            />
+              class='bg-[#334155] w-full resize-none outline-none rounded-full p-3 px-4 text-[#ffffff] placeholder:text-[#ffffff]'
+            ></input>
+
             <div
-              className={`ml-4 p-2 cursor-pointer bg-light rounded-full hover:bg-zinc-100 ${
+              className={`p-2 mt-1 cursor-pointer bg-light rounded-full hover:bg-[#384454] ${
                 !message && 'pointer-events-none'
               }`}
               onClick={() => sendMessage()}
@@ -264,7 +274,7 @@ const Messenger = () => {
                 height='31'
                 viewBox='0 0 24 24'
                 stroke-width='1.5'
-                stroke='#2c3e50'
+                stroke='#fff'
                 fill='none'
                 stroke-linecap='round'
                 stroke-linejoin='round'

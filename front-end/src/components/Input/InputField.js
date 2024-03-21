@@ -1,21 +1,23 @@
 import React, { forwardRef } from 'react'
 
-const InputField = forwardRef(({ id, label, name, value, type = 'text', placeholder, handleChange }, ref) => {
-  return (
-    <label htmlFor={id} className='flex flex-col text-dark_color text-base font-medium gap-2 capitalize'>
-      {label}
-      <input
-        ref={ref}
-        id={id}
-        name={name}
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        className='ps-5 rounded-xl bg-gray-50 outline-none block w-full border-0 py-3 text-dark_color shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:font-normal focus:ring-inset focus:ring-[#818cf8] focus:ring-2 hover:ring-inset hover:ring-1 hover:ring-[#818cf8] font-normal'
-        onChange={handleChange}
-      />
-    </label>
-  )
-})
+const InputField = forwardRef(
+  ({ id, label, name, value, type = 'text', placeholder, handleChange, className }, ref) => {
+    return (
+      <label htmlFor={id} className='flex flex-col  text-white text-base font-medium gap-2 capitalize'>
+        {label}
+        <input
+          ref={ref}
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          placeholder={placeholder}
+          className={`border-[#cdcdcd] ps-5 text-base border-none rounded-xl  font-normal  w-full bg-[#334155] resize-none outline-none p-3 px-4 py-3 text-[#ffffff] w-full placeholder:text-[#ffffffb3] ${className}`}
+          onChange={handleChange}
+        />
+      </label>
+    )
+  }
+)
 
 export default InputField

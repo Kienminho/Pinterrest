@@ -210,45 +210,49 @@ const Setting = () => {
   return (
     <>
       {/* Phan binh thuong */}
-      <div className='flex flex-col md:flex-row gap-5 lg:gap-10 font-roboto'>
-        <Sidebar className='ml-3 mt-[2%]' aria-label='Sidebar with content separator example'>
+      <div className='flex flex-col md:flex-row gap-5 lg:gap-10 font-inter'>
+        <Sidebar className='ml-3 mt-6' aria-label='Sidebar with content separator example'>
           <Sidebar.Items>
             <Sidebar.ItemGroup>
               <NavLink to='/settings'>
-                <Sidebar.Item className='font-medium text-dark_color' icon={HiUser}>
+                <Sidebar.Item className='font-medium text-[#ffffff] hover:bg-hover_dark' icon={HiUser}>
                   Thông tin người dùng
                 </Sidebar.Item>
               </NavLink>
 
               <NavLink to='/settings/category'>
-                <Sidebar.Item className='font-medium text-dark_color' icon={HiTable}>
+                <Sidebar.Item className='font-medium text-[#ffffff] hover:bg-hover_dark' icon={HiTable}>
                   Chọn chủ đề quan tâm
                 </Sidebar.Item>
               </NavLink>
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
-              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={HiViewBoards}>
-                Tài liệu
-              </Sidebar.Item>
-              <Sidebar.Item className='font-medium text-dark_color' href='#' icon={BiBuoy}>
-                Hỗ trợ
-              </Sidebar.Item>
+              <NavLink to='/terms-of-service'>
+                <Sidebar.Item className='font-medium text-[#ffffff] hover:bg-hover_dark' href='#' icon={HiViewBoards}>
+                  Điều khoản dịch vụ
+                </Sidebar.Item>
+              </NavLink>
+              <NavLink to='/about'>
+                <Sidebar.Item className='font-medium text-[#ffffff] hover:bg-hover_dark' href='#' icon={BiBuoy}>
+                  Giới thiệu Pinspired
+                </Sidebar.Item>
+              </NavLink>
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </Sidebar>
-        <div className='min-h-fit py-2 lg:px-40 flex items-center justify-center rounded-xl '>
+        <div className='min-h-fit bg-light_blue mt-6 my-5 lg:px-14 flex items-center justify-center rounded-xl text-white'>
           <div className='container max-w-screen-lg mx-auto relative'>
             {loading || loadingAvt || loadingUpdate ? (
-              <div className='absolute left-0 right-0 z-50 bg-white bg-opacity-50 min-h-screen'>
+              <div className='absolute left-0 right-0 z-50 bg-hover_dark bg-opacity-70 rounded-lg min-h-full'>
                 <Spin className='px-64 z-60 absolute top-1/3' size='large' />
               </div>
             ) : (
               ''
             )}
-            <div className='rounded-xl p-4 px-4 md:p-10 '>
+            <div className='rounded-xl p-4 px-4 md:p-5 '>
               <div className='grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-1'>
-                <div className='text-gray-700 mb-6'>
-                  <p className='text-xl md:text-3xl font-medium mb-3'>Chỉnh sửa hồ sơ</p>
+                <div className='text-white mb-3'>
+                  <p className='text-xl md:text-3xl font-semibold mb-3'>Chỉnh sửa hồ sơ</p>
                   <p className='text-base'>Thực hiện thay đổi thông tin cá nhân hoặc loại tài khoản của bạn..</p>
                 </div>
                 <div className='lg:col-span-2'>
@@ -269,17 +273,20 @@ const Setting = () => {
                           onPreview={onPreview}
                           value={userData.Avatar}
                         >
-                          {fileList.length === 0 && '+ Tải lên'}
+                          <span className='text-white'>{fileList.length === 0 && '+ Tải lên'}</span>
                         </Upload>
                       </ImgCrop>
-                      <button className='btn-greysave text-[15px] shrink-0' onClick={handleChangeAvatar}>
+                      <button
+                        className='rounded-3xl text-white font-medium px-[18px] py-3 bg-hover_dark hover:bg-[#384454d3] shrink-0'
+                        onClick={handleChangeAvatar}
+                      >
                         Lưu Avatar
                       </button>
                     </div>
                     {/* Fullname */}
                     <div className='md:col-span-5 mb-4'>
                       <div className='mb-2 block'>
-                        <Label htmlFor='full_name' className='text-base' value='Họ và Tên' />
+                        <Label htmlFor='full_name' className='text-base text-white' value='Họ và Tên' />
                       </div>
                       <Input
                         size='large'
@@ -294,7 +301,7 @@ const Setting = () => {
                     {/* Username */}
                     <div className='md:col-span-5 mb-4'>
                       <div className='mb-2 block'>
-                        <Label htmlFor='username' className='text-base' value='Tên người dùng' />
+                        <Label htmlFor='username' className='text-base text-white' value='Tên người dùng' />
                       </div>
                       <Input
                         size='large'
@@ -308,7 +315,7 @@ const Setting = () => {
                     {/* Email */}
                     <div className='md:col-span-5 mb-4'>
                       <div className='mb-2 block'>
-                        <Label htmlFor='email' className='text-base' value='Địa chỉ Email' />
+                        <Label htmlFor='email' className='text-base text-white ' value='Địa chỉ Email' />
                       </div>
                       <Input
                         disabled={true}
@@ -322,7 +329,7 @@ const Setting = () => {
                     {/* Birthday */}
                     <div className='md:col-span-5 mb-4'>
                       <div className='mb-2 block'>
-                        <Label htmlFor='birthday' className='text-base' value='Ngày sinh' />
+                        <Label htmlFor='birthday' className='text-base text-white' value='Ngày sinh' />
                       </div>
                       <DatePicker
                         size='large'
@@ -337,26 +344,29 @@ const Setting = () => {
                     <div className='md:col-span-5 mb-4'>
                       <Radio.Group size='large' onChange={onChangeRadio} value={selectGender}>
                         <Radio value={'Nam'} checked={isGenderSelected('Nam')}>
-                          Nam
+                          <span className='text-white text-base font-medium'>Nam</span>
                         </Radio>
                         <Radio value={'Nữ'} checked={isGenderSelected('Nữ')}>
-                          Nữ
+                          <span className='text-white text-base font-medium'>Nữ</span>
                         </Radio>
                         <Radio value={'Khác'} checked={isGenderSelected('Khác')}>
-                          Khác
+                          <span className='text-white text-base font-medium'>Khác</span>
                         </Radio>
                       </Radio.Group>
                     </div>
 
-                    <div className='md:col-span-5 text-right mt-3'>
+                    <div className='md:col-span-5 text-right -mt-2'>
                       <div className='inline-flex items-end gap-2'>
                         <button
-                          className='btn-upload rounded-full px-6 py-3.5 text-base bg-zinc-300/60 hover:bg-zinc-300/90 transition duration-300 ease-in-out text-dark_color'
+                          className='btn-pink bg-pink-100 text-pink-600 border border-pink-200 rounded-full py-3 px-6 text-[15px]'
                           onClick={handleCancel}
                         >
                           Huỷ
                         </button>
-                        <button className='btn-upload rounded-full px-6 py-3.5 text-base' onClick={handleSave}>
+                        <button
+                          className='btn-pink bg-pink-600 hover:bg-pink-700 border border-pink-600 rounded-full py-3 px-6 text-[15px]'
+                          onClick={handleSave}
+                        >
                           Lưu
                         </button>
                       </div>

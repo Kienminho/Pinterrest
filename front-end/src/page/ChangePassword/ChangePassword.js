@@ -4,7 +4,7 @@ import InputField from '../../components/Input/InputField'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { changePassword } from '../../store/apiRequest'
-import logo from '../../components/Nav/PLogo.svg'
+import logo from '../../components/Nav/PLogo_circle.png'
 import { HiInformationCircle } from 'react-icons/hi'
 import { Alert, Spin } from 'antd'
 
@@ -65,22 +65,19 @@ const ChangePassword = () => {
         </div>
       )}
       <FormWrapper loading={loading}>
-        <div className='flex flex-col items-center font-roboto'>
+        <div className='flex flex-col items-center font-inter text-white mt-5 mb-7'>
           <div className='logo aspect-square w-12 mb-3 '>
             <img src={logo} className='rounded-full' alt='Pinspired' />
           </div>
-          <div className='items-center block justify-center text-center px-4;'>
-            <h3 className='text-dark_color tracking-normal leading-tight'>Thay đổi mật khẩu Pinspired</h3>
+          <div className='items-center block justify-center text-center px-4'>
+            <h3 className='tracking-normal leading-tight'>Thay đổi mật khẩu Pinspired</h3>
           </div>
           <div className='block items-center justify-center mt-1'>
-            <p className='text-center text-dark_color font-normal'>Vui lòng điền thông tin bên dưới</p>
+            <p className='text-center text-zinc-300 font-normal'>Vui lòng điền thông tin bên dưới</p>
           </div>
 
           <div className='w-[360px] mt-6 flex flex-col gap-3'>
             <div className='relative'>
-              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
-                {/* <MdEmail size='1.5rem' color='salmon' /> */}
-              </div>
               <InputField
                 ref={inputRef}
                 label={'Email'}
@@ -93,9 +90,6 @@ const ChangePassword = () => {
             </div>
 
             <div className='relative'>
-              <div className='absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none'>
-                {/* <RiLockPasswordFill size='1.5rem' color='salmon' /> */}
-              </div>
               <InputField
                 label={'Password'}
                 type='password'
@@ -112,14 +106,14 @@ const ChangePassword = () => {
                 <Alert message={error} type='error' showIcon />{' '}
               </div>
             ) : (
-              <p class='flex items-center gap-1 mt-2 font-sans text-sm antialiased font-normal leading-normal text-gray-600'>
+              <p class='flex items-center gap-1 mt-2 font-sans text-sm antialiased font-normal leading-normal text-zinc-300'>
                 <HiInformationCircle size='1.4rem' />
                 Mật khẩu mới không được trùng với mật khẩu cũ.
               </p>
             )}
             <div className='flex justify-center'>
               <button
-                className='text-white bg-[#6366f1] hover:bg-indigo-600 focus:ring-4 focus:ring-indigo-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-2 transition duration-300 ease-in-out'
+                className='text-white bg-pink-600 hover:bg-pink-700 focus:ring-4 focus:ring-pink-300 font-medium rounded-3xl text-base p-3 text-decoration-none w-80 text-center mt-4 transition duration-300 ease-in-out'
                 onClick={() => {
                   handleChangePassword()
                   setHideError(true)

@@ -41,8 +41,9 @@ const UserPicUploader = ({ setTempPic }) => {
             headers: { authorization: `Bearer ${accessToken_daniel}` }
           }
         )
+        toast.success('Tải lên avatar thành công!')
       } else {
-        toast.error('Tải lên file thất bại')
+        toast.error('Tải lên file thất bại!')
       }
     } catch (error) {
       console.log('Xảy ra lỗi khi thực hiện tải lên và cập nhật avatar:', error)
@@ -51,7 +52,7 @@ const UserPicUploader = ({ setTempPic }) => {
 
   return (
     <div
-      className='w-8 aspect-square z-20 rounded-full bg-gray-100 hover:bg-gray-200 grid place-content-center '
+      className='w-8 aspect-square z-20 rounded-full bg-gray-700 hover:bg-gray-800 grid place-content-center '
       onClick={selectfile}
     >
       <MdOutlineEdit />

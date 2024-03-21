@@ -28,7 +28,10 @@ module.exports = {
         gray_input: '#e9e9e9',
         purple_btn: '#6366f1',
         purple_textl: '#818cf8',
-        purple_textd: '#4f46e5'
+        purple_textd: '#4f46e5',
+        dark_blue: '#0f172a',
+        light_blue: '#1e293b',
+        hover_dark: '#384454'
       }
     }
   },
