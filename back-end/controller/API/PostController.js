@@ -393,7 +393,7 @@ const HandleGetSavePost = async (req, res) => {
 //create template send email to follower when user create post
 const createTemplate = async (id, userCreatedPost, post) => {
   //get follower list and just get UserName and Email.
-  const followerList = await _Follow
+  let followerList = await _Follow
     .find({ following: id })
     .populate("follower", "UserName Email");
 
