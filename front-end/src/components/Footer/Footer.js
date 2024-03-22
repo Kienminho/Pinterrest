@@ -8,9 +8,7 @@ export const FooterLayout = () => {
           <div>
             <div class='flex justify-center text-blue-300 sm:justify-start'>
               <img src='./PLogo_circle.png' className='h-6 sm:h-9 rounded-full' alt='Flowbite React Logo' />
-              <h2 class='self-center whitespace-nowrap font-semibold dark:text-white text-indigo-500 ml-1'>
-                Pinspired
-              </h2>
+              <h2 class='self-center whitespace-nowrap font-semibold dark:text-white text-pink-600 ml-1'>Pinspired</h2>
             </div>
 
             <p class='max-w-md mx-auto mt-6 leading-relaxed text-center text-gray-400 sm:max-w-xs sm:mx-0 sm:text-left'>
@@ -168,7 +166,7 @@ export const FooterLayout = () => {
 
         <div class='pt-6 mt-12 border-t border-gray-800'>
           <div class='text-center sm:flex sm:justify-between sm:text-left'>
-            <p class='mt-4 text-xl text-indigo-500 font-medium sm:order-first sm:mt-0'>&copy; Pinspired 2024</p>
+            <p class='mt-4 text-xl text-pink-600 font-medium sm:order-first sm:mt-0'>&copy; Pinspired 2024</p>
           </div>
         </div>
       </div>
