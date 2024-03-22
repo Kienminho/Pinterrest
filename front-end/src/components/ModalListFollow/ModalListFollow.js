@@ -43,13 +43,13 @@ function ModalListFollow({ followersList, followingsList }) {
   return (
     <div className='font-inter flex gap-4 font-medium'>
       <button
-        className='bg-hover_dark hover:bg-slate-700 transition duration-300 ease-in-out px-3 py-3 rounded-2xl'
+        className='bg-hover_dark hover:bg-slate-700 transition duration-300 ease-in-out px-3 py-2.5 rounded-xl'
         onClick={() => setOpenModalFollowers(true)}
       >
         {followersList?.length} người theo dõi
       </button>
       <button
-        className='bg-hover_dark hover:bg-slate-700 transition duration-300 ease-in-out px-3 py-3 rounded-2xl'
+        className='bg-hover_dark hover:bg-slate-700 transition duration-300 ease-in-out px-3 py-2.5 rounded-xl'
         onClick={() => setOpenModalFollowings(true)}
       >
         {followingsList?.length} đang theo dõi

@@ -461,7 +461,7 @@ const DetailPin = () => {
 
           {/* description right handside */}
           <div className='w-[550px] desc-container max-sm:px-2 max-sm:w-auto relative'>
-            <div className='desc-container-header pt-9 px-9 pb-7 flex justify-between items-center max-sm:pt-5 max-sm:justify-start'>
+            <div className='desc-container-header pt-9 px-9 pb-7 flex justify-between items-center max-sm:pt-5'>
               <ImageDownloader imageUrl={postData?.Attachment?.Thumbnail} />
               {isPostSaved ? (
                 <button
@@ -473,7 +473,7 @@ const DetailPin = () => {
               ) : (
                 <button
                   onClick={handleSavedPost}
-                  className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-3 px-6'
+                  className='btn-pink bg-pink-600 hover:bg-pink-700 rounded-full py-2.5 px-6'
                 >
                   <span className='text-base'>Lưu</span>
                 </button>
@@ -484,11 +484,8 @@ const DetailPin = () => {
               <span className='text-3xl font-medium max-sm:text-2xl text-white'>{postData?.Title}</span>{' '}
               <span className='text-[18px] font-normal max-sm:text-base text-zinc-300'>{postData?.Description}</span>
               {/* User info part */}
-              <div className='creator-profile flex w-full items-center gap-1'>
-                <div
-                  className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'
-                  onClick={handleShowProfile}
-                >
+              <div className='creator-profile flex w-full items-center gap-1' onClick={handleShowProfile}>
+                <div className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'>
                   {user ? (
                     <ProfileImage src={postData?.Created?.Avatar} />
                   ) : (
@@ -499,7 +496,7 @@ const DetailPin = () => {
                     />
                   )}
                 </div>
-                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-white cursor-pointer gap-1'>
+                <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-white cursor-pointer gap-1 hover:text-gray-300 p-2 transition duration-200 rounded-xl'>
                   <div className='font-semibold'>{postData?.Created?.UserName}</div>
                   <div className='text-zinc-300'>
                     {UserId === postData?.Created?._id ? followers?.length : followersOther?.length} người theo dõi
@@ -639,7 +636,11 @@ const DetailPin = () => {
               </div>
             </div>
 
-            <div className={`desc-commentbox-main bottom-0 right-0 left-0 ${comments.length > 4 ? '' : 'absolute'}`}>
+            <div
+              className={`desc-commentbox-main bottom-0 right-0 left-0 ${
+                comments.length > 4 && window.innerWidth >= 768 ? 'absolute' : ''
+              }`}
+            >
               {/* Comment box section */}
               {postData.IsComment ? (
                 <div
