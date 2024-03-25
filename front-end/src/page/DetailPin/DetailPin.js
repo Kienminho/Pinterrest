@@ -637,9 +637,7 @@ const DetailPin = () => {
             </div>
 
             <div
-              className={`desc-commentbox-main bottom-0 right-0 left-0 ${
-                comments.length > 4 && window.innerWidth >= 768 ? 'absolute' : ''
-              }`}
+              className={`desc-commentbox-main bottom-0 right-0 left-0 ${window.innerWidth >= 768 ? 'absolute' : ''}`}
             >
               {/* Comment box section */}
               {postData.IsComment ? (
