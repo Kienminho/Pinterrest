@@ -170,7 +170,7 @@ const ProfileOther = () => {
         {/* Avatar part */}
         <div className='relative profile-pic-main mb-4'>
           <div className='w-32 flex justify-center rounded-full aspect-square overflow-hidden'>
-            <ProfileImage src={createdPosts[0]?.Created.Avatar} alt='pic' />
+            <ProfileImage src={createdPosts[0]?.Created?.Avatar} alt='pic' />
           </div>
         </div>
 
