@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@react-oauth/google": "^0.12.1",
+    "@react-sandbox/heart": "^1.1.0",
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -25,6 +26,7 @@
     "moment": "^2.30.1",
     "postcss": "^8.4.33",
     "react": "^18.2.0",
+    "react-animated-heart": "^0.0.8",
     "react-bootstrap": "^2.9.2",
     "react-date-picker": "^10.6.0",
     "react-dom": "^18.2.0",

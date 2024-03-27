@@ -89,3 +89,22 @@ div.px-5 {
 [data-testid='flowbite-navbar-toggle']:hover {
   background-color: #384454 !important;
 }
+
+[aria-pressed='true'] > svg {
+  fill: rgb(228, 52, 52) !important;
+}
+
+/* [aria-pressed='false'] > svg {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+[aria-pressed='false'] {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+[aria-pressed='true'] {
+  width: 30px !important;
+  height: 30px !important;
+}  */

@@ -2414,6 +2414,11 @@
   resolved "https://registry.yarnpkg.com/@react-oauth/google/-/google-0.12.1.tgz#b76432c3a525e9afe076f787d2ded003fcc1bee9"
   integrity sha512-qagsy22t+7UdkYAiT5ZhfM4StXi9PPNvw0zuwNmabrWyMKddczMtBIOARflbaIj+wHiQjnMAsZmzsUYuXeyoSg==
 
+"@react-sandbox/heart@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@react-sandbox/heart/-/heart-1.1.0.tgz#9551d79ea124875018adde8e43fad16cdb044d3c"
+  integrity sha512-oGthkH936UyDnjfdBxRM/88Bimcg1eYgi3eITYp19bv0WkKMd2AD8Ede2hCK61SEkF3F2wmGUEF4Jdr17XgDXw==
+
 "@reduxjs/toolkit@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-2.0.1.tgz#0a5233c1e35c1941b03aece39cceade3467a1062"
@@ -6485,7 +6490,7 @@ globby@^11.0.4, globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-goober@^2.1.10, goober@^2.1.8:
+goober@^2.1.10, goober@^2.1.13, goober@^2.1.8:
   version "2.1.14"
   resolved "https://registry.yarnpkg.com/goober/-/goober-2.1.14.tgz#4a5c94fc34dc086a8e6035360ae1800005135acd"
   integrity sha512-4UpC0NdGyAFqLNPnhCT2iHpza2q+RAY3GV85a/mRPdzyPQMsj0KmMMuetdIkzWRbJ+Hgau1EZztq8ImmiMGhsg==
@@ -11089,6 +11094,16 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-animated-heart@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/react-animated-heart/-/react-animated-heart-0.0.8.tgz#462c8f9b287619bba3adce8d4f271fd2c715e6f0"
+  integrity sha512-WVFG+T7UX+mbnUaR3bNjkTQQj8nkj3tq6ty9tLXfpd2lruh5BN7praj1SJiMdOzTbqPlLbbxeTUnE+Z3OoO3QQ==
+  dependencies:
+    goober "^2.1.13"
+    react "^18.2.0"
+    react-dom "^18.2.0"
+    typescript "^4.7.4"
+
 react-app-polyfill@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-3.0.0.tgz#95221e0a9bd259e5ca6b177c7bb1cb6768f68fd7"
@@ -12969,6 +12984,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
+
+typescript@^4.7.4:
+  version "4.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
+  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

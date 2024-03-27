@@ -419,3 +419,42 @@ export const getMessageByConversation = async (conversationId, senderId, receive
     console.log(error)
   }
 }
+
+export const getReactionByUser = async (postOrCommentId, userId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/reaction/get-reaction-by-user`, {
+      params: { postOrCommentId, userId },
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getAllReactions = async (pageIndex, pageSize, postOrCommentId, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/reaction/get-all-reactions`, {
+      params: { pageIndex, pageSize, postOrCommentId },
+      headers: { authorization: `Bearer ${accessToken}` }
+    })
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const createReaction = async (postOrCommentId, userId, icon, isPost, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.post(
+      `${process.env.REACT_APP_API_URL}/reaction/create-reaction`,
+      { postOrCommentId, userId, icon, isPost },
+      {
+        headers: { authorization: `Bearer ${accessToken}` }
+      }
+    )
+    return res.data
+  } catch (error) {
+    console.log(error)
+  }
+}

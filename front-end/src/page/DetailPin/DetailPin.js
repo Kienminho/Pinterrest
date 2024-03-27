@@ -19,6 +19,8 @@ import { Comment } from '../../components/Comment/Comment'
 import { ReplyInput } from '../../components/ReplyInput/ReplyInput'
 import { ReplyComment } from '../../components/ReplyComment/ReplyComment'
 import { savePost, unsavePost } from '../../store/slices/SavePostSlice'
+// import Heart from 'react-animated-heart'
+import Heart from '@react-sandbox/heart'
 
 const DetailPin = () => {
   const [postData, setPostData] = useState({})
@@ -39,6 +41,8 @@ const DetailPin = () => {
   const [followingOther, setFollowingOther] = useState([])
   const [loadingCmt, setLoadingCmt] = useState(true)
   const [loadingPost, setLoadingPost] = useState(true)
+  const [isClick, setClick] = useState(false)
+  const [active, setActive] = useState(false)
 
   const { savedPosts } = useSelector((state) => {
     return state.SavePost
@@ -484,8 +488,11 @@ const DetailPin = () => {
               <span className='text-3xl font-medium max-sm:text-2xl text-white'>{postData?.Title}</span>{' '}
               <span className='text-[18px] font-normal max-sm:text-base text-zinc-300'>{postData?.Description}</span>
               {/* User info part */}
-              <div className='creator-profile flex w-full items-center gap-1' onClick={handleShowProfile}>
-                <div className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'>
+              <div className='creator-profile flex w-full items-center gap-1'>
+                <div
+                  className='creator-image rounded-full w-14 aspect-square overflow-hidden shrink-0 hover:bg-blue-300 cursor-pointer p-1'
+                  onClick={handleShowProfile}
+                >
                   {user ? (
                     <ProfileImage src={postData?.Created?.Avatar} />
                   ) : (
@@ -497,7 +504,9 @@ const DetailPin = () => {
                   )}
                 </div>
                 <div className='creator-name whitespace-nowrap overflow-hidden text-ellipsis flex flex-col text-white cursor-pointer gap-1 hover:text-gray-300 p-2 transition duration-200 rounded-xl'>
-                  <div className='font-semibold'>{postData?.Created?.UserName}</div>
+                  <div className='font-semibold' onClick={handleShowProfile}>
+                    {postData?.Created?.UserName}
+                  </div>
                   <div className='text-zinc-300'>
                     {UserId === postData?.Created?._id ? followers?.length : followersOther?.length} người theo dõi
                   </div>
@@ -648,11 +657,17 @@ const DetailPin = () => {
                       : ''
                   }`}
                 >
-                  <h6 className='text-[#ffffffb3] font-medium ml-1'>
-                    {getTotalCommentsAndReplies(comments) === 0
-                      ? 'Bạn nghĩ gì?'
-                      : `${getTotalCommentsAndReplies(comments)} Nhận xét`}
-                  </h6>
+                  <div className='flex justify-between'>
+                    <h6 className='text-[#ffffffb3] font-medium ml-1'>
+                      {getTotalCommentsAndReplies(comments) === 0
+                        ? 'Bạn nghĩ gì?'
+                        : `${getTotalCommentsAndReplies(comments)} Nhận xét`}
+                    </h6>
+                    <div className='react-length flex gap-5 items-center'>
+                      <span className='text-[#ffffffb3] font-medium'>❤️{getTotalCommentsAndReplies(comments)}</span>
+                      <Heart width={30} height={30} active={active} onClick={() => setActive(!active)} />
+                    </div>
+                  </div>
 
                   <div className='flex gap-3'>
                     <div className='creator-image rounded-full w-12 aspect-square  shrink-0'>

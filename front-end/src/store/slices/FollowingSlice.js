@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const FollowingSlice = createSlice({
   name: 'Following',
   initialState: {
-    followingList: [] // Mảng chứa ID của các post đã được theo dõi
+    followingList: ['65fbf2a230c32a5bf74c78d3'] // Mảng chứa ID của các post đã được theo dõi
   },
   reducers: {
     followUser: (state, action) => {
