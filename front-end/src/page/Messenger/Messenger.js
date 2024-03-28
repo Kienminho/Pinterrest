@@ -26,7 +26,7 @@ const Messenger = () => {
   useEffect(() => {
     //wss://api-pinterrest.up.railway.app
     setSocket(
-      io(`wss://pinterrest.onrender.com/`, {
+      io(`wss://api-pinterrest.up.railway.app/`, {
         path: '/socket/',
         transports: ['websocket', 'polling'] // use WebSocket first, if available
       })
