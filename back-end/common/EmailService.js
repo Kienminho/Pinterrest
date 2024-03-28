@@ -3,8 +3,8 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "Hopkien1609@gmail.com", // Email người gửi
-    pass: "vptxiuwznddhfzdl", // Mật khẩu email người gửi
+    user: "noreply.pinterest.tdtu@gmail.com", // Email người gửi
+    pass: "oovegqlxdsqcfjho", // Mật khẩu email người gửi
   },
 });
 
@@ -14,7 +14,7 @@ const sendMail = async (email, code, username) => {
   <p> Mã xác minh có hiệu lực trong 5 phút.</p>`;
   // Cấu hình nội dung email
   const mailOptions = {
-    from: "Hopkien1609@gmail.com", // Email người gửi
+    from: "noreply.pinterest.tdtu@gmail.com", // Email người gửi
     to: email, // Email người nhận
     subject: "Xác thực người dùng", // Tiêu đề email
     html: html, // Nội dung email
@@ -35,7 +35,7 @@ const sendNotification = async (recipients) => {
   for (let i = 0; i < recipients.length; i++) {
     const { email, content } = recipients[i];
     const mailOptions = {
-      from: "Hopkien1609@gmail.com", // Email người gửi
+      from: "noreply.pinterest.tdtu@gmail.com", // Email người gửi
       to: email, // Email người nhận
       subject: "Pinspired - Thông báo", // Tiêu đề email
       html: content, // Nội dung email
