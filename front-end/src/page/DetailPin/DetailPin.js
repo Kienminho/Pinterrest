@@ -8,7 +8,7 @@ import { MdSend } from 'react-icons/md'
 
 import SuspenseImg from '../../components/SuspenseImg/SuspenseImg'
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage'
-import { createComment, replyComment } from '../../store/apiRequest'
+import { createComment, createReaction, getAllReactions, getReactionByUser, replyComment } from '../../store/apiRequest'
 import 'moment/locale/vi'
 import { followUser, unfollowUser } from '../../store/slices/FollowingSlice'
 import toast from 'react-hot-toast'
@@ -21,6 +21,8 @@ import { ReplyComment } from '../../components/ReplyComment/ReplyComment'
 import { savePost, unsavePost } from '../../store/slices/SavePostSlice'
 // import Heart from 'react-animated-heart'
 import Heart from '@react-sandbox/heart'
+import FBReactions from '../../components/FBReactions/FBReactions'
+import ReactionStats from '../../components/ReactionStats/ReactionStats'
 
 const DetailPin = () => {
   const [postData, setPostData] = useState({})
@@ -41,8 +43,9 @@ const DetailPin = () => {
   const [followingOther, setFollowingOther] = useState([])
   const [loadingCmt, setLoadingCmt] = useState(true)
   const [loadingPost, setLoadingPost] = useState(true)
-  const [isClick, setClick] = useState(false)
   const [active, setActive] = useState(false)
+  const [reactionList, setReactionList] = useState([])
+  const [reactedType, setReactedType] = useState('')
 
   const { savedPosts } = useSelector((state) => {
     return state.SavePost
@@ -72,6 +75,54 @@ const DetailPin = () => {
   const handleGoBack = () => {
     navigate(-1)
   }
+
+  // create reaction
+  const handleReactionSelect = async (selectedReaction) => {
+    try {
+      const res = await createReaction(postData._id, UserId, selectedReaction, true, accessToken_daniel, axiosJWT)
+      if (res.statusCode === 200) {
+        setActive(true)
+        // toast.success('Đã thích bài viết')
+      } else {
+        toast.error('Thích bài viết không thành công')
+      }
+    } catch (error) {
+      console.log('Error creating reaction:', error)
+    }
+  }
+
+  // get all reactions of post
+  useEffect(() => {
+    const getReactions = async () => {
+      try {
+        const res = await getAllReactions(1, 50, postData._id, accessToken_daniel, axiosJWT)
+        if (res.statusCode === 200) {
+          setReactionList(res.data)
+        }
+      } catch (error) {
+        console.log('Error getting reactions:', error)
+      }
+    }
+    getReactions()
+  }, [active])
+
+  // check reacted this post or not
+  useEffect(() => {
+    const checkReacted = async () => {
+      try {
+        const res = await getReactionByUser(postData._id, UserId, accessToken_daniel, axiosJWT)
+        if (res.statusCode === 200 && res.data !== '') {
+          setActive(false)
+          setReactedType(res.data)
+        }
+      } catch (error) {
+        console.log('Error getting reactions:', error)
+      }
+    }
+    checkReacted()
+  }, [reactionList])
+
+  console.log('active', active)
 
   // Cấp 1: Cmt chính -> Reply (cmtId)
   const handleReplyClick = (commentId) => {
@@ -536,12 +587,12 @@ const DetailPin = () => {
               <div>
                 <>
                   {postData.IsComment === false ? (
-                    <button disabled className='text-zinc-300 -mt-10'>
+                    <button disabled className='text-zinc-300 -mt-10 text-left'>
                       Đã tắt nhận xét cho Ghim này
                     </button>
                   ) : // Điều kiện thứ hai
                   !loadingCmt && !loadingPost && postData.IsComment === true && comments.length === 0 ? (
-                    <button disabled className='text-zinc-300 -mt-10'>
+                    <button disabled className='text-zinc-300 -mt-10 text-left'>
                       Chưa có nhận xét nào! Thêm nhận xét để bắt đầu.
                     </button>
                   ) : loadingCmt && loadingPost ? (
@@ -657,15 +708,20 @@ const DetailPin = () => {
                       : ''
                   }`}
                 >
-                  <div className='flex justify-between'>
+                  <div className='flex justify-between items-center'>
                     <h6 className='text-[#ffffffb3] font-medium ml-1'>
                       {getTotalCommentsAndReplies(comments) === 0
                         ? 'Bạn nghĩ gì?'
                         : `${getTotalCommentsAndReplies(comments)} Nhận xét`}
                     </h6>
                     <div className='react-length flex gap-5 items-center'>
-                      <span className='text-[#ffffffb3] font-medium'>❤️{getTotalCommentsAndReplies(comments)}</span>
-                      <Heart width={30} height={30} active={active} onClick={() => setActive(!active)} />
+                      <ReactionStats
+                        postData={postData}
+                        accessToken_daniel={accessToken_daniel}
+                        axiosJWT={axiosJWT}
+                        active={active}
+                      />
+                      <FBReactions onReactionSelect={handleReactionSelect} reactedType={reactedType} />
                     </div>
                   </div>
 
