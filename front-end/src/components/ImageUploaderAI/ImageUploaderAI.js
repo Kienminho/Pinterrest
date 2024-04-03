@@ -29,7 +29,7 @@ const ImageUploaderAI = ({ imgSrc: propImgSrc, loadingAI, loadingPostAI }) => {
     return (
       <>
         <div className='flex flex-col font-inter'>
-          <p className='text-lg text-dark_color font-medium'>Chọn lại ảnh trước đó, (lưu tối đa 3 ảnh)</p>
+          <p className='text-lg font-medium text-[#ffffffb3]'>Chọn lại ảnh trước đó, (lưu tối đa 3 ảnh)</p>
           <div className='flex gap-2 justify-around my-5'>
             {previousImages.map((imageURL, index) => (
               <div className='rounded-3xl ring-2 hover:ring-indigo-400 hover:ring-4 '>
