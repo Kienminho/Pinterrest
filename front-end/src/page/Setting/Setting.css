@@ -12,35 +12,35 @@ ul > li:hover {
 } */
 
 .ant-input-affix-wrapper {
-  padding: 10px 16px;
+  padding: 10px 16px !important;
 }
 
 .ant-picker {
-  padding: 10px 16px;
+  padding: 10px 16px !important;
 }
 
-.ant-input-affix-wrapper.ant-input-affix-wrapper-lg.css-dev-only-do-not-override-1k979oh.ant-input-outlined {
-  padding: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  border-radius: 12px;
-  outline-style: none;
-  width: 100%;
-  background: #334155;
-  color: #ffffff;
-  border: none;
+.ant-input-affix-wrapper {
+  padding: 0.9rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  border-radius: 14px !important;
+  outline-style: none !important;
+  width: 100% !important;
+  background: #334155 !important;
+  color: #ffffff !important;
+  border: none !important;
 }
 
-.ant-picker.ant-picker-large.ant-picker-outlined.css-dev-only-do-not-override-1k979oh.block {
-  padding: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  border-radius: 12px;
-  outline-style: none;
-  width: 100%;
-  background: #334155;
-  color: #ffffff;
-  border: none;
+.ant-picker.ant-picker-large {
+  padding: 0.9rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  border-radius: 12px !important;
+  outline-style: none !important;
+  width: 100% !important;
+  background: #334155 !important;
+  color: #ffffff !important;
+  border: none !important;
 }
 
 input[type='file'] {
