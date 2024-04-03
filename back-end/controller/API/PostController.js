@@ -95,7 +95,7 @@ const HandleCreatePost = async (req, res) => {
     const base64 = await _FileService.getBase64FromFile(Attachment.Thumbnail);
     const text = await createQuestion();
     const data = await _AIController.createNonStreamingMultipartContent(
-      "pinterest-417305",
+      "pinspried",
       "us-central1",
       "gemini-1.0-pro-vision",
       base64,
