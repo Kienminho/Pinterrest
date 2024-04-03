@@ -69,7 +69,7 @@ const CreateImageToText = async (req, res) => {
 const SummarizesContent = async (req, res) => {
   //request body
   createNonStreamingMultipartContent(
-    "pinterest-417305",
+    "pinspried",
     "us-central1",
     "gemini-1.0-pro-vision",
     req.body.image,
@@ -79,7 +79,7 @@ const SummarizesContent = async (req, res) => {
 };
 
 async function createNonStreamingMultipartContent(
-  projectId = "pinterest-417305",
+  projectId = "pinspried",
   location = "us-central1",
   model = "gemini-1.0-pro-vision",
   image = "gs://generativeai-downloads/images/scones.jpg",
