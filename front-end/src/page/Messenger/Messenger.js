@@ -217,7 +217,7 @@ const Messenger = () => {
                   {/* Hiển thị avatar của sender bên trái */}
                   {user?._id !== userReal?._id && (
                     <div className='mr-2'>
-                      <img src={user?.Avatar} alt='Sender Avatar' className='w-8 h-8 rounded-full' />
+                      <img src={messages?.receiver?.Avatar} alt='Sender Avatar' className='w-8 h-8 rounded-full' />
                     </div>
                   )}
                   <div
@@ -247,7 +247,7 @@ const Messenger = () => {
         </div>
 
         {messages?.receiver && (
-          <div className='relative flex w-full px-10 gap-2'>
+          <div className='relative flex w-full px-10 gap-2 border-t-2 border-gray-700'>
             <input
               placeholder='Nhập tin nhắn...'
               rows='1'
@@ -258,11 +258,11 @@ const Messenger = () => {
                   sendMessage()
                 }
               }}
-              class='bg-[#334155] w-full resize-none outline-none rounded-full p-3 px-4 text-[#ffffff] placeholder:text-[#ffffff]'
-            ></input>
+              class='bg-[#334155] w-full resize-none outline-none rounded-full p-3 px-4 text-[#ffffff] placeholder:text-[#ffffff] mt-4'
+            />
 
             <div
-              className={`p-2 mt-1 cursor-pointer bg-light rounded-full hover:bg-[#384454] ${
+              className={`p-2 flex justify-center items-center mt-4 cursor-pointer bg-light rounded-full hover:bg-[#384454] ${
                 !message && 'pointer-events-none'
               }`}
               onClick={() => sendMessage()}
