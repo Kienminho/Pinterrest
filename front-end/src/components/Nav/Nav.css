@@ -53,6 +53,15 @@ svg {
   transition: background-color 0.2s;
 }
 
+.ant-float-btn-body {
+  background-color: #1e293b !important;
+}
+
+.ant-float-btn-body:hover {
+  background-color: #183769 !important;
+  transition: background-color 0.3s;
+}
+
 .ant-float-btn .ant-float-btn-body .ant-float-btn-content .ant-float-btn-icon {
   width: 24px;
   height: 24px;
